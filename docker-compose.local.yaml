@@ -1,0 +1,77 @@
+version: '3'
+
+volumes:
+  spanner-local:
+    driver: local
+  redis-local:
+    driver: local
+
+services:
+  # API
+  api-game:
+    tty: true
+    env_file:
+      - .env.local
+    build:
+      target: local
+      context: .
+      dockerfile: ./docker/api/game/Dockerfile
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./:/go/src/app
+    depends_on:
+      - spanner
+
+  # Generator
+  gen:
+    tty: true
+    env_file:
+      - .env.local
+    build:
+      target: local
+      context: .
+      dockerfile: ./docker/gen/Dockerfile
+    volumes:
+      - ./:/go/src/app
+    depends_on:
+      - spanner
+
+  # Redis
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis/redis.conf:/etc/redis.conf
+      - redis-local:/data
+
+  # Spanner
+  spanner:
+    image: gcr.io/cloud-spanner-emulator/emulator
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+
+  # Init
+  spanner-init:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    command: >
+      bash -c 'gcloud config configurations create emulator &&
+              gcloud config set auth/disable_credentials true &&
+              gcloud config set project $${PROJECT_ID} &&
+              gcloud config set api_endpoint_overrides/spanner $${SPANNER_EMULATOR_URL} &&
+              gcloud config set auth/disable_credentials true &&
+              gcloud spanner instances create $${INSTANCE_NAME} --config=emulator-config --description=Emulator --nodes=1'
+    environment:
+      PROJECT_ID: "test-project"
+      SPANNER_EMULATOR_URL: "http://spanner:9020/"
+      INSTANCE_NAME: "test-instance"
+      DATABASE_NAME: "test-database"
+
+  # CLI
+  spanner-cli:
+    image: sjdaws/spanner-cli:latest
+    environment:
+      SPANNER_EMULATOR_HOST: "spanner:9010"
+    command: ['sh', '-c', 'echo this container keep running && tail -f /dev/null']
