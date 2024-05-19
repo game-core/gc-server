@@ -1,0 +1,9 @@
+// アカウント作成リクエスト
+syntax = "proto3";
+
+package api.game;
+
+message AccountCreateRequest {
+  string name = 1;
+  string password = 2;
+}

@@ -9,24 +9,24 @@ structure:
     nullable: false
     number: 1
     comment: "シャードID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 2
+    comment: "シャード名"
   ShardKey:
     name: shard_key
     type: string
     nullable: false
-    number: 2
+    number: 3
     comment: "シャードキー"
   Count:
     name: count
     type: int32
     nullable: false
-    number: 3
-    comment: "シャードされたユーザー数"
-  Name:
-    name: name
-    type: string
-    nullable: false
     number: 4
-    comment: "シャード名"
+    comment: "シャードされたユーザー数"
 primary:
   - MasterShardId
 unique:

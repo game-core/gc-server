@@ -1,0 +1,17 @@
+// アカウント
+syntax = "proto3";
+
+package api.game;
+
+import "account/account_get_request.proto";
+import "account/account_get_response.proto";
+import "account/account_create_request.proto";
+import "account/account_create_response.proto";
+import "account/account_login_request.proto";
+import "account/account_login_response.proto";
+
+service Account {
+  rpc Get (AccountGetRequest) returns (AccountGetResponse);
+  rpc Create (AccountCreateRequest) returns (AccountCreateResponse);
+  rpc Login (AccountLoginRequest) returns (AccountLoginResponse);
+}

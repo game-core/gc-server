@@ -1,0 +1,8 @@
+// アカウント取得リクエスト
+syntax = "proto3";
+
+package api.game;
+
+message AccountGetRequest {
+  string user_id = 1;
+}

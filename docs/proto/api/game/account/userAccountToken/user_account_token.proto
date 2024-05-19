@@ -1,0 +1,9 @@
+// ユーザーアカウントトークン
+syntax = "proto3";
+
+package api.game;
+
+message UserAccountToken {
+  string user_id = 1;
+  string token = 2;
+}

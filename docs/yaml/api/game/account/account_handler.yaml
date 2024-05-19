@@ -1,0 +1,29 @@
+name: Account
+package: account
+comment: "アカウント"
+
+structure:
+  Get:
+    name: get
+    method: unary
+    auth: true
+    request: AccountGetRequest
+    response: AccountGetResponse
+    number: 1
+    comment: "アカウントを取得する"
+  Create:
+    name: create
+    method: unary
+    auth: false
+    request: AccountCreateRequest
+    response: AccountCreateResponse
+    number: 2
+    comment: "アカウントを作成する"
+  Login:
+    name: login
+    method: unary
+    auth: false
+    request: AccountLoginRequest
+    response: AccountLoginResponse
+    number: 3
+    comment: "アカウントをログインする"

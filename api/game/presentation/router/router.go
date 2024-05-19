@@ -7,19 +7,22 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/game-core/gc-server/api/game/di"
+	"github.com/game-core/gc-server/api/game/presentation/server/account"
 	"github.com/game-core/gc-server/api/game/presentation/server/health"
 )
 
 func Router(lis net.Listener) {
 	// DI
-	healthHandler := di.InitializeHealthHandler()
 	authInterceptor := di.InitializeAuthInterceptor()
+	accountHandler := di.InitializeAccountHandler()
+	healthHandler := di.InitializeHealthHandler()
 
 	// Server
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor.JwtAuth),
 	)
 
+	account.RegisterAccountServer(s, accountHandler)
 	health.RegisterHealthServer(s, healthHandler)
 
 	log.Printf("gRPC server started")

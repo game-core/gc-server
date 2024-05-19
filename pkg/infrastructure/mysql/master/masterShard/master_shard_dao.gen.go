@@ -45,7 +45,7 @@ func (s *masterShardDao) Find(ctx context.Context, masterShardId int64) (*master
 		return nil, errors.NewError("record does not exist")
 	}
 
-	m := masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name)
+	m := masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "Find", fmt.Sprintf("%d_", masterShardId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -67,7 +67,7 @@ func (s *masterShardDao) FindOrNil(ctx context.Context, masterShardId int64) (*m
 		return nil, nil
 	}
 
-	m := masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name)
+	m := masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "FindOrNil", fmt.Sprintf("%d_", masterShardId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -89,7 +89,7 @@ func (s *masterShardDao) FindByShardKey(ctx context.Context, shardKey string) (*
 		return nil, errors.NewError("record does not exist")
 	}
 
-	m := masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name)
+	m := masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "FindByShardKey", fmt.Sprintf("%s_", shardKey)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -111,7 +111,7 @@ func (s *masterShardDao) FindOrNilByShardKey(ctx context.Context, shardKey strin
 		return nil, nil
 	}
 
-	m := masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name)
+	m := masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "FindOrNilByShardKey", fmt.Sprintf("%s_", shardKey)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -132,7 +132,7 @@ func (s *masterShardDao) FindList(ctx context.Context) (masterShard.MasterShards
 
 	ms := masterShard.NewMasterShards()
 	for _, t := range ts {
-		ms = append(ms, masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name))
+		ms = append(ms, masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count))
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "FindList", ""), ms, cache.DefaultExpiration)
@@ -155,7 +155,7 @@ func (s *masterShardDao) FindListByShardKey(ctx context.Context, shardKey string
 
 	ms := masterShard.NewMasterShards()
 	for _, t := range ts {
-		ms = append(ms, masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name))
+		ms = append(ms, masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count))
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_shard", "FindListByShardKey", fmt.Sprintf("%s_", shardKey)), ms, cache.DefaultExpiration)
@@ -172,16 +172,16 @@ func (s *masterShardDao) Create(ctx context.Context, tx *gorm.DB, m *masterShard
 
 	t := &MasterShard{
 		MasterShardId: m.MasterShardId,
+		Name:          m.Name,
 		ShardKey:      m.ShardKey,
 		Count:         m.Count,
-		Name:          m.Name,
 	}
 	res := conn.Model(NewMasterShard()).WithContext(ctx).Create(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name), nil
+	return masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count), nil
 }
 
 func (s *masterShardDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
@@ -196,9 +196,9 @@ func (s *masterShardDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterS
 	for _, m := range ms {
 		t := &MasterShard{
 			MasterShardId: m.MasterShardId,
+			Name:          m.Name,
 			ShardKey:      m.ShardKey,
 			Count:         m.Count,
-			Name:          m.Name,
 		}
 		ts = append(ts, t)
 	}
@@ -221,16 +221,16 @@ func (s *masterShardDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard
 
 	t := &MasterShard{
 		MasterShardId: m.MasterShardId,
+		Name:          m.Name,
 		ShardKey:      m.ShardKey,
 		Count:         m.Count,
-		Name:          m.Name,
 	}
 	res := conn.Model(NewMasterShard()).WithContext(ctx).Where("master_shard_id = ?", m.MasterShardId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return masterShard.SetMasterShard(t.MasterShardId, t.ShardKey, t.Count, t.Name), nil
+	return masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count), nil
 }
 
 func (s *masterShardDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) error {

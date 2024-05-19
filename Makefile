@@ -60,3 +60,7 @@ gen_migration:
 # マスターインポート
 gen_master:
 	$(DOCKER_COMPOSE) exec gen go run ./tool/masterImport/main.go
+
+# フォーマット
+gen_fmt:
+	$(DOCKER_COMPOSE) exec gen goimports -w .

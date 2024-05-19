@@ -1,0 +1,17 @@
+name: AccountCreateRequest
+package: account
+comment: "アカウント作成リクエスト"
+
+structure:
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザー名"
+  Password:
+    name: password
+    type: string
+    nullable: false
+    number: 2
+    comment: "パスワード"

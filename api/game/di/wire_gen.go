@@ -7,16 +7,26 @@
 package di
 
 import (
+	"github.com/game-core/gc-server/api/game/presentation/handler/account"
 	"github.com/game-core/gc-server/api/game/presentation/handler/health"
 	"github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
+	account2 "github.com/game-core/gc-server/api/game/usecase/account"
 	health2 "github.com/game-core/gc-server/api/game/usecase/health"
 	"github.com/game-core/gc-server/config/database"
-	"github.com/game-core/gc-server/pkg/domain/model/account"
+	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
+	"github.com/game-core/gc-server/pkg/domain/model/shard"
+	"github.com/game-core/gc-server/pkg/domain/model/transaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterHealth"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterShard"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAccount"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userTransaction"
+	userAccount2 "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccount"
 	"github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccountToken"
+	masterTransaction2 "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userTransaction"
 )
 
 // Injectors from wire.go:
@@ -27,10 +37,23 @@ func InitializeAuthInterceptor() auth.AuthInterceptor {
 	return authInterceptor
 }
 
+func InitializeAccountHandler() account.AccountHandler {
+	accountUsecase := InitializeAccountUsecase()
+	accountHandler := account.NewAccountHandler(accountUsecase)
+	return accountHandler
+}
+
 func InitializeHealthHandler() health.HealthHandler {
 	healthUsecase := InitializeHealthUsecase()
 	healthHandler := health.NewHealthHandler(healthUsecase)
 	return healthHandler
+}
+
+func InitializeAccountUsecase() account2.AccountUsecase {
+	accountService := InitializeAccountService()
+	transactionService := InitializeTransactionService()
+	accountUsecase := account2.NewAccountUsecase(accountService, transactionService)
+	return accountUsecase
 }
 
 func InitializeHealthUsecase() health2.HealthUsecase {
@@ -39,12 +62,14 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 	return healthUsecase
 }
 
-func InitializeAccountService() account.AccountService {
+func InitializeAccountService() account3.AccountService {
+	shardService := InitializeShardService()
 	mysqlHandler := database.NewMysql()
 	userAccountMysqlRepository := userAccount.NewUserAccountDao(mysqlHandler)
 	redisHandler := database.NewRedis()
+	userAccountRedisRepository := userAccount2.NewUserAccountDao(redisHandler)
 	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenDao(redisHandler)
-	accountService := account.NewAccountService(userAccountMysqlRepository, userAccountTokenRedisRepository)
+	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 
@@ -54,4 +79,22 @@ func InitializeHealthService() health3.HealthService {
 	masterHealthMysqlRepository := masterHealth.NewMasterHealthDao(mysqlHandler)
 	healthService := health3.NewHealthService(commonHealthMysqlRepository, masterHealthMysqlRepository)
 	return healthService
+}
+
+func InitializeShardService() shard.ShardService {
+	mysqlHandler := database.NewMysql()
+	masterShardMysqlRepository := masterShard.NewMasterShardDao(mysqlHandler)
+	shardService := shard.NewShardService(masterShardMysqlRepository)
+	return shardService
+}
+
+func InitializeTransactionService() transaction.TransactionService {
+	mysqlHandler := database.NewMysql()
+	commonTransactionMysqlRepository := commonTransaction.NewCommonTransactionDao(mysqlHandler)
+	masterTransactionMysqlRepository := masterTransaction.NewMasterTransactionDao(mysqlHandler)
+	userTransactionMysqlRepository := userTransaction.NewUserTransactionDao(mysqlHandler)
+	redisHandler := database.NewRedis()
+	userTransactionRedisRepository := masterTransaction2.NewUserTransactionDao(redisHandler)
+	transactionService := transaction.NewTransactionService(commonTransactionMysqlRepository, masterTransactionMysqlRepository, userTransactionMysqlRepository, userTransactionRedisRepository)
+	return transactionService
 }

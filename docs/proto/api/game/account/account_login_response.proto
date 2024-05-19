@@ -1,0 +1,11 @@
+// アカウントログインレスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "account/userAccount/user_account.proto";
+
+message AccountLoginResponse {
+  string token = 1;
+  optional UserAccount user_account = 2;
+}

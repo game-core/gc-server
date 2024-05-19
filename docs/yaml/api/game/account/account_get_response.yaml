@@ -1,0 +1,12 @@
+name: AccountGetResponse
+package: account
+comment: "アカウント取得レスポンス"
+
+structure:
+  UserAccount:
+    name: user_account
+    type: structure
+    package: account/userAccount
+    nullable: true
+    number: 1
+    comment: "ユーザーアカウント"

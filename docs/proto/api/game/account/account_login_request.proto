@@ -1,0 +1,9 @@
+// アカウントログインリクエスト
+syntax = "proto3";
+
+package api.game;
+
+message AccountLoginRequest {
+  string user_id = 1;
+  string password = 2;
+}

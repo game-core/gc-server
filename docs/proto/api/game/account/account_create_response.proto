@@ -1,0 +1,10 @@
+// アカウント作成レスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "account/userAccount/user_account.proto";
+
+message AccountCreateResponse {
+  optional UserAccount user_account = 1;
+}

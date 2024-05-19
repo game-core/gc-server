@@ -3,11 +3,11 @@ package transaction
 
 import (
 	"context"
-	"log"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
+	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/keys"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/commonTransaction"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/masterTransaction"
@@ -62,11 +62,11 @@ func (s *transactionService) CommonMysqlBegin(ctx context.Context) (*gorm.DB, er
 func (s *transactionService) CommonMysqlEnd(ctx context.Context, tx *gorm.DB, err error) {
 	if err != nil {
 		if err := s.commonTransactionMysqlRepository.Rollback(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.commonTransactionMysqlRepository.Rollback", err)
 		}
 	} else {
 		if err := s.commonTransactionMysqlRepository.Commit(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.commonTransactionMysqlRepository.Commit", err)
 		}
 	}
 }
@@ -75,7 +75,7 @@ func (s *transactionService) CommonMysqlEnd(ctx context.Context, tx *gorm.DB, er
 func (s *transactionService) MasterMysqlBegin(ctx context.Context) (*gorm.DB, error) {
 	tx, err := s.masterTransactionMysqlRepository.Begin(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewMethodError("s.masterTransactionMysqlRepository.Begin", err)
 	}
 
 	return tx, nil
@@ -85,11 +85,11 @@ func (s *transactionService) MasterMysqlBegin(ctx context.Context) (*gorm.DB, er
 func (s *transactionService) MasterMysqlEnd(ctx context.Context, tx *gorm.DB, err error) {
 	if err != nil {
 		if err := s.masterTransactionMysqlRepository.Rollback(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.masterTransactionMysqlRepository.Rollback", err)
 		}
 	} else {
 		if err := s.masterTransactionMysqlRepository.Commit(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.masterTransactionMysqlRepository.Commit", err)
 		}
 	}
 }
@@ -98,7 +98,7 @@ func (s *transactionService) MasterMysqlEnd(ctx context.Context, tx *gorm.DB, er
 func (s *transactionService) UserMysqlBegin(ctx context.Context, userId string) (*gorm.DB, error) {
 	tx, err := s.userTransactionMysqlRepository.Begin(ctx, keys.GetShardKeyByUserId(userId))
 	if err != nil {
-		return nil, err
+		return nil, errors.NewMethodError("s.userTransactionMysqlRepository.Begin", err)
 	}
 
 	return tx, nil
@@ -108,11 +108,11 @@ func (s *transactionService) UserMysqlBegin(ctx context.Context, userId string) 
 func (s *transactionService) UserMysqlEnd(ctx context.Context, tx *gorm.DB, err error) {
 	if err != nil {
 		if err := s.userTransactionMysqlRepository.Rollback(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.userTransactionMysqlRepository.Rollback", err)
 		}
 	} else {
 		if err := s.userTransactionMysqlRepository.Commit(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.userTransactionMysqlRepository.Commit", err)
 		}
 	}
 }
@@ -123,7 +123,7 @@ func (s *transactionService) MultiUserMysqlBegin(ctx context.Context, userIds []
 	for _, userId := range userIds {
 		tx, err := s.userTransactionMysqlRepository.Begin(ctx, keys.GetShardKeyByUserId(userId))
 		if err != nil {
-			return nil, err
+			return nil, errors.NewMethodError("s.userTransactionMysqlRepository.Begin", err)
 		}
 
 		txs[userId] = tx
@@ -137,7 +137,7 @@ func (s *transactionService) MultiUserMysqlEnd(ctx context.Context, txs map[stri
 	if err != nil {
 		for _, tx := range txs {
 			if rollbackErr := s.userTransactionMysqlRepository.Rollback(ctx, tx); rollbackErr != nil {
-				log.Panicln(rollbackErr)
+				errors.NewMethodErrorLog("s.userTransactionMysqlRepository.Rollback", rollbackErr)
 			}
 		}
 		return
@@ -145,7 +145,7 @@ func (s *transactionService) MultiUserMysqlEnd(ctx context.Context, txs map[stri
 
 	for _, tx := range txs {
 		if commitErr := s.userTransactionMysqlRepository.Commit(ctx, tx); commitErr != nil {
-			log.Panicln(commitErr)
+			errors.NewMethodErrorLog("s.userTransactionMysqlRepository.Commit", commitErr)
 		}
 	}
 }
@@ -159,10 +159,10 @@ func (s *transactionService) UserRedisBegin() redis.Pipeliner {
 func (s *transactionService) UserRedisEnd(ctx context.Context, tx redis.Pipeliner, err error) {
 	if err != nil {
 		s.userTransactionRedisRepository.Rollback(tx)
-		log.Panicln(err)
+		errors.NewMethodErrorLog("s.userTransactionRedisRepository.Rollback", err)
 	} else {
 		if err := s.userTransactionRedisRepository.Commit(ctx, tx); err != nil {
-			log.Panicln(err)
+			errors.NewMethodErrorLog("s.userTransactionRedisRepository.Commit", err)
 		}
 	}
 }

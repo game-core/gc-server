@@ -19,5 +19,5 @@ structure:
     name: password
     type: string
     nullable: false
-    number: 2
+    number: 3
     comment: "パスワード"
