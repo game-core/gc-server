@@ -74,9 +74,9 @@ func (i *authInterceptor) check(ctx context.Context, tokenString string) (map[st
 		return nil, fmt.Errorf("invalid token")
 	}
 
-	userAccountToken, err := i.accountService.CheckToken(ctx, accountService.SetAccountCheckTokenRequest(claims["userId"].(string)))
+	userAccountToken, err := i.accountService.GetToken(ctx, accountService.SetAccountGetTokenRequest(claims["userId"].(string)))
 	if err != nil {
-		return nil, fmt.Errorf("i.accountService.CheckToken: %s", err)
+		return nil, fmt.Errorf("i.accountService.GetToken: %s", err)
 	}
 
 	if tokenString != userAccountToken.UserAccountToken.Token {

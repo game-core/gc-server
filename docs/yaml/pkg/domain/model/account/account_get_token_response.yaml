@@ -1,6 +1,6 @@
-name: AccountCheckTokenResponse
+name: AccountGetTokenResponse
 package: account
-comment: "アカウントトークン確認レスポンス"
+comment: "アカウントトークン取得レスポンス"
 
 structure:
   UserAccountToken:

@@ -8,8 +8,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// GenerateUserId UserIdを生成する
-func GenerateUserId(shardKey string) (string, error) {
+// CreateUserId UserIdを作成する
+func CreateUserId(shardKey string) (string, error) {
 	uuid, err := gonanoid.New(20)
 	if err != nil {
 		return "", err
@@ -18,8 +18,8 @@ func GenerateUserId(shardKey string) (string, error) {
 	return fmt.Sprintf("%s:%s", shardKey, uuid), nil
 }
 
-// GenerateRoomId RoomIdを生成する
-func GenerateRoomId() (string, error) {
+// CreateRoomId RoomIdを作成する
+func CreateRoomId() (string, error) {
 	uuid, err := gonanoid.New(20)
 	if err != nil {
 		return "", err
@@ -33,8 +33,8 @@ func GetShardKeyByUserId(userID string) string {
 	return strings.Split(userID, ":")[0]
 }
 
-// GeneratePassword パスワードを生成する
-func GeneratePassword() (string, error) {
+// CreatePassword パスワードを作成する
+func CreatePassword() (string, error) {
 	password, err := gonanoid.New(20)
 	if err != nil {
 		return "", err
@@ -43,8 +43,8 @@ func GeneratePassword() (string, error) {
 	return password, nil
 }
 
-// GenerateHashPassword ハッシュパスワードを生成する
-func GenerateHashPassword(password string) (string, error) {
+// CreateHashPassword ハッシュパスワードを作成する
+func CreateHashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err

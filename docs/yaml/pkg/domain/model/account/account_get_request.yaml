@@ -1,6 +1,6 @@
-name: AccountCheckTokenRequest
+name: AccountGetRequest
 package: account
-comment: "アカウントトークン確認リクエスト"
+comment: "アカウント取得リクエスト"
 
 structure:
   UserId:
