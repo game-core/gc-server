@@ -16,5 +16,6 @@ type UserAccountTokenMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *UserAccountToken) (*UserAccountToken, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms UserAccountTokens) (UserAccountTokens, error)
 	Update(ctx context.Context, tx *gorm.DB, m *UserAccountToken) (*UserAccountToken, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms UserAccountTokens) (UserAccountTokens, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *UserAccountToken) error
 }

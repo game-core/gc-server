@@ -180,6 +180,11 @@ func (s *MysqlRepository) createMethods(yamlStruct *YamlStruct) []string {
 		methods = append(methods, s.createUpdate(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
 	}
 
+	// UpdateList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createUpdateList(yamlStruct))
+	}
+
 	// Delete
 	if len(yamlStruct.Primary) > 0 {
 		methods = append(methods, s.createDelete(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
@@ -278,7 +283,7 @@ func (s *MysqlRepository) createCreate(yamlStruct *YamlStruct) string {
 	)
 }
 
-// createCreate CreateListを作成する
+// createCreateList CreateListを作成する
 func (s *MysqlRepository) createCreateList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
 		`CreateList(ctx context.Context, tx *gorm.DB, ms %s) (%s, error)`,
@@ -298,6 +303,15 @@ func (s *MysqlRepository) createUpdate(yamlStruct *YamlStruct, primaryFields []s
 		`Update(ctx context.Context, tx *gorm.DB, m *%s) (*%s, error)`,
 		yamlStruct.Name,
 		yamlStruct.Name,
+	)
+}
+
+// createUpdateList UpdateListを作成する
+func (s *MysqlRepository) createUpdateList(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`UpdateList(ctx context.Context, tx *gorm.DB, ms %s) (%s, error)`,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 	)
 }
 

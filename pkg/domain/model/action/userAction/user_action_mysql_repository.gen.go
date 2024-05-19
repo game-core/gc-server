@@ -16,5 +16,6 @@ type UserActionMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *UserAction) (*UserAction, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms UserActions) (UserActions, error)
 	Update(ctx context.Context, tx *gorm.DB, m *UserAction) (*UserAction, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms UserActions) (UserActions, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *UserAction) error
 }

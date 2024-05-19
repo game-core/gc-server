@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	{{.Import}}
 	"github.com/game-core/gc-server/config/database"
@@ -228,6 +229,11 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 	// Update
 	if len(yamlStruct.Primary) > 0 {
 		methods = append(methods, s.createUpdate(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
+	}
+
+	// UpdateList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createUpdateList(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
 	}
 
 	// Delete
@@ -448,7 +454,7 @@ func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 	)
 }
 
-// createCreate CreateListを作成する
+// createCreateList CreateListを作成する
 func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
 		`func (s *%sDao) CreateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
@@ -530,6 +536,69 @@ func (s *Dao) createUpdate(yamlStruct *YamlStruct, primaryFields []string) strin
 	)
 }
 
+// createUpdateList UpdateListを作成する
+func (s *Dao) createUpdateList(yamlStruct *YamlStruct, primaryFields []string) string {
+	keys := make(map[string]Structure)
+	for _, field := range primaryFields {
+		keys[field] = yamlStruct.Structures[field]
+	}
+
+	updates := make(map[string]Structure)
+	for _, field := range yamlStruct.Structures {
+		if !s.checkKeys(keys, field.Name) && s.checkTimestamp(field.Name) {
+			updates[changes.SnakeToUpperCamel(field.Name)] = yamlStruct.Structures[changes.SnakeToUpperCamel(field.Name)]
+		}
+	}
+
+	return fmt.Sprintf(
+		`func (s *%sDao) UpdateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
+			if len(ms) <= 0 {
+				return ms, nil
+			}
+			
+			fms := ms[0]
+			for _, m := range ms {
+				if m.UserId != fms.UserId {
+					return nil, errors.NewError("userId is invalid")
+				}
+			}
+
+			var conn *gorm.DB
+			if tx != nil {
+				conn = tx
+			} else {
+				conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+			}
+
+			ts := New%s()
+			for _, m := range ms {
+				t := %s
+				ts = append(ts, t)
+			}
+		
+			res := conn.Model(New%s()).Clauses(clause.OnConflict{
+				Columns:   []clause.Column{%s},
+				DoUpdates: clause.AssignmentColumns([]string{%s}),
+			}).WithContext(ctx).Create(ts)
+			if err := res.Error; err != nil {
+				return nil, err
+			}
+
+			return ms, nil
+		}`,
+		changes.UpperCamelToCamel(yamlStruct.Name),
+		yamlStruct.Package,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		yamlStruct.Package,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		s.createTableSetter(yamlStruct),
+		yamlStruct.Name,
+		s.createKeyColumn(keys),
+		s.createUpdateColumn(updates),
+	)
+}
+
 // createDelete Deleteを作成する
 func (s *Dao) createDelete(yamlStruct *YamlStruct, primaryFields []string) string {
 	keys := make(map[string]Structure)
@@ -560,6 +629,46 @@ func (s *Dao) createDelete(yamlStruct *YamlStruct, primaryFields []string) strin
 		s.createModelQuery(keys),
 		yamlStruct.Name,
 	)
+}
+
+// checkKeys キーを確認する
+func (s *Dao) checkKeys(keys map[string]Structure, name string) bool {
+	for _, key := range keys {
+		if key.Name == name {
+			return true
+		}
+	}
+
+	return false
+}
+
+// checkTimestamp タイムスタンプか確認する
+func (s *Dao) checkTimestamp(name string) bool {
+	if name != "created_at" && name != "updated_at" {
+		return true
+	}
+
+	return false
+}
+
+// createKeyColumn Columnを作成する
+func (s *Dao) createKeyColumn(keys map[string]Structure) string {
+	var columnStrings []string
+	for _, field := range s.getStructures(keys) {
+		columnStrings = append(columnStrings, fmt.Sprintf("{Name: \"%s\"}", field.Name))
+	}
+
+	return strings.Join(columnStrings, ",")
+}
+
+// createUpdateColumn Columnを作成する
+func (s *Dao) createUpdateColumn(updates map[string]Structure) string {
+	var columnStrings []string
+	for _, field := range s.getStructures(updates) {
+		columnStrings = append(columnStrings, fmt.Sprintf("\"%s\"", field.Name))
+	}
+
+	return strings.Join(columnStrings, ",")
 }
 
 // createQuery Queryを作成する

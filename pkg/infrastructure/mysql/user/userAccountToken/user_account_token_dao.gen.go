@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/errors"
@@ -137,6 +138,45 @@ func (s *userAccountTokenDao) Update(ctx context.Context, tx *gorm.DB, m *userAc
 	}
 
 	return userAccountToken.SetUserAccountToken(t.UserId, t.Token), nil
+}
+
+func (s *userAccountTokenDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) (userAccountToken.UserAccountTokens, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return nil, errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	ts := NewUserAccountTokens()
+	for _, m := range ms {
+		t := &UserAccountToken{
+			UserId: m.UserId,
+			Token:  m.Token,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewUserAccountToken()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"token"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
 }
 
 func (s *userAccountTokenDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) error {

@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/errors"
@@ -140,6 +141,46 @@ func (s *userItemBoxDao) Update(ctx context.Context, tx *gorm.DB, m *userItemBox
 	}
 
 	return userItemBox.SetUserItemBox(t.UserId, t.MasterItemId, t.Count), nil
+}
+
+func (s *userItemBoxDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) (userItemBox.UserItemBoxes, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return nil, errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	ts := NewUserItemBoxes()
+	for _, m := range ms {
+		t := &UserItemBox{
+			UserId:       m.UserId,
+			MasterItemId: m.MasterItemId,
+			Count:        m.Count,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewUserItemBox()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "master_item_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"count"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
 }
 
 func (s *userItemBoxDao) Delete(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) error {
