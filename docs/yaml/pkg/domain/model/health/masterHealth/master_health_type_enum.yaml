@@ -1,0 +1,13 @@
+name: MasterHealthType
+package: masterHealth
+comment: "ヘルスチェックタイプ"
+
+structure:
+  MasterNone:
+    name: MasterNone
+    number: 0
+    comment: "無"
+  MasterSuccess:
+    name: MasterSuccess
+    number: 1
+    comment: "正常"

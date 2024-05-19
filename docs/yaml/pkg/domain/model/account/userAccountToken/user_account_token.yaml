@@ -1,0 +1,17 @@
+name: UserAccountToken
+package: userAccountToken
+comment: "ユーザーアカウントトークン"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  Token:
+    name: token
+    type: string
+    nullable: false
+    number: 2
+    comment: "トークン"

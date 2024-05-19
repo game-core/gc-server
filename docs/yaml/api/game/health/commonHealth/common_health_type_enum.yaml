@@ -1,0 +1,13 @@
+name: CommonHealthType
+package: commonHealth
+comment: "ヘルスチェックタイプ"
+
+structure:
+  CommonNone:
+    name: CommonNone
+    number: 0
+    comment: "無"
+  CommonSuccess:
+    name: CommonSuccess
+    number: 1
+    comment: "正常"

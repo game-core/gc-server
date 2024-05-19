@@ -1,77 +1,68 @@
-version: '3'
+version: '3.8'
+
+name: gc-server
 
 volumes:
-  spanner-local:
+  mysql-local:
     driver: local
   redis-local:
     driver: local
 
 services:
-  # API
-  api-game:
-    tty: true
-    env_file:
-      - .env.local
-    build:
-      target: local
-      context: .
-      dockerfile: ./docker/api/game/Dockerfile
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql_root
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_password
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - ./platform/docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./platform/docker/mysql/init:/docker-entrypoint-initdb.d
+      - mysql-local:/var/lib/mysql
     ports:
-      - "50051:50051"
-    volumes:
-      - ./:/go/src/app
-    depends_on:
-      - spanner
-
-  # Generator
-  gen:
+      - "3306:3306"
     tty: true
-    env_file:
-      - .env.local
-    build:
-      target: local
-      context: .
-      dockerfile: ./docker/gen/Dockerfile
-    volumes:
-      - ./:/go/src/app
-    depends_on:
-      - spanner
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
 
-  # Redis
   redis:
     image: redis:7.2.4
     ports:
       - "6379:6379"
     volumes:
-      - ./docker/redis/redis.conf:/etc/redis.conf
+      - ./platform/docker/redis/redis.conf:/etc/redis.conf
       - redis-local:/data
+    tty: true
 
-  # Spanner
-  spanner:
-    image: gcr.io/cloud-spanner-emulator/emulator
+  gen:
+    env_file:
+      - .env.local
+    build:
+      target: prod
+      context: .
+      dockerfile: ./platform/docker/gen/Dockerfile
+    volumes:
+      - ./:/go/src/app
+    tty: true
+    depends_on:
+      - mysql
+      - redis
+
+  api-game:
+    env_file:
+      - .env.local
+    build:
+      target: prod
+      context: .
+      dockerfile: ./platform/docker/api/game/Dockerfile
+    volumes:
+      - ./:/go/src/app
     ports:
-      - "9010:9010"
-      - "9020:9020"
-
-  # Init
-  spanner-init:
-    image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-    command: >
-      bash -c 'gcloud config configurations create emulator &&
-              gcloud config set auth/disable_credentials true &&
-              gcloud config set project $${PROJECT_ID} &&
-              gcloud config set api_endpoint_overrides/spanner $${SPANNER_EMULATOR_URL} &&
-              gcloud config set auth/disable_credentials true &&
-              gcloud spanner instances create $${INSTANCE_NAME} --config=emulator-config --description=Emulator --nodes=1'
-    environment:
-      PROJECT_ID: "test-project"
-      SPANNER_EMULATOR_URL: "http://spanner:9020/"
-      INSTANCE_NAME: "test-instance"
-      DATABASE_NAME: "test-database"
-
-  # CLI
-  spanner-cli:
-    image: sjdaws/spanner-cli:latest
-    environment:
-      SPANNER_EMULATOR_HOST: "spanner:9010"
-    command: ['sh', '-c', 'echo this container keep running && tail -f /dev/null']
+      - "50051:50051"
+    tty: true
+    depends_on:
+      - mysql
+      - redis

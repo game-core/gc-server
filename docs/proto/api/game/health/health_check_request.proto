@@ -1,0 +1,14 @@
+// ヘルスチェックリクエスト
+syntax = "proto3";
+
+package api.game;
+
+import "health/commonHealth/common_health_type_enum.proto";
+import "health/masterHealth/master_health_type_enum.proto";
+
+message HealthCheckRequest {
+  int64 health_id = 1;
+  string name = 2;
+  CommonHealthType common_health_type = 3;
+  MasterHealthType master_health_type = 4;
+}

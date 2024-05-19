@@ -1,0 +1,28 @@
+name: MasterHealth
+package: masterHealth
+comment: "ヘルスチェック"
+
+structure:
+  HealthId:
+    name: health_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "ヘルスID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 2
+    comment: "アクション名"
+  MasterHealthType:
+    name: master_health_type
+    type: enum
+    package: health/masterHealth
+    nullable: false
+    number: 3
+    comment: "ヘルスチェックタイプ"
+primary:
+  - Id
+unique:
+  - Id

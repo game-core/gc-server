@@ -1,0 +1,22 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/game-core/gc-server/api/game/presentation/server
+
+plugins:
+  # for Go gRPC Server
+  - remote: buf.build/protocolbuffers/go
+    out: api/game/presentation/server
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: api/game/presentation/server
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=false
+  # for C# gRPC Client
+  - remote: buf.build/grpc/csharp:v1.62.1
+    out: client/Assets/Project/Scripts/Proto
+  - remote: buf.build/protocolbuffers/csharp:v26.1
+    out: client/Assets/Project/Scripts/Proto

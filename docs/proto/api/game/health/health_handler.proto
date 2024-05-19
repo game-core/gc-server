@@ -1,0 +1,11 @@
+// ヘルスチェック
+syntax = "proto3";
+
+package api.game;
+
+import "health/health_check_request.proto";
+import "health/health_check_response.proto";
+
+service Health {
+  rpc Check (HealthCheckRequest) returns (HealthCheckResponse);
+}
