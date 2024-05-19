@@ -1,0 +1,29 @@
+name: MasterShard
+package: masterShard
+comment: "シャード"
+
+structure:
+  MasterShardId:
+    name: master_shard_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "シャードID"
+  ShardKey:
+    name: shard_key
+    type: string
+    nullable: false
+    number: 2
+    comment: "シャードキー"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 3
+    comment: "シャード名"
+primary:
+  - MasterShardId
+unique:
+  - MasterShardId
+index:
+  - ShardKey
