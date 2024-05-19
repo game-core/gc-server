@@ -1,0 +1,23 @@
+name: AccountCreateRequest
+package: account
+comment: "アカウント作成リクエスト"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 2
+    comment: "ユーザー名"
+  Password:
+    name: password
+    type: string
+    nullable: false
+    number: 2
+    comment: "パスワード"
