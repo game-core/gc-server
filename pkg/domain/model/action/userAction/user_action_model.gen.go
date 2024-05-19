@@ -11,8 +11,6 @@ type UserAction struct {
 	UserId         string
 	MasterActionId int64
 	StartedAt      time.Time
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
 }
 
 func NewUserAction() *UserAction {
@@ -23,12 +21,10 @@ func NewUserActions() UserActions {
 	return UserActions{}
 }
 
-func SetUserAction(userId string, masterActionId int64, startedAt time.Time, createdAt time.Time, updatedAt time.Time) *UserAction {
+func SetUserAction(userId string, masterActionId int64, startedAt time.Time) *UserAction {
 	return &UserAction{
 		UserId:         userId,
 		MasterActionId: masterActionId,
 		StartedAt:      startedAt,
-		CreatedAt:      createdAt,
-		UpdatedAt:      updatedAt,
 	}
 }

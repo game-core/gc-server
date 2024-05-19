@@ -1,0 +1,24 @@
+name: ActionRunRequest
+package: action
+comment: "アクション実行リクエスト"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  MasterActionStepEnum:
+    name: master_action_step_enum
+    type: enum
+    package: action/masterActionStep
+    nullable: false
+    number: 2
+    comment: "アクションステップタイプ"
+  TargetId:
+    name: target_id
+    type: int64
+    nullable: true
+    number: 3
+    comment: "対象のID"
