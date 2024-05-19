@@ -1,0 +1,30 @@
+name: MasterActionStep
+package: masterActionStep
+comment: "アクションステップ"
+
+structure:
+  MasterActionStepId:
+    name: master_action_step_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "アクションステップID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 2
+    comment: "アクションステップ名"
+  MasterActionStepEnum:
+    name: master_action_step_enum
+    type: enum
+    package: action/masterActionStep
+    nullable: false
+    number: 3
+    comment: "アクションステップEnum"
+primary:
+  - MasterActionStepId
+unique:
+  - MasterActionStepId
+index:
+  - MasterActionStepEnum
