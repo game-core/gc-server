@@ -49,10 +49,14 @@ gen_infra:
 gen_sql:
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/sql/main.go
 
+# mockを生成
+gen_mock:
+	$(DOCKER_COMPOSE) exec gen go generate ./pkg/domain/...
+
 # マイグレーション
 gen_migration:
 	$(DOCKER_COMPOSE) exec gen go run ./tool/migration/migration.go
 
-# mockを生成
-gen_mock:
-	$(DOCKER_COMPOSE) exec gen go generate ./pkg/domain/...
+# マスターインポート
+gen_master:
+	$(DOCKER_COMPOSE) exec gen go run ./tool/masterImport/main.go
