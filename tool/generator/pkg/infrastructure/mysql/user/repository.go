@@ -197,7 +197,7 @@ func (s *MysqlRepository) createFind(yamlStruct *YamlStruct, primaryFields []str
 
 	return fmt.Sprintf(
 		`Find(ctx context.Context, %s) (*%s, error)`,
-		s.createParam(keys),
+		s.createParam(yamlStruct.Package, keys),
 		yamlStruct.Name,
 	)
 }
@@ -211,7 +211,7 @@ func (s *MysqlRepository) createFindOrNil(yamlStruct *YamlStruct, primaryFields 
 
 	return fmt.Sprintf(
 		`FindOrNil(ctx context.Context, %s) (*%s, error)`,
-		s.createParam(keys),
+		s.createParam(yamlStruct.Package, keys),
 		yamlStruct.Name,
 	)
 }
@@ -226,7 +226,7 @@ func (s *MysqlRepository) createFindByIndex(yamlStruct *YamlStruct, indexFields 
 	return fmt.Sprintf(
 		`FindBy%s(ctx context.Context, %s) (*%s, error)`,
 		strings.Join(indexFields, "And"),
-		s.createParam(keys),
+		s.createParam(yamlStruct.Package, keys),
 		yamlStruct.Name,
 	)
 }
@@ -241,7 +241,7 @@ func (s *MysqlRepository) createFindOrNilByIndex(yamlStruct *YamlStruct, indexFi
 	return fmt.Sprintf(
 		`FindOrNilBy%s(ctx context.Context, %s) (*%s, error)`,
 		strings.Join(indexFields, "And"),
-		s.createParam(keys),
+		s.createParam(yamlStruct.Package, keys),
 		yamlStruct.Name,
 	)
 }
@@ -264,7 +264,7 @@ func (s *MysqlRepository) createFindListByIndex(yamlStruct *YamlStruct, indexFie
 	return fmt.Sprintf(
 		`FindListBy%s(ctx context.Context, %s) (%s, error)`,
 		strings.Join(indexFields, "And"),
-		s.createParam(keys),
+		s.createParam(yamlStruct.Package, keys),
 		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 	)
 }
@@ -315,10 +315,10 @@ func (s *MysqlRepository) createDelete(yamlStruct *YamlStruct, primaryFields []s
 }
 
 // createParam Paramを作成する
-func (s *MysqlRepository) createParam(keys map[string]Structure) string {
+func (s *MysqlRepository) createParam(structPackage string, keys map[string]Structure) string {
 	var paramStrings []string
 	for _, field := range s.getStructures(keys) {
-		paramStrings = append(paramStrings, fmt.Sprintf("%s %s", changes.SnakeToCamel(field.Name), s.getType(field)))
+		paramStrings = append(paramStrings, fmt.Sprintf("%s %s", changes.SnakeToCamel(field.Name), s.getType(structPackage, field)))
 	}
 
 	return strings.Join(paramStrings, ",")
@@ -349,18 +349,18 @@ func (s *MysqlRepository) getStructures(structures map[string]Structure) []*Stru
 }
 
 // getType 型を取得する
-func (s *MysqlRepository) getType(field *Structure) string {
+func (s *MysqlRepository) getType(structPackage string, field *Structure) string {
 	var result string
 
 	switch field.Type {
 	case "time":
 		result = s.getTypeTime()
 	case "structure":
-		result = s.getTypeStructure(field.Name, field.Package)
+		result = s.getTypeStructure(field.Name, field.Package, structPackage)
 	case "structures":
-		result = s.getTypeStructures(field.Name, field.Package)
+		result = s.getTypeStructures(field.Name, field.Package, structPackage)
 	case "enum":
-		result = s.getTypeEnum(field.Name, field.Package)
+		result = s.getTypeEnum(field.Name, field.Package, structPackage)
 	default:
 		result = field.Type
 	}
@@ -378,8 +378,8 @@ func (s *MysqlRepository) getTypeTime() string {
 }
 
 // getTypeStructure structureの型を取得する
-func (s *MysqlRepository) getTypeStructure(fieldName, fieldPackage string) string {
-	if fieldPackage != "" {
+func (s *MysqlRepository) getTypeStructure(fieldName, fieldPackage string, structPackage string) string {
+	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
 		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(fieldName), changes.SnakeToUpperCamel(fieldName))
 	}
 
@@ -387,8 +387,8 @@ func (s *MysqlRepository) getTypeStructure(fieldName, fieldPackage string) strin
 }
 
 // getTypeStructures structuresの型を取得する
-func (s *MysqlRepository) getTypeStructures(fieldName, fieldPackage string) string {
-	if fieldPackage != "" {
+func (s *MysqlRepository) getTypeStructures(fieldName, fieldPackage string, structPackage string) string {
+	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
 		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(fieldName), changes.SnakeToUpperCamel(changes.SingularToPlural(fieldName)))
 	}
 
@@ -396,8 +396,8 @@ func (s *MysqlRepository) getTypeStructures(fieldName, fieldPackage string) stri
 }
 
 // getTypeEnum enumの型を取得する
-func (s *MysqlRepository) getTypeEnum(fieldName, fieldPackage string) string {
-	if fieldPackage != "" {
+func (s *MysqlRepository) getTypeEnum(fieldName, fieldPackage, structPackage string) string {
+	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
 		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
 		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(changes.CamelToSnake(changes.Extraction(fieldPackage, "/", 1))), changes.SnakeToUpperCamel(fieldName))
 	}
