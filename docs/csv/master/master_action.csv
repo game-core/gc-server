@@ -1,0 +1,2 @@
+master_action_id,name,master_action_step_enum,master_action_trigger_enum,target_id,trigger_master_action_id,expiration
+1,チュートリアル突破,1,1,,,
