@@ -1,0 +1,3 @@
+master_shard_id,name,shard_key,count
+1,Shard0,0,0
+2,Shard1,1,0
