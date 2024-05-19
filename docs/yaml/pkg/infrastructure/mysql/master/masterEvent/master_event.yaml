@@ -8,7 +8,7 @@ structure:
     type: int64
     nullable: false
     number: 1
-    comment: "ID"
+    comment: "イベントID"
   Name:
     name: name
     type: string
