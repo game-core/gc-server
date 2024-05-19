@@ -791,30 +791,19 @@ func (s *Dao) getStructures(structures map[string]Structure) []*Structure {
 }
 
 // getType 型を取得する
+// getType 型を取得する
 func (s *Dao) getType(field *Structure) string {
 	var result string
 
 	switch field.Type {
 	case "time":
-		importCode = fmt.Sprintf("%s\n%s", importCode, "\"time\"")
-		result = "time.Time"
+		result = s.getTypeTime()
 	case "structure":
-		if field.Package != "" {
-			importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", field.Package))
-			result = fmt.Sprintf("%s.%s", changes.SnakeToCamel(field.Name), changes.SnakeToUpperCamel(field.Name))
-		} else {
-			result = changes.SnakeToUpperCamel(field.Name)
-		}
+		result = s.getTypeStructure(field.Name, field.Package)
 	case "structures":
-		if field.Package != "" {
-			importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", field.Package))
-			result = fmt.Sprintf("%s.%s", changes.SnakeToCamel(field.Name), changes.SnakeToUpperCamel(changes.SingularToPlural(field.Name)))
-		} else {
-			result = changes.SnakeToUpperCamel(changes.SingularToPlural(field.Name))
-		}
+		result = s.getTypeStructures(field.Name, field.Package)
 	case "enum":
-		importCode = fmt.Sprintf("%s\n%s", importCode, "\"github.com/game-core/gc-server/pkg/domain/enum\"")
-		result = fmt.Sprintf("enum.%s", changes.SnakeToUpperCamel(field.Name))
+		result = s.getTypeEnum(field.Name, field.Package)
 	default:
 		result = field.Type
 	}
@@ -824,4 +813,40 @@ func (s *Dao) getType(field *Structure) string {
 	}
 
 	return result
+}
+
+// getTypeTime timeの型を取得する
+func (s *Dao) getTypeTime() string {
+	importCode = fmt.Sprintf("%s\n%s", importCode, "\"time\"")
+	return "time.Time"
+}
+
+// getTypeStructure structureの型を取得する
+func (s *Dao) getTypeStructure(fieldName, fieldPackage string) string {
+	if fieldPackage != "" {
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(fieldName), changes.SnakeToUpperCamel(fieldName))
+	}
+
+	return changes.SnakeToUpperCamel(fieldName)
+}
+
+// getTypeStructures structuresの型を取得する
+func (s *Dao) getTypeStructures(fieldName, fieldPackage string) string {
+	if fieldPackage != "" {
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(fieldName), changes.SnakeToUpperCamel(fieldName))
+	}
+
+	return changes.SnakeToUpperCamel(fieldName)
+}
+
+// getTypeEnum enumの型を取得する
+func (s *Dao) getTypeEnum(fieldName, fieldPackage string) string {
+	if fieldPackage != "" {
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(changes.CamelToSnake(changes.Extraction(fieldPackage, "/", 1))), changes.SnakeToUpperCamel(fieldName))
+	}
+
+	return changes.SnakeToUpperCamel(fieldName)
 }
