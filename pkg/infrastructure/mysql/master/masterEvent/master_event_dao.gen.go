@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -121,6 +122,10 @@ func (s *masterEventDao) Create(ctx context.Context, tx *gorm.DB, m *masterEvent
 }
 
 func (s *masterEventDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -175,6 +180,43 @@ func (s *masterEventDao) Update(ctx context.Context, tx *gorm.DB, m *masterEvent
 	return masterEvent.SetMasterEvent(t.MasterEventId, t.Name, t.ResetHour, t.IntervalHour, t.RepeatSetting, t.StartAt, t.EndAt), nil
 }
 
+func (s *masterEventDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterEvents()
+	for _, m := range ms {
+		t := &MasterEvent{
+			MasterEventId: m.MasterEventId,
+			Name:          m.Name,
+			ResetHour:     m.ResetHour,
+			IntervalHour:  m.IntervalHour,
+			RepeatSetting: m.RepeatSetting,
+			StartAt:       m.StartAt,
+			EndAt:         m.EndAt,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterEvent()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_event_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "reset_hour", "interval_hour", "repeat_setting", "start_at", "end_at"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterEventDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -184,6 +226,31 @@ func (s *masterEventDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEvent
 	}
 
 	res := conn.Model(NewMasterEvent()).WithContext(ctx).Where("master_event_id = ?", m.MasterEventId).Delete(NewMasterEvent())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterEventDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterEventId})
+	}
+
+	res := conn.Model(NewMasterEvent()).WithContext(ctx).Where("(master_event_id) IN ?", ks).Delete(NewMasterEvent())
 	if err := res.Error; err != nil {
 		return err
 	}

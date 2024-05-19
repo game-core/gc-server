@@ -79,6 +79,20 @@ func (mr *MockUserAccountTokenMysqlRepositoryMockRecorder) Delete(ctx, tx, m int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserAccountTokenMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockUserAccountTokenMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms UserAccountTokens) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockUserAccountTokenMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockUserAccountTokenMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockUserAccountTokenMysqlRepository) Find(ctx context.Context, userId string) (*UserAccountToken, error) {
 	m.ctrl.T.Helper()
@@ -137,4 +151,19 @@ func (m_2 *MockUserAccountTokenMysqlRepository) Update(ctx context.Context, tx *
 func (mr *MockUserAccountTokenMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUserAccountTokenMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockUserAccountTokenMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms UserAccountTokens) (UserAccountTokens, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(UserAccountTokens)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockUserAccountTokenMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockUserAccountTokenMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

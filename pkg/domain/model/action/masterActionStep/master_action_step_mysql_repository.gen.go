@@ -19,5 +19,7 @@ type MasterActionStepMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterActionStep) (*MasterActionStep, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterActionSteps) (MasterActionSteps, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterActionStep) (*MasterActionStep, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActionSteps) (MasterActionSteps, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterActionStep) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActionSteps) error
 }

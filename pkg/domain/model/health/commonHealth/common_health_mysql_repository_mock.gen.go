@@ -79,6 +79,20 @@ func (mr *MockCommonHealthMysqlRepositoryMockRecorder) Delete(ctx, tx, m interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockCommonHealthMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockCommonHealthMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms CommonHealths) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockCommonHealthMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockCommonHealthMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockCommonHealthMysqlRepository) Find(ctx context.Context, healthId int64) (*CommonHealth, error) {
 	m.ctrl.T.Helper()
@@ -137,4 +151,19 @@ func (m_2 *MockCommonHealthMysqlRepository) Update(ctx context.Context, tx *gorm
 func (mr *MockCommonHealthMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCommonHealthMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockCommonHealthMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms CommonHealths) (CommonHealths, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(CommonHealths)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockCommonHealthMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockCommonHealthMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

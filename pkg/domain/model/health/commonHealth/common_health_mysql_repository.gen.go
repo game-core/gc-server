@@ -16,5 +16,7 @@ type CommonHealthMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *CommonHealth) (*CommonHealth, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms CommonHealths) (CommonHealths, error)
 	Update(ctx context.Context, tx *gorm.DB, m *CommonHealth) (*CommonHealth, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms CommonHealths) (CommonHealths, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *CommonHealth) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms CommonHealths) error
 }

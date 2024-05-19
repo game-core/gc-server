@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -184,6 +185,10 @@ func (s *masterRarityDao) Create(ctx context.Context, tx *gorm.DB, m *masterRari
 }
 
 func (s *masterRarityDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -230,6 +235,39 @@ func (s *masterRarityDao) Update(ctx context.Context, tx *gorm.DB, m *masterRari
 	return masterRarity.SetMasterRarity(t.MasterRarityId, t.Name, t.MasterRarityEnum), nil
 }
 
+func (s *masterRarityDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterRarities()
+	for _, m := range ms {
+		t := &MasterRarity{
+			MasterRarityId:   m.MasterRarityId,
+			Name:             m.Name,
+			MasterRarityEnum: m.MasterRarityEnum,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterRarity()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_rarity_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_rarity_enum"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterRarityDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -239,6 +277,31 @@ func (s *masterRarityDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRari
 	}
 
 	res := conn.Model(NewMasterRarity()).WithContext(ctx).Where("master_rarity_id = ?", m.MasterRarityId).Delete(NewMasterRarity())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterRarityDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterRarityId})
+	}
+
+	res := conn.Model(NewMasterRarity()).WithContext(ctx).Where("(master_rarity_id) IN ?", ks).Delete(NewMasterRarity())
 	if err := res.Error; err != nil {
 		return err
 	}

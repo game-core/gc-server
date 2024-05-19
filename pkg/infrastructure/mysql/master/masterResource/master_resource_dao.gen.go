@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -184,6 +185,10 @@ func (s *masterResourceDao) Create(ctx context.Context, tx *gorm.DB, m *masterRe
 }
 
 func (s *masterResourceDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -230,6 +235,39 @@ func (s *masterResourceDao) Update(ctx context.Context, tx *gorm.DB, m *masterRe
 	return masterResource.SetMasterResource(t.MasterResourceId, t.Name, t.MasterResourceEnum), nil
 }
 
+func (s *masterResourceDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterResources()
+	for _, m := range ms {
+		t := &MasterResource{
+			MasterResourceId:   m.MasterResourceId,
+			Name:               m.Name,
+			MasterResourceEnum: m.MasterResourceEnum,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterResource()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_resource_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_resource_enum"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterResourceDao) Delete(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -239,6 +277,31 @@ func (s *masterResourceDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRe
 	}
 
 	res := conn.Model(NewMasterResource()).WithContext(ctx).Where("master_resource_id = ?", m.MasterResourceId).Delete(NewMasterResource())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterResourceDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterResourceId})
+	}
+
+	res := conn.Model(NewMasterResource()).WithContext(ctx).Where("(master_resource_id) IN ?", ks).Delete(NewMasterResource())
 	if err := res.Error; err != nil {
 		return err
 	}

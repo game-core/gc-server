@@ -79,6 +79,20 @@ func (mr *MockMasterActionTriggerMysqlRepositoryMockRecorder) Delete(ctx, tx, m 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMasterActionTriggerMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockMasterActionTriggerMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActionTriggers) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockMasterActionTriggerMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockMasterActionTriggerMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockMasterActionTriggerMysqlRepository) Find(ctx context.Context, masterActionTriggerId int64) (*MasterActionTrigger, error) {
 	m.ctrl.T.Helper()
@@ -182,4 +196,19 @@ func (m_2 *MockMasterActionTriggerMysqlRepository) Update(ctx context.Context, t
 func (mr *MockMasterActionTriggerMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMasterActionTriggerMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockMasterActionTriggerMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActionTriggers) (MasterActionTriggers, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(MasterActionTriggers)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockMasterActionTriggerMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockMasterActionTriggerMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

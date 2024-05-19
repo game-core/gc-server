@@ -19,5 +19,7 @@ type MasterRarityMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterRarity) (*MasterRarity, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterRarities) (MasterRarities, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterRarity) (*MasterRarity, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterRarities) (MasterRarities, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterRarity) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterRarities) error
 }

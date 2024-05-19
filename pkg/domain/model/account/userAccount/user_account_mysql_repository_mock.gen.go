@@ -79,6 +79,20 @@ func (mr *MockUserAccountMysqlRepositoryMockRecorder) Delete(ctx, tx, m interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockUserAccountMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockUserAccountMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms UserAccounts) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockUserAccountMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockUserAccountMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockUserAccountMysqlRepository) Find(ctx context.Context, userId string) (*UserAccount, error) {
 	m.ctrl.T.Helper()
@@ -137,4 +151,19 @@ func (m_2 *MockUserAccountMysqlRepository) Update(ctx context.Context, tx *gorm.
 func (mr *MockUserAccountMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUserAccountMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockUserAccountMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms UserAccounts) (UserAccounts, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(UserAccounts)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockUserAccountMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockUserAccountMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

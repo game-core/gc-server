@@ -16,5 +16,7 @@ type MasterItemMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterItem) (*MasterItem, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterItems) (MasterItems, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterItem) (*MasterItem, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterItems) (MasterItems, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterItem) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterItems) error
 }

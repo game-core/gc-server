@@ -19,5 +19,7 @@ type MasterShardMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterShard) (*MasterShard, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterShards) (MasterShards, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterShard) (*MasterShard, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterShards) (MasterShards, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterShard) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterShards) error
 }

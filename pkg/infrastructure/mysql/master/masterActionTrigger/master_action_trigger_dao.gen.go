@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -184,6 +185,10 @@ func (s *masterActionTriggerDao) Create(ctx context.Context, tx *gorm.DB, m *mas
 }
 
 func (s *masterActionTriggerDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -230,6 +235,39 @@ func (s *masterActionTriggerDao) Update(ctx context.Context, tx *gorm.DB, m *mas
 	return masterActionTrigger.SetMasterActionTrigger(t.MasterActionTriggerId, t.Name, t.MasterActionTriggerEnum), nil
 }
 
+func (s *masterActionTriggerDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterActionTriggers()
+	for _, m := range ms {
+		t := &MasterActionTrigger{
+			MasterActionTriggerId:   m.MasterActionTriggerId,
+			Name:                    m.Name,
+			MasterActionTriggerEnum: m.MasterActionTriggerEnum,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterActionTrigger()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_action_trigger_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_action_trigger_enum"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterActionTriggerDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -239,6 +277,31 @@ func (s *masterActionTriggerDao) Delete(ctx context.Context, tx *gorm.DB, m *mas
 	}
 
 	res := conn.Model(NewMasterActionTrigger()).WithContext(ctx).Where("master_action_trigger_id = ?", m.MasterActionTriggerId).Delete(NewMasterActionTrigger())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterActionTriggerDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterActionTriggerId})
+	}
+
+	res := conn.Model(NewMasterActionTrigger()).WithContext(ctx).Where("(master_action_trigger_id) IN ?", ks).Delete(NewMasterActionTrigger())
 	if err := res.Error; err != nil {
 		return err
 	}

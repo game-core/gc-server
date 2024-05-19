@@ -19,5 +19,7 @@ type MasterActionRunMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterActionRun) (*MasterActionRun, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterActionRuns) (MasterActionRuns, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterActionRun) (*MasterActionRun, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActionRuns) (MasterActionRuns, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterActionRun) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActionRuns) error
 }

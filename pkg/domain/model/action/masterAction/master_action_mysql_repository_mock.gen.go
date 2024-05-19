@@ -80,6 +80,20 @@ func (mr *MockMasterActionMysqlRepositoryMockRecorder) Delete(ctx, tx, m interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMasterActionMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockMasterActionMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockMasterActionMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockMasterActionMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockMasterActionMysqlRepository) Find(ctx context.Context, masterActionId int64) (*MasterAction, error) {
 	m.ctrl.T.Helper()
@@ -273,4 +287,19 @@ func (m_2 *MockMasterActionMysqlRepository) Update(ctx context.Context, tx *gorm
 func (mr *MockMasterActionMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMasterActionMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockMasterActionMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActions) (MasterActions, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(MasterActions)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockMasterActionMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockMasterActionMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

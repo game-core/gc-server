@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -117,6 +118,10 @@ func (s *masterHealthDao) Create(ctx context.Context, tx *gorm.DB, m *masterHeal
 }
 
 func (s *masterHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -163,6 +168,39 @@ func (s *masterHealthDao) Update(ctx context.Context, tx *gorm.DB, m *masterHeal
 	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType), nil
 }
 
+func (s *masterHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterHealths()
+	for _, m := range ms {
+		t := &MasterHealth{
+			HealthId:         m.HealthId,
+			Name:             m.Name,
+			MasterHealthType: m.MasterHealthType,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterHealth()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "health_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_health_type"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -172,6 +210,31 @@ func (s *masterHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *masterHeal
 	}
 
 	res := conn.Model(NewMasterHealth()).WithContext(ctx).Where("health_id = ?", m.HealthId).Delete(NewMasterHealth())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterHealthDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.HealthId})
+	}
+
+	res := conn.Model(NewMasterHealth()).WithContext(ctx).Where("(health_id) IN ?", ks).Delete(NewMasterHealth())
 	if err := res.Error; err != nil {
 		return err
 	}

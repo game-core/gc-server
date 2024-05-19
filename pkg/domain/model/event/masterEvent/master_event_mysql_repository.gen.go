@@ -16,5 +16,7 @@ type MasterEventMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterEvent) (*MasterEvent, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterEvents) (MasterEvents, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterEvent) (*MasterEvent, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterEvents) (MasterEvents, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterEvent) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterEvents) error
 }

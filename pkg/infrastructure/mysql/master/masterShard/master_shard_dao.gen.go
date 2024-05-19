@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -185,6 +186,10 @@ func (s *masterShardDao) Create(ctx context.Context, tx *gorm.DB, m *masterShard
 }
 
 func (s *masterShardDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -233,6 +238,40 @@ func (s *masterShardDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard
 	return masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count), nil
 }
 
+func (s *masterShardDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterShards()
+	for _, m := range ms {
+		t := &MasterShard{
+			MasterShardId: m.MasterShardId,
+			Name:          m.Name,
+			ShardKey:      m.ShardKey,
+			Count:         m.Count,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterShard()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_shard_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "shard_key", "count"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterShardDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -242,6 +281,31 @@ func (s *masterShardDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard
 	}
 
 	res := conn.Model(NewMasterShard()).WithContext(ctx).Where("master_shard_id = ?", m.MasterShardId).Delete(NewMasterShard())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterShardDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterShardId})
+	}
+
+	res := conn.Model(NewMasterShard()).WithContext(ctx).Where("(master_shard_id) IN ?", ks).Delete(NewMasterShard())
 	if err := res.Error; err != nil {
 		return err
 	}

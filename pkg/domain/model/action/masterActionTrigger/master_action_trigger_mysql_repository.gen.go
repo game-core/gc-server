@@ -19,5 +19,7 @@ type MasterActionTriggerMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterActionTrigger) (*MasterActionTrigger, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterActionTriggers) (MasterActionTriggers, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterActionTrigger) (*MasterActionTrigger, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActionTriggers) (MasterActionTriggers, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterActionTrigger) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActionTriggers) error
 }

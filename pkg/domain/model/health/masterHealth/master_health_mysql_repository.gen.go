@@ -16,5 +16,7 @@ type MasterHealthMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterHealth) (*MasterHealth, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterHealths) (MasterHealths, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterHealth) (*MasterHealth, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterHealths) (MasterHealths, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterHealth) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterHealths) error
 }

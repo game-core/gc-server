@@ -79,6 +79,20 @@ func (mr *MockMasterActionStepMysqlRepositoryMockRecorder) Delete(ctx, tx, m int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockMasterActionStepMysqlRepository)(nil).Delete), ctx, tx, m)
 }
 
+// DeleteList mocks base method.
+func (m *MockMasterActionStepMysqlRepository) DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActionSteps) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteList", ctx, tx, ms)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteList indicates an expected call of DeleteList.
+func (mr *MockMasterActionStepMysqlRepositoryMockRecorder) DeleteList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteList", reflect.TypeOf((*MockMasterActionStepMysqlRepository)(nil).DeleteList), ctx, tx, ms)
+}
+
 // Find mocks base method.
 func (m *MockMasterActionStepMysqlRepository) Find(ctx context.Context, masterActionStepId int64) (*MasterActionStep, error) {
 	m.ctrl.T.Helper()
@@ -182,4 +196,19 @@ func (m_2 *MockMasterActionStepMysqlRepository) Update(ctx context.Context, tx *
 func (mr *MockMasterActionStepMysqlRepositoryMockRecorder) Update(ctx, tx, m interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockMasterActionStepMysqlRepository)(nil).Update), ctx, tx, m)
+}
+
+// UpdateList mocks base method.
+func (m *MockMasterActionStepMysqlRepository) UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActionSteps) (MasterActionSteps, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateList", ctx, tx, ms)
+	ret0, _ := ret[0].(MasterActionSteps)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateList indicates an expected call of UpdateList.
+func (mr *MockMasterActionStepMysqlRepositoryMockRecorder) UpdateList(ctx, tx, ms interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateList", reflect.TypeOf((*MockMasterActionStepMysqlRepository)(nil).UpdateList), ctx, tx, ms)
 }

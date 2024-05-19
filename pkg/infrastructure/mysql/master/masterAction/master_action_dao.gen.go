@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -323,6 +324,10 @@ func (s *masterActionDao) Create(ctx context.Context, tx *gorm.DB, m *masterActi
 }
 
 func (s *masterActionDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterAction.MasterActions) (masterAction.MasterActions, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -377,6 +382,43 @@ func (s *masterActionDao) Update(ctx context.Context, tx *gorm.DB, m *masterActi
 	return masterAction.SetMasterAction(t.MasterActionId, t.Name, t.MasterActionStepEnum, t.MasterActionTriggerEnum, t.TargetId, t.TriggerMasterActionId, t.Expiration), nil
 }
 
+func (s *masterActionDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterAction.MasterActions) (masterAction.MasterActions, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterActions()
+	for _, m := range ms {
+		t := &MasterAction{
+			MasterActionId:          m.MasterActionId,
+			Name:                    m.Name,
+			MasterActionStepEnum:    m.MasterActionStepEnum,
+			MasterActionTriggerEnum: m.MasterActionTriggerEnum,
+			TargetId:                m.TargetId,
+			TriggerMasterActionId:   m.TriggerMasterActionId,
+			Expiration:              m.Expiration,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterAction()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_action_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_action_step_enum", "master_action_trigger_enum", "target_id", "trigger_master_action_id", "expiration"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterActionDao) Delete(ctx context.Context, tx *gorm.DB, m *masterAction.MasterAction) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -386,6 +428,31 @@ func (s *masterActionDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActi
 	}
 
 	res := conn.Model(NewMasterAction()).WithContext(ctx).Where("master_action_id = ?", m.MasterActionId).Delete(NewMasterAction())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterActionDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterAction.MasterActions) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterActionId})
+	}
+
+	res := conn.Model(NewMasterAction()).WithContext(ctx).Where("(master_action_id) IN ?", ks).Delete(NewMasterAction())
 	if err := res.Error; err != nil {
 		return err
 	}

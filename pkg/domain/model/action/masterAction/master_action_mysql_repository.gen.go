@@ -26,5 +26,7 @@ type MasterActionMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterAction) (*MasterAction, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterActions) (MasterActions, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterAction) (*MasterAction, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterActions) (MasterActions, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterAction) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterActions) error
 }

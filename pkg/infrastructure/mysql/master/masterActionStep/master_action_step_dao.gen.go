@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -184,6 +185,10 @@ func (s *masterActionStepDao) Create(ctx context.Context, tx *gorm.DB, m *master
 }
 
 func (s *masterActionStepDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -230,6 +235,39 @@ func (s *masterActionStepDao) Update(ctx context.Context, tx *gorm.DB, m *master
 	return masterActionStep.SetMasterActionStep(t.MasterActionStepId, t.Name, t.MasterActionStepEnum), nil
 }
 
+func (s *masterActionStepDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterActionSteps()
+	for _, m := range ms {
+		t := &MasterActionStep{
+			MasterActionStepId:   m.MasterActionStepId,
+			Name:                 m.Name,
+			MasterActionStepEnum: m.MasterActionStepEnum,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterActionStep()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_action_step_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_action_step_enum"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterActionStepDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -239,6 +277,31 @@ func (s *masterActionStepDao) Delete(ctx context.Context, tx *gorm.DB, m *master
 	}
 
 	res := conn.Model(NewMasterActionStep()).WithContext(ctx).Where("master_action_step_id = ?", m.MasterActionStepId).Delete(NewMasterActionStep())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterActionStepDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterActionStepId})
+	}
+
+	res := conn.Model(NewMasterActionStep()).WithContext(ctx).Where("(master_action_step_id) IN ?", ks).Delete(NewMasterActionStep())
 	if err := res.Error; err != nil {
 		return err
 	}

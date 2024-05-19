@@ -19,5 +19,7 @@ type MasterResourceMysqlRepository interface {
 	Create(ctx context.Context, tx *gorm.DB, m *MasterResource) (*MasterResource, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterResources) (MasterResources, error)
 	Update(ctx context.Context, tx *gorm.DB, m *MasterResource) (*MasterResource, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms MasterResources) (MasterResources, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *MasterResource) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms MasterResources) error
 }

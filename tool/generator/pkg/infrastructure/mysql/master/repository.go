@@ -180,9 +180,19 @@ func (s *MysqlRepository) createMethods(yamlStruct *YamlStruct) []string {
 		methods = append(methods, s.createUpdate(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
 	}
 
+	// UpdateList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createUpdateList(yamlStruct))
+	}
+
 	// Delete
 	if len(yamlStruct.Primary) > 0 {
 		methods = append(methods, s.createDelete(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
+	}
+
+	// DeleteList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createDeleteList(yamlStruct))
 	}
 
 	return methods
@@ -301,6 +311,15 @@ func (s *MysqlRepository) createUpdate(yamlStruct *YamlStruct, primaryFields []s
 	)
 }
 
+// createUpdateList UpdateListを作成する
+func (s *MysqlRepository) createUpdateList(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`UpdateList(ctx context.Context, tx *gorm.DB, ms %s) (%s, error)`,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+	)
+}
+
 // createDelete Deleteを作成する
 func (s *MysqlRepository) createDelete(yamlStruct *YamlStruct, primaryFields []string) string {
 	keys := make(map[string]Structure)
@@ -311,6 +330,14 @@ func (s *MysqlRepository) createDelete(yamlStruct *YamlStruct, primaryFields []s
 	return fmt.Sprintf(
 		`Delete(ctx context.Context, tx *gorm.DB, m *%s) error`,
 		yamlStruct.Name,
+	)
+}
+
+// createDeleteList DeleteListを作成する
+func (s *MysqlRepository) createDeleteList(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`DeleteList(ctx context.Context, tx *gorm.DB, ms %s) error`,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 	)
 }
 

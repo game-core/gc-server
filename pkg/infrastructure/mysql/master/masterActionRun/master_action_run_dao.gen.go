@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -184,6 +185,10 @@ func (s *masterActionRunDao) Create(ctx context.Context, tx *gorm.DB, m *masterA
 }
 
 func (s *masterActionRunDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -230,6 +235,39 @@ func (s *masterActionRunDao) Update(ctx context.Context, tx *gorm.DB, m *masterA
 	return masterActionRun.SetMasterActionRun(t.MasterActionRunId, t.Name, t.MasterActionId), nil
 }
 
+func (s *masterActionRunDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterActionRuns()
+	for _, m := range ms {
+		t := &MasterActionRun{
+			MasterActionRunId: m.MasterActionRunId,
+			Name:              m.Name,
+			MasterActionId:    m.MasterActionId,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterActionRun()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_action_run_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_action_id"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterActionRunDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -239,6 +277,31 @@ func (s *masterActionRunDao) Delete(ctx context.Context, tx *gorm.DB, m *masterA
 	}
 
 	res := conn.Model(NewMasterActionRun()).WithContext(ctx).Where("master_action_run_id = ?", m.MasterActionRunId).Delete(NewMasterActionRun())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterActionRunDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterActionRunId})
+	}
+
+	res := conn.Model(NewMasterActionRun()).WithContext(ctx).Where("(master_action_run_id) IN ?", ks).Delete(NewMasterActionRun())
 	if err := res.Error; err != nil {
 		return err
 	}

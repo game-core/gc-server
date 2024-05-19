@@ -7,6 +7,7 @@ import (
 
 	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/internal/cashes"
@@ -119,6 +120,10 @@ func (s *masterItemDao) Create(ctx context.Context, tx *gorm.DB, m *masterItem.M
 }
 
 func (s *masterItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -169,6 +174,41 @@ func (s *masterItemDao) Update(ctx context.Context, tx *gorm.DB, m *masterItem.M
 	return masterItem.SetMasterItem(t.MasterItemId, t.Name, t.MasterResourceEnum, t.MasterRarityEnum, t.Content), nil
 }
 
+func (s *masterItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	ts := NewMasterItems()
+	for _, m := range ms {
+		t := &MasterItem{
+			MasterItemId:       m.MasterItemId,
+			Name:               m.Name,
+			MasterResourceEnum: m.MasterResourceEnum,
+			MasterRarityEnum:   m.MasterRarityEnum,
+			Content:            m.Content,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewMasterItem()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "master_item_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_resource_enum", "master_rarity_enum", "content"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
 func (s *masterItemDao) Delete(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) error {
 	var conn *gorm.DB
 	if tx != nil {
@@ -178,6 +218,31 @@ func (s *masterItemDao) Delete(ctx context.Context, tx *gorm.DB, m *masterItem.M
 	}
 
 	res := conn.Model(NewMasterItem()).WithContext(ctx).Where("master_item_id = ?", m.MasterItemId).Delete(NewMasterItem())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *masterItemDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.MasterItemId})
+	}
+
+	res := conn.Model(NewMasterItem()).WithContext(ctx).Where("(master_item_id) IN ?", ks).Delete(NewMasterItem())
 	if err := res.Error; err != nil {
 		return err
 	}
