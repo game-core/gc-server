@@ -206,3 +206,35 @@ func (s *userAccountDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccount
 
 	return nil
 }
+
+func (s *userAccountDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.UserId})
+	}
+
+	res := conn.Model(NewUserAccount()).WithContext(ctx).Where("(user_id) IN ?", ks).Delete(NewUserAccount())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}

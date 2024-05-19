@@ -241,6 +241,11 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 		methods = append(methods, s.createDelete(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
 	}
 
+	// DeleteList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createDeleteList(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
+	}
+
 	return methods
 }
 
@@ -631,6 +636,55 @@ func (s *Dao) createDelete(yamlStruct *YamlStruct, primaryFields []string) strin
 	)
 }
 
+// createDeleteList UpdateListを作成する
+func (s *Dao) createDeleteList(yamlStruct *YamlStruct, primaryFields []string) string {
+	keys := make(map[string]Structure)
+	for _, field := range primaryFields {
+		keys[field] = yamlStruct.Structures[field]
+	}
+
+	return fmt.Sprintf(
+		`func (s *%sDao) DeleteList(ctx context.Context, tx *gorm.DB, ms %s.%s) error {
+			if len(ms) <= 0 {
+				return nil
+			}
+		
+			fms := ms[0]
+			for _, m := range ms {
+				if m.UserId != fms.UserId {
+					return errors.NewError("userId is invalid")
+				}
+			}
+		
+			var conn *gorm.DB
+			if tx != nil {
+				conn = tx
+			} else {
+				conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+			}
+		
+			var ks [][]interface{}
+			for _, m := range ms {
+				ks = append(ks, %s)
+			}
+		
+			res := conn.Model(New%s()).WithContext(ctx).%s.Delete(New%s())
+			if err := res.Error; err != nil {
+				return err
+			}
+		
+			return nil
+		}`,
+		changes.UpperCamelToCamel(yamlStruct.Name),
+		yamlStruct.Package,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+		s.createKeyInterface(keys),
+		yamlStruct.Name,
+		s.createInQuery(keys),
+		yamlStruct.Name,
+	)
+}
+
 // checkKeys キーを確認する
 func (s *Dao) checkKeys(keys map[string]Structure, name string) bool {
 	for _, key := range keys {
@@ -651,14 +705,14 @@ func (s *Dao) checkTimestamp(name string) bool {
 	return false
 }
 
-// createKeyColumn Columnを作成する
-func (s *Dao) createKeyColumn(keys map[string]Structure) string {
+// createKeyInterface Interfaceを作成する
+func (s *Dao) createKeyInterface(keys map[string]Structure) string {
 	var columnStrings []string
 	for _, field := range s.getStructures(keys) {
-		columnStrings = append(columnStrings, fmt.Sprintf("{Name: \"%s\"}", field.Name))
+		columnStrings = append(columnStrings, fmt.Sprintf("m.%s", changes.SnakeToUpperCamel(field.Name)))
 	}
 
-	return strings.Join(columnStrings, ",")
+	return fmt.Sprintf("[]interface{}{%s}", strings.Join(columnStrings, ","))
 }
 
 // createUpdateColumn Columnを作成する
@@ -666,6 +720,16 @@ func (s *Dao) createUpdateColumn(updates map[string]Structure) string {
 	var columnStrings []string
 	for _, field := range s.getStructures(updates) {
 		columnStrings = append(columnStrings, fmt.Sprintf("\"%s\"", field.Name))
+	}
+
+	return strings.Join(columnStrings, ",")
+}
+
+// createKeyColumn Columnを作成する
+func (s *Dao) createKeyColumn(keys map[string]Structure) string {
+	var columnStrings []string
+	for _, field := range s.getStructures(keys) {
+		columnStrings = append(columnStrings, fmt.Sprintf("{Name: \"%s\"}", field.Name))
 	}
 
 	return strings.Join(columnStrings, ",")
@@ -679,6 +743,16 @@ func (s *Dao) createQuery(keys map[string]Structure) string {
 	}
 
 	return strings.Join(queryStrings, ".")
+}
+
+// createInQuery Queryを作成する
+func (s *Dao) createInQuery(keys map[string]Structure) string {
+	var queryStrings []string
+	for _, field := range s.getStructures(keys) {
+		queryStrings = append(queryStrings, field.Name)
+	}
+
+	return fmt.Sprintf("Where(\"(%s) IN ?\", ks)", strings.Join(queryStrings, ", "))
 }
 
 // createModelQuery Queryを作成する

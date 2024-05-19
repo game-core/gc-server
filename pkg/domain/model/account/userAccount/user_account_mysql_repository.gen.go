@@ -18,4 +18,5 @@ type UserAccountMysqlRepository interface {
 	Update(ctx context.Context, tx *gorm.DB, m *UserAccount) (*UserAccount, error)
 	UpdateList(ctx context.Context, tx *gorm.DB, ms UserAccounts) (UserAccounts, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *UserAccount) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms UserAccounts) error
 }

@@ -190,6 +190,11 @@ func (s *MysqlRepository) createMethods(yamlStruct *YamlStruct) []string {
 		methods = append(methods, s.createDelete(yamlStruct, strings.Split(yamlStruct.Primary[0], ",")))
 	}
 
+	// DeleteList
+	if len(yamlStruct.Primary) > 0 {
+		methods = append(methods, s.createDeleteList(yamlStruct))
+	}
+
 	return methods
 }
 
@@ -325,6 +330,14 @@ func (s *MysqlRepository) createDelete(yamlStruct *YamlStruct, primaryFields []s
 	return fmt.Sprintf(
 		`Delete(ctx context.Context, tx *gorm.DB, m *%s) error`,
 		yamlStruct.Name,
+	)
+}
+
+// createDeleteList DeleteListを作成する
+func (s *MysqlRepository) createDeleteList(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`DeleteList(ctx context.Context, tx *gorm.DB, ms %s) error`,
+		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 	)
 }
 

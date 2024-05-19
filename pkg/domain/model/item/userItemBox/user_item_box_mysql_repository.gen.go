@@ -18,4 +18,5 @@ type UserItemBoxMysqlRepository interface {
 	Update(ctx context.Context, tx *gorm.DB, m *UserItemBox) (*UserItemBox, error)
 	UpdateList(ctx context.Context, tx *gorm.DB, ms UserItemBoxes) (UserItemBoxes, error)
 	Delete(ctx context.Context, tx *gorm.DB, m *UserItemBox) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms UserItemBoxes) error
 }
