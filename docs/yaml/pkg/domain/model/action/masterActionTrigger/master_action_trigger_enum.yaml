@@ -1,0 +1,13 @@
+name: MasterActionTriggerEnum
+package: masterActionTrigger
+comment: "アクショントリガーEnum"
+
+structure:
+  Continuation:
+    name: Continuation
+    number: 0
+    comment: "持続する"
+  Discontinuation:
+    name: Discontinuation
+    number: 1
+    comment: "持続しない"

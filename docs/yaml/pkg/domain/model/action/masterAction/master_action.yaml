@@ -1,0 +1,49 @@
+name: MasterAction
+package: masterAction
+comment: "アクション"
+
+structure:
+  MasterActionId:
+    name: master_action_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "ID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 2
+    comment: "アクション名"
+  MasterActionStepEnum:
+    name: master_action_step_enum
+    type: enum
+    package: action/masterActionStep
+    nullable: false
+    number: 3
+    comment: "アクションステップEnum"
+  MasterActionTriggerEnum:
+    name: master_action_trigger_enum
+    type: enum
+    package: action/masterActionTrigger
+    nullable: false
+    number: 4
+    comment: "アクショントリガーEnum"
+  TargetId:
+    name: target_id
+    type: int64
+    nullable: true
+    number: 5
+    comment: "対象のID"
+  TriggerMasterActionId:
+    name: trigger_master_action_id
+    type: int64
+    nullable: true
+    number: 6
+    comment: "トリガーになるアクションのID"
+  Expiration:
+    name: expiration
+    type: int32
+    nullable: true
+    number: 7
+    comment: "有効期限"

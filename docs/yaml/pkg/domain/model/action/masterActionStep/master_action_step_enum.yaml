@@ -1,0 +1,13 @@
+name: MasterActionStepEnum
+package: masterActionStep
+comment: "アクションステップEnum"
+
+structure:
+  None:
+    name: None
+    number: 0
+    comment: "無"
+  PassedTutorial:
+    name: PassedTutorial
+    number: 1
+    comment: "チュートリアル突破"
