@@ -253,29 +253,34 @@ func (s *Table) getTypeTime() string {
 
 // getTypeStructure structureの型を取得する
 func (s *Table) getTypeStructure(fieldName, fieldPackage, structPackage string) string {
-	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
-		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(fieldName), changes.SnakeToUpperCamel(fieldName))
-	}
-
-	return changes.SnakeToUpperCamel(fieldName)
+	return s.createType(strings.Split(fieldPackage, "/"), fieldName, fieldPackage, structPackage)
 }
 
 // getTypeStructures structuresの型を取得する
 func (s *Table) getTypeStructures(fieldName, fieldPackage, structPackage string) string {
-	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
-		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(changes.PluralToSingular(fieldName)), changes.SnakeToUpperCamel(fieldName))
-	}
-
-	return changes.SnakeToUpperCamel(fieldName)
+	return s.createType(strings.Split(fieldPackage, "/"), fieldName, fieldPackage, structPackage)
 }
 
 // getTypeEnum enumの型を取得する
 func (s *Table) getTypeEnum(fieldName, fieldPackage string) string {
-	if fieldPackage != "" {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
-		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(changes.CamelToSnake(changes.Extraction(fieldPackage, "/", 1))), changes.SnakeToUpperCamel(fieldName))
+	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+	return fmt.Sprintf("%s.%s", strings.Split(fieldPackage, "/")[1], changes.SnakeToUpperCamel(fieldName))
+}
+
+// createType 型を生成する
+func (s *Table) createType(parts []string, fieldName, fieldPackage, structPackage string) string {
+	if len(parts) > 1 {
+		if parts[1] != structPackage {
+			importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+			return fmt.Sprintf("%s.%s", parts[1], changes.SnakeToUpperCamel(fieldName))
+		}
+	}
+
+	if len(parts) <= 1 {
+		if parts[0] != structPackage {
+			importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/pkg/domain/model/%s\"", fieldPackage))
+			return fmt.Sprintf("%s.%s", parts[0], changes.SnakeToUpperCamel(fieldName))
+		}
 	}
 
 	return changes.SnakeToUpperCamel(fieldName)
