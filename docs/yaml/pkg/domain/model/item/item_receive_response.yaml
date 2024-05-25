@@ -1,0 +1,12 @@
+name: ItemReceiveResponse
+package: item
+comment: "アイテム受け取りレスポンス"
+
+structure:
+  UserItemBoxes:
+    name: user_item_boxes
+    type: structures
+    package: item/userItemBox
+    nullable: false
+    number: 1
+    comment: "ユーザーアイテムボックス一覧"
