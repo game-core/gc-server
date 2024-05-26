@@ -374,7 +374,7 @@ func (s *masterActionDao) Update(ctx context.Context, tx *gorm.DB, m *masterActi
 		TriggerMasterActionId:   m.TriggerMasterActionId,
 		Expiration:              m.Expiration,
 	}
-	res := conn.Model(NewMasterAction()).WithContext(ctx).Where("master_action_id = ?", m.MasterActionId).Updates(t)
+	res := conn.Model(NewMasterAction()).WithContext(ctx).Select("master_action_id", "name", "master_action_step_enum", "master_action_trigger_enum", "target_id", "trigger_master_action_id", "expiration").Where("master_action_id = ?", m.MasterActionId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

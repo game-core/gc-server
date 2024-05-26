@@ -135,7 +135,7 @@ func (s *userActionDao) Update(ctx context.Context, tx *gorm.DB, m *userAction.U
 		MasterActionId: m.MasterActionId,
 		StartedAt:      m.StartedAt,
 	}
-	res := conn.Model(NewUserAction()).WithContext(ctx).Where("user_id = ?", m.UserId).Where("master_action_id = ?", m.MasterActionId).Updates(t)
+	res := conn.Model(NewUserAction()).WithContext(ctx).Select("user_id", "master_action_id", "started_at").Where("user_id = ?", m.UserId).Where("master_action_id = ?", m.MasterActionId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

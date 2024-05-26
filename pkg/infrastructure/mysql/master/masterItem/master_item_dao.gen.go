@@ -166,7 +166,7 @@ func (s *masterItemDao) Update(ctx context.Context, tx *gorm.DB, m *masterItem.M
 		MasterRarityEnum:   m.MasterRarityEnum,
 		Content:            m.Content,
 	}
-	res := conn.Model(NewMasterItem()).WithContext(ctx).Where("master_item_id = ?", m.MasterItemId).Updates(t)
+	res := conn.Model(NewMasterItem()).WithContext(ctx).Select("master_item_id", "name", "master_resource_enum", "master_rarity_enum", "content").Where("master_item_id = ?", m.MasterItemId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

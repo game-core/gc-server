@@ -172,7 +172,7 @@ func (s *masterEventDao) Update(ctx context.Context, tx *gorm.DB, m *masterEvent
 		StartAt:       m.StartAt,
 		EndAt:         m.EndAt,
 	}
-	res := conn.Model(NewMasterEvent()).WithContext(ctx).Where("master_event_id = ?", m.MasterEventId).Updates(t)
+	res := conn.Model(NewMasterEvent()).WithContext(ctx).Select("master_event_id", "name", "reset_hour", "interval_hour", "repeat_setting", "start_at", "end_at").Where("master_event_id = ?", m.MasterEventId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

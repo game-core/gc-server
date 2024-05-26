@@ -227,7 +227,7 @@ func (s *masterActionRunDao) Update(ctx context.Context, tx *gorm.DB, m *masterA
 		Name:              m.Name,
 		MasterActionId:    m.MasterActionId,
 	}
-	res := conn.Model(NewMasterActionRun()).WithContext(ctx).Where("master_action_run_id = ?", m.MasterActionRunId).Updates(t)
+	res := conn.Model(NewMasterActionRun()).WithContext(ctx).Select("master_action_run_id", "name", "master_action_id").Where("master_action_run_id = ?", m.MasterActionRunId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

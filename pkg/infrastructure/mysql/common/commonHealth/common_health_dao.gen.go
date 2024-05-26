@@ -129,7 +129,7 @@ func (s *commonHealthDao) Update(ctx context.Context, tx *gorm.DB, m *commonHeal
 		Name:             m.Name,
 		CommonHealthType: m.CommonHealthType,
 	}
-	res := conn.Model(NewCommonHealth()).WithContext(ctx).Where("health_id = ?", m.HealthId).Updates(t)
+	res := conn.Model(NewCommonHealth()).WithContext(ctx).Select("health_id", "name", "common_health_type").Where("health_id = ?", m.HealthId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

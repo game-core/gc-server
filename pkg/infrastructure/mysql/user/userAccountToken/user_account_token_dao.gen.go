@@ -132,7 +132,7 @@ func (s *userAccountTokenDao) Update(ctx context.Context, tx *gorm.DB, m *userAc
 		UserId: m.UserId,
 		Token:  m.Token,
 	}
-	res := conn.Model(NewUserAccountToken()).WithContext(ctx).Where("user_id = ?", m.UserId).Updates(t)
+	res := conn.Model(NewUserAccountToken()).WithContext(ctx).Select("user_id", "token").Where("user_id = ?", m.UserId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

@@ -522,7 +522,7 @@ func (s *Dao) createUpdate(yamlStruct *YamlStruct, primaryFields []string) strin
 			}
 
 			t := %s
-			res := conn.Model(New%s()).WithContext(ctx).%s.Updates(t)
+			res := conn.Model(New%s()).WithContext(ctx).%s.%s.Updates(t)
 			if err := res.Error; err != nil {
 				return nil, err
 			}
@@ -536,6 +536,7 @@ func (s *Dao) createUpdate(yamlStruct *YamlStruct, primaryFields []string) strin
 		yamlStruct.Name,
 		s.createTableSetter(yamlStruct),
 		yamlStruct.Name,
+		s.createSelect(yamlStruct),
 		s.createModelQuery(keys),
 		s.createModelSetter(yamlStruct),
 	)
@@ -753,6 +754,18 @@ func (s *Dao) createInQuery(keys map[string]Structure) string {
 	}
 
 	return fmt.Sprintf("Where(\"(%s) IN ?\", ks)", strings.Join(queryStrings, ", "))
+}
+
+// createSelect createSelectを作成する
+func (s *Dao) createSelect(yamlStruct *YamlStruct) string {
+	var paramStrings []string
+	for _, field := range s.getStructures(yamlStruct.Structures) {
+		if field.Name != "created_at" && field.Name != "updated_at" {
+			paramStrings = append(paramStrings, fmt.Sprintf("\"%s\"", field.Name))
+		}
+	}
+
+	return fmt.Sprintf(`Select(%s)`, strings.Join(paramStrings, ","))
 }
 
 // createModelQuery Queryを作成する

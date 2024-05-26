@@ -227,7 +227,7 @@ func (s *masterRarityDao) Update(ctx context.Context, tx *gorm.DB, m *masterRari
 		Name:             m.Name,
 		MasterRarityEnum: m.MasterRarityEnum,
 	}
-	res := conn.Model(NewMasterRarity()).WithContext(ctx).Where("master_rarity_id = ?", m.MasterRarityId).Updates(t)
+	res := conn.Model(NewMasterRarity()).WithContext(ctx).Select("master_rarity_id", "name", "master_rarity_enum").Where("master_rarity_id = ?", m.MasterRarityId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

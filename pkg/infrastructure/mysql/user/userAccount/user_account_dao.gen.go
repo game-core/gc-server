@@ -141,7 +141,7 @@ func (s *userAccountDao) Update(ctx context.Context, tx *gorm.DB, m *userAccount
 		LoginAt:  m.LoginAt,
 		LogoutAt: m.LogoutAt,
 	}
-	res := conn.Model(NewUserAccount()).WithContext(ctx).Where("user_id = ?", m.UserId).Updates(t)
+	res := conn.Model(NewUserAccount()).WithContext(ctx).Select("user_id", "name", "password", "login_at", "logout_at").Where("user_id = ?", m.UserId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

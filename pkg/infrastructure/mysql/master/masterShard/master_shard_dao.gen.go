@@ -230,7 +230,7 @@ func (s *masterShardDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard
 		ShardKey:      m.ShardKey,
 		Count:         m.Count,
 	}
-	res := conn.Model(NewMasterShard()).WithContext(ctx).Where("master_shard_id = ?", m.MasterShardId).Updates(t)
+	res := conn.Model(NewMasterShard()).WithContext(ctx).Select("master_shard_id", "name", "shard_key", "count").Where("master_shard_id = ?", m.MasterShardId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

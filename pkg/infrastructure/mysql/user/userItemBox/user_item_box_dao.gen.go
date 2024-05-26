@@ -135,7 +135,7 @@ func (s *userItemBoxDao) Update(ctx context.Context, tx *gorm.DB, m *userItemBox
 		MasterItemId: m.MasterItemId,
 		Count:        m.Count,
 	}
-	res := conn.Model(NewUserItemBox()).WithContext(ctx).Where("user_id = ?", m.UserId).Where("master_item_id = ?", m.MasterItemId).Updates(t)
+	res := conn.Model(NewUserItemBox()).WithContext(ctx).Select("user_id", "master_item_id", "count").Where("user_id = ?", m.UserId).Where("master_item_id = ?", m.MasterItemId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

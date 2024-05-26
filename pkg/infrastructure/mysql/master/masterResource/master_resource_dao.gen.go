@@ -227,7 +227,7 @@ func (s *masterResourceDao) Update(ctx context.Context, tx *gorm.DB, m *masterRe
 		Name:               m.Name,
 		MasterResourceEnum: m.MasterResourceEnum,
 	}
-	res := conn.Model(NewMasterResource()).WithContext(ctx).Where("master_resource_id = ?", m.MasterResourceId).Updates(t)
+	res := conn.Model(NewMasterResource()).WithContext(ctx).Select("master_resource_id", "name", "master_resource_enum").Where("master_resource_id = ?", m.MasterResourceId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
