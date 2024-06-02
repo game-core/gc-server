@@ -1,0 +1,3 @@
+master_item_id,name,master_resource_enum,master_rarity_enum,content
+1,ノーマルアイテム,0,0,ノーマルアイテム
+2,カードアイテム,1,0,カードアイテム

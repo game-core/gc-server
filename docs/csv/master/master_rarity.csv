@@ -1,0 +1,5 @@
+master_rarity_id,name,master_rarity_enum
+1,ノーマル,0
+2,レア,1
+3,スーパーレア,2
+4,スーパースペシャルレア,3
