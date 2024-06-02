@@ -11,7 +11,7 @@
 ゲームサーバー基盤(gRPC)
 
 ## アーキテクチャ
-![architecture](https://github.com/game-core/gc-server/assets/71867595/67847572-8401-403d-a347-8c078d58c2cc)
+![architecture drawio](https://github.com/game-core/gc-server/assets/71867595/d43b608d-89eb-4d32-8bb1-b2fac7fa9815)
 
 ## 機能
 - API
