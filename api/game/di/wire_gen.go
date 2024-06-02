@@ -9,20 +9,38 @@ package di
 import (
 	"github.com/game-core/gc-server/api/game/presentation/handler/account"
 	"github.com/game-core/gc-server/api/game/presentation/handler/health"
+	"github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
 	"github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	account2 "github.com/game-core/gc-server/api/game/usecase/account"
 	health2 "github.com/game-core/gc-server/api/game/usecase/health"
+	loginBonus2 "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	"github.com/game-core/gc-server/config/database"
 	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
+	"github.com/game-core/gc-server/pkg/domain/model/action"
+	"github.com/game-core/gc-server/pkg/domain/model/event"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
+	"github.com/game-core/gc-server/pkg/domain/model/item"
+	loginBonus3 "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionRun"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionStep"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionTrigger"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterEvent"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterHealth"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterItem"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonus"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonusItem"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonusSchedule"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterShard"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAccount"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userTransaction"
 	userAccount2 "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccount"
 	"github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccountToken"
@@ -49,6 +67,12 @@ func InitializeHealthHandler() health.HealthHandler {
 	return healthHandler
 }
 
+func InitializeLoginBonusHandler() loginBonus.LoginBonusHandler {
+	loginBonusUsecase := InitializeLoginBonusUsecase()
+	loginBonusHandler := loginBonus.NewLoginBonusHandler(loginBonusUsecase)
+	return loginBonusHandler
+}
+
 func InitializeAccountUsecase() account2.AccountUsecase {
 	accountService := InitializeAccountService()
 	transactionService := InitializeTransactionService()
@@ -62,6 +86,13 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 	return healthUsecase
 }
 
+func InitializeLoginBonusUsecase() loginBonus2.LoginBonusUsecase {
+	loginBonusService := InitializeLoginBonusService()
+	transactionService := InitializeTransactionService()
+	loginBonusUsecase := loginBonus2.NewLoginBonusUsecase(loginBonusService, transactionService)
+	return loginBonusUsecase
+}
+
 func InitializeAccountService() account3.AccountService {
 	shardService := InitializeShardService()
 	mysqlHandler := database.NewMysql()
@@ -73,12 +104,50 @@ func InitializeAccountService() account3.AccountService {
 	return accountService
 }
 
+func InitializeActionService() action.ActionService {
+	mysqlHandler := database.NewMysql()
+	masterActionMysqlRepository := masterAction.NewMasterActionDao(mysqlHandler)
+	masterActionRunMysqlRepository := masterActionRun.NewMasterActionRunDao(mysqlHandler)
+	masterActionStepMysqlRepository := masterActionStep.NewMasterActionStepDao(mysqlHandler)
+	masterActionTriggerMysqlRepository := masterActionTrigger.NewMasterActionTriggerDao(mysqlHandler)
+	userActionMysqlRepository := userAction.NewUserActionDao(mysqlHandler)
+	actionService := action.NewActionService(masterActionMysqlRepository, masterActionRunMysqlRepository, masterActionStepMysqlRepository, masterActionTriggerMysqlRepository, userActionMysqlRepository)
+	return actionService
+}
+
+func InitializeEventService() event.EventService {
+	mysqlHandler := database.NewMysql()
+	masterEventMysqlRepository := masterEvent.NewMasterEventDao(mysqlHandler)
+	eventService := event.NewEventService(masterEventMysqlRepository)
+	return eventService
+}
+
 func InitializeHealthService() health3.HealthService {
 	mysqlHandler := database.NewMysql()
 	commonHealthMysqlRepository := commonHealth.NewCommonHealthDao(mysqlHandler)
 	masterHealthMysqlRepository := masterHealth.NewMasterHealthDao(mysqlHandler)
 	healthService := health3.NewHealthService(commonHealthMysqlRepository, masterHealthMysqlRepository)
 	return healthService
+}
+
+func InitializeItemService() item.ItemService {
+	mysqlHandler := database.NewMysql()
+	userItemBoxMysqlRepository := userItemBox.NewUserItemBoxDao(mysqlHandler)
+	masterItemMysqlRepository := masterItem.NewMasterItemDao(mysqlHandler)
+	itemService := item.NewItemService(userItemBoxMysqlRepository, masterItemMysqlRepository)
+	return itemService
+}
+
+func InitializeLoginBonusService() loginBonus3.LoginBonusService {
+	itemService := InitializeItemService()
+	eventService := InitializeEventService()
+	mysqlHandler := database.NewMysql()
+	userLoginBonusMysqlRepository := userLoginBonus.NewUserLoginBonusDao(mysqlHandler)
+	masterLoginBonusMysqlRepository := masterLoginBonus.NewMasterLoginBonusDao(mysqlHandler)
+	masterLoginBonusItemMysqlRepository := masterLoginBonusItem.NewMasterLoginBonusItemDao(mysqlHandler)
+	masterLoginBonusScheduleMysqlRepository := masterLoginBonusSchedule.NewMasterLoginBonusScheduleDao(mysqlHandler)
+	loginBonusService := loginBonus3.NewLoginBonusService(itemService, eventService, userLoginBonusMysqlRepository, masterLoginBonusMysqlRepository, masterLoginBonusItemMysqlRepository, masterLoginBonusScheduleMysqlRepository)
+	return loginBonusService
 }
 
 func InitializeShardService() shard.ShardService {

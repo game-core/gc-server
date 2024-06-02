@@ -14,6 +14,7 @@ import (
 	authInterceptor "github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	accountUsecase "github.com/game-core/gc-server/api/game/usecase/account"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
+	loginBonusUsecase "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
 	eventService "github.com/game-core/gc-server/pkg/domain/model/event"
@@ -91,6 +92,15 @@ func InitializeHealthUsecase() healthUsecase.HealthUsecase {
 	wire.Build(
 		healthUsecase.NewHealthUsecase,
 		InitializeHealthService,
+	)
+	return nil
+}
+
+func InitializeLoginBonusUsecase() loginBonusUsecase.LoginBonusUsecase {
+	wire.Build(
+		loginBonusUsecase.NewLoginBonusUsecase,
+		InitializeLoginBonusService,
+		InitializeTransactionService,
 	)
 	return nil
 }

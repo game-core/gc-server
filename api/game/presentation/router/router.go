@@ -9,6 +9,7 @@ import (
 	"github.com/game-core/gc-server/api/game/di"
 	"github.com/game-core/gc-server/api/game/presentation/server/account"
 	"github.com/game-core/gc-server/api/game/presentation/server/health"
+	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
 )
 
 func Router(lis net.Listener) {
@@ -16,6 +17,7 @@ func Router(lis net.Listener) {
 	authInterceptor := di.InitializeAuthInterceptor()
 	accountHandler := di.InitializeAccountHandler()
 	healthHandler := di.InitializeHealthHandler()
+	loginBonusHandler := di.InitializeLoginBonusHandler()
 
 	// Server
 	s := grpc.NewServer(
@@ -24,6 +26,7 @@ func Router(lis net.Listener) {
 
 	account.RegisterAccountServer(s, accountHandler)
 	health.RegisterHealthServer(s, healthHandler)
+	loginBonus.RegisterLoginBonusServer(s, loginBonusHandler)
 
 	log.Printf("gRPC server started")
 	if err := s.Serve(lis); err != nil {
