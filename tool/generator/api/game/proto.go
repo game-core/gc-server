@@ -129,7 +129,7 @@ func (s *Proto) createService(yamlStruct *YamlStruct) string {
 	var services []string
 	for _, field := range s.getStructure(yamlStruct.Structures) {
 		checkReq := true
-		req := fmt.Sprintf("import \"%s/%s.proto\";", changes.UpperCamelToSnake(yamlStruct.Package), changes.UpperCamelToSnake(field.Request))
+		req := fmt.Sprintf("import \"%s/%s.proto\";", yamlStruct.Package, changes.UpperCamelToSnake(field.Request))
 		for _, m := range imports {
 			if m == req {
 				checkReq = false
@@ -141,7 +141,7 @@ func (s *Proto) createService(yamlStruct *YamlStruct) string {
 		}
 
 		checkRes := true
-		res := fmt.Sprintf("import \"%s/%s.proto\";", changes.UpperCamelToSnake(yamlStruct.Package), changes.UpperCamelToSnake(field.Response))
+		res := fmt.Sprintf("import \"%s/%s.proto\";", yamlStruct.Package, changes.UpperCamelToSnake(field.Response))
 		for _, m := range imports {
 			if m == res {
 				checkRes = false
