@@ -1,5 +1,4 @@
 # gc-server
-ゲームサーバー
 ![GitHub repo size](https://img.shields.io/github/repo-size/game-core/gc-server)
 <img src="https://img.shields.io/badge/-Go-76E1FE.svg?logo=go&style=plastic">
 <img src="https://img.shields.io/badge/-Nuxt.js-00C58E.svg?logo=nuxt.js&style=plastic">
