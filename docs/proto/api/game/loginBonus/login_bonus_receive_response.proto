@@ -1,0 +1,10 @@
+// ログインボーナス受け取りレスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "loginBonus/userLoginBonus/user_login_bonus.proto";
+
+message LoginBonusReceiveResponse {
+  optional UserLoginBonus user_login_bonus = 1;
+}

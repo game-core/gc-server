@@ -10,19 +10,36 @@ import (
 
 	accountHandler "github.com/game-core/gc-server/api/game/presentation/handler/account"
 	healthHandler "github.com/game-core/gc-server/api/game/presentation/handler/health"
+	loginBonusHandler "github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
 	authInterceptor "github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	accountUsecase "github.com/game-core/gc-server/api/game/usecase/account"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
+	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
+	eventService "github.com/game-core/gc-server/pkg/domain/model/event"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
+	itemService "github.com/game-core/gc-server/pkg/domain/model/item"
+	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
 	shardService "github.com/game-core/gc-server/pkg/domain/model/shard"
 	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	commonTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
+	masterActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
+	masterActionRunMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionRun"
+	masterActionStepMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionStep"
+	masterActionTriggerMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionTrigger"
+	masterEventMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterEvent"
 	masterHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterHealth"
+	masterItemMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterItem"
+	masterLoginBonusMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonus"
+	masterLoginBonusItemMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonusItem"
+	masterLoginBonusScheduleMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonusSchedule"
 	masterShardMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterShard"
 	masterTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterTransaction"
 	userAccountMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAccount"
+	userActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
+	userItemBoxMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
+	userLoginBonusMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
 	userTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userTransaction"
 	userAccountRedisDao "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccount"
 	userAccountTokenRedisDao "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccountToken"
@@ -49,6 +66,14 @@ func InitializeHealthHandler() healthHandler.HealthHandler {
 	wire.Build(
 		healthHandler.NewHealthHandler,
 		InitializeHealthUsecase,
+	)
+	return nil
+}
+
+func InitializeLoginBonusHandler() loginBonusHandler.LoginBonusHandler {
+	wire.Build(
+		loginBonusHandler.NewLoginBonusHandler,
+		InitializeLoginBonusUsecase,
 	)
 	return nil
 }
@@ -83,12 +108,58 @@ func InitializeAccountService() accountService.AccountService {
 	return nil
 }
 
+func InitializeActionService() actionService.ActionService {
+	wire.Build(
+		database.NewMysql,
+		actionService.NewActionService,
+		masterActionMysqlDao.NewMasterActionDao,
+		masterActionRunMysqlDao.NewMasterActionRunDao,
+		masterActionStepMysqlDao.NewMasterActionStepDao,
+		masterActionTriggerMysqlDao.NewMasterActionTriggerDao,
+		userActionMysqlDao.NewUserActionDao,
+	)
+	return nil
+}
+
+func InitializeEventService() eventService.EventService {
+	wire.Build(
+		database.NewMysql,
+		eventService.NewEventService,
+		masterEventMysqlDao.NewMasterEventDao,
+	)
+	return nil
+}
+
 func InitializeHealthService() healthService.HealthService {
 	wire.Build(
 		database.NewMysql,
 		healthService.NewHealthService,
 		commonHealthMysqlDao.NewCommonHealthDao,
 		masterHealthMysqlDao.NewMasterHealthDao,
+	)
+	return nil
+}
+
+func InitializeItemService() itemService.ItemService {
+	wire.Build(
+		database.NewMysql,
+		itemService.NewItemService,
+		userItemBoxMysqlDao.NewUserItemBoxDao,
+		masterItemMysqlDao.NewMasterItemDao,
+	)
+	return nil
+}
+
+func InitializeLoginBonusService() loginBonusService.LoginBonusService {
+	wire.Build(
+		database.NewMysql,
+		loginBonusService.NewLoginBonusService,
+		InitializeItemService,
+		InitializeEventService,
+		userLoginBonusMysqlDao.NewUserLoginBonusDao,
+		masterLoginBonusMysqlDao.NewMasterLoginBonusDao,
+		masterLoginBonusItemMysqlDao.NewMasterLoginBonusItemDao,
+		masterLoginBonusScheduleMysqlDao.NewMasterLoginBonusScheduleDao,
 	)
 	return nil
 }

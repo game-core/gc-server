@@ -1,0 +1,12 @@
+// ログインボーナスアイテム
+syntax = "proto3";
+
+package api.game;
+
+message MasterLoginBonusItem {
+  int64 master_login_bonus_item_id = 1;
+  int64 master_login_bonus_schedule_id = 2;
+  int64 master_item_id = 3;
+  string name = 4;
+  int32 count = 5;
+}

@@ -1,0 +1,12 @@
+// ユーザーログインボーナス
+syntax = "proto3";
+
+package api.game;
+
+import "google/protobuf/timestamp.proto";
+
+message UserLoginBonus {
+  string user_id = 1;
+  int64 master_login_bonus_id = 2;
+  google.protobuf.Timestamp received_at = 3;
+}

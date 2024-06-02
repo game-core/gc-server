@@ -1,0 +1,9 @@
+// ログインボーナス受け取りリクエスト
+syntax = "proto3";
+
+package api.game;
+
+message LoginBonusReceiveRequest {
+  string user_id = 1;
+  int64 master_login_bonus_id = 2;
+}

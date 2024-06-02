@@ -1,0 +1,11 @@
+// ログインボーナス
+syntax = "proto3";
+
+package api.game;
+
+import "loginBonus/login_bonus_receive_request.proto";
+import "loginBonus/login_bonus_receive_response.proto";
+
+service LoginBonus {
+  rpc Receive (LoginBonusReceiveRequest) returns (LoginBonusReceiveResponse);
+}

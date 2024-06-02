@@ -1,0 +1,10 @@
+// ログインボーナス
+syntax = "proto3";
+
+package api.game;
+
+message MasterLoginBonus {
+  int64 master_login_bonus_id = 1;
+  int64 master_event_id = 2;
+  string name = 3;
+}

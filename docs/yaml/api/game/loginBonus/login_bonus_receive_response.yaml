@@ -1,0 +1,12 @@
+name: LoginBonusReceiveResponse
+package: loginBonus
+comment: "ログインボーナス受け取りレスポンス"
+
+structure:
+  UserLoginBonus:
+    name: user_login_bonus
+    type: structure
+    package: loginBonus/userLoginBonus
+    nullable: true
+    number: 1
+    comment: "ユーザーログインボーナス"
