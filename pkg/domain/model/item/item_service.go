@@ -51,14 +51,11 @@ func (s *itemService) Receive(ctx context.Context, tx *gorm.DB, req *ItemReceive
 
 // SetUpdateUserItemBox 更新するItemBox一覧をセットする
 func (s *itemService) setUpdateUserItemBox(userId string, items Items, userItemBoxModels userItemBox.UserItemBoxes) userItemBox.UserItemBoxes {
-	existingItems := make(map[int64]bool)
-	for _, userItemBoxModel := range userItemBoxModels {
-		existingItems[userItemBoxModel.MasterItemId] = true
-	}
-
+	existingItemMaps := userItemBoxModels.SetExistingItemMaps()
 	updateUserItemBoxModels := userItemBox.NewUserItemBoxes()
+
 	for _, itemModel := range items {
-		if existingItems[itemModel.MasterItemId] {
+		if existingItemMaps[itemModel.MasterItemId] {
 			for _, userItemBoxModel := range userItemBoxModels {
 				if userItemBoxModel.MasterItemId == itemModel.MasterItemId {
 					updateUserItemBoxModels = append(updateUserItemBoxModels, userItemBox.SetUserItemBox(userItemBoxModel.UserId, userItemBoxModel.MasterItemId, userItemBoxModel.Count+itemModel.Count))
