@@ -3,23 +3,27 @@ package: masterResource
 comment: "リソースEnum"
 
 structure:
+  None:
+    name: None
+    number: 0
+    comment: "無"
   Normal:
     name: Normal
-    number: 0
+    number: 1
     comment: "ノーマルアイテム"
   Card:
     name: Card
-    number: 1
+    number: 2
     comment: "カード"
   Ticket:
     name: Ticket
-    number: 2
+    number: 3
     comment: "チケット"
   Coin:
     name: Coin
-    number: 3
+    number: 4
     comment: "コイン"
   Crystal:
     name: Crystal
-    number: 4
+    number: 5
     comment: "クリスタル"

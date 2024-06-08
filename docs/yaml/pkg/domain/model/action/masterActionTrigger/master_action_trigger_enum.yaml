@@ -3,11 +3,15 @@ package: masterActionTrigger
 comment: "アクショントリガーEnum"
 
 structure:
+  None:
+    name: None
+    number: 0
+    comment: "無"
   Continuation:
     name: Continuation
-    number: 0
+    number: 1
     comment: "持続する"
   Discontinuation:
     name: Discontinuation
-    number: 1
+    number: 2
     comment: "持続しない"
