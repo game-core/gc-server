@@ -1,11 +1,11 @@
 package logger
 
-type LogLevel int32
+type LogLevel string
 
 const (
-	Error   LogLevel = 0
-	Warning LogLevel = 1
-	Info    LogLevel = 2
-	Debug   LogLevel = 3
-	Success LogLevel = 4
+	LogLevel_Error   LogLevel = "Error"
+	LogLevel_Warning LogLevel = "Warning"
+	LogLevel_Info    LogLevel = "Info"
+	LogLevel_Debug   LogLevel = "Debug"
+	LogLevel_Success LogLevel = "Success"
 )

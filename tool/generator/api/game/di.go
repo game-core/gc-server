@@ -30,6 +30,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/game-core/gc-server/config/database"
+	"github.com/game-core/gc-server/config/logger"
 
 	{{.Import}}
 )
@@ -315,6 +316,16 @@ func (s *Di) serviceScript(structName string, fields []*ast.Field) string {
 
 				if !strings.Contains(databaseCode, "database.NewRedis") {
 					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "database.NewRedis,")
+				}
+			}
+
+			if strings.Contains(fieldName, "CloudWatchRepository") {
+				name := strings.Replace(fieldName, "CloudWatchRepository", "", -1)
+				importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("%sCloudWatchDao \"github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/%s/%s\"", strings.Replace(name, "Original", "", -1), s.getDaoDir(name), strings.Replace(name, "Original", "", -1)))
+				scripts = append(scripts, fmt.Sprintf("%sCloudWatchDao.New%sDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
+
+				if !strings.Contains(databaseCode, "logger.NewCloudWatch") {
+					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "logger.NewCloudWatch,")
 				}
 			}
 		}

@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/game-core/gc-server/config/database"
+	"github.com/game-core/gc-server/config/logger"
 
 	accountHandler "github.com/game-core/gc-server/api/game/presentation/handler/account"
 	healthHandler "github.com/game-core/gc-server/api/game/presentation/handler/health"
@@ -26,6 +27,7 @@ import (
 	profileService "github.com/game-core/gc-server/pkg/domain/model/profile"
 	shardService "github.com/game-core/gc-server/pkg/domain/model/shard"
 	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
+	userItemBoxCloudWatchDao "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	commonTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	masterActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -174,8 +176,10 @@ func InitializeHealthService() healthService.HealthService {
 func InitializeItemService() itemService.ItemService {
 	wire.Build(
 		database.NewMysql,
+		logger.NewCloudWatch,
 		itemService.NewItemService,
 		userItemBoxMysqlDao.NewUserItemBoxDao,
+		userItemBoxCloudWatchDao.NewUserItemBoxDao,
 		masterItemMysqlDao.NewMasterItemDao,
 	)
 	return nil

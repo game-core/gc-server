@@ -10,19 +10,24 @@ import (
 	"github.com/game-core/gc-server/api/game/presentation/handler/account"
 	"github.com/game-core/gc-server/api/game/presentation/handler/health"
 	"github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/handler/profile"
 	"github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	account2 "github.com/game-core/gc-server/api/game/usecase/account"
 	health2 "github.com/game-core/gc-server/api/game/usecase/health"
 	loginBonus2 "github.com/game-core/gc-server/api/game/usecase/loginBonus"
+	profile2 "github.com/game-core/gc-server/api/game/usecase/profile"
 	"github.com/game-core/gc-server/config/database"
+	"github.com/game-core/gc-server/config/logger"
 	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
 	"github.com/game-core/gc-server/pkg/domain/model/action"
 	"github.com/game-core/gc-server/pkg/domain/model/event"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
 	"github.com/game-core/gc-server/pkg/domain/model/item"
 	loginBonus3 "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
+	profile3 "github.com/game-core/gc-server/pkg/domain/model/profile"
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction"
+	userItemBox2 "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -41,6 +46,7 @@ import (
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userProfile"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userTransaction"
 	userAccount2 "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccount"
 	"github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccountToken"
@@ -73,6 +79,12 @@ func InitializeLoginBonusHandler() loginBonus.LoginBonusHandler {
 	return loginBonusHandler
 }
 
+func InitializeProfileHandler() profile.ProfileHandler {
+	profileUsecase := InitializeProfileUsecase()
+	profileHandler := profile.NewProfileHandler(profileUsecase)
+	return profileHandler
+}
+
 func InitializeAccountUsecase() account2.AccountUsecase {
 	accountService := InitializeAccountService()
 	transactionService := InitializeTransactionService()
@@ -91,6 +103,13 @@ func InitializeLoginBonusUsecase() loginBonus2.LoginBonusUsecase {
 	transactionService := InitializeTransactionService()
 	loginBonusUsecase := loginBonus2.NewLoginBonusUsecase(loginBonusService, transactionService)
 	return loginBonusUsecase
+}
+
+func InitializeProfileUsecase() profile2.ProfileUsecase {
+	profileService := InitializeProfileService()
+	transactionService := InitializeTransactionService()
+	profileUsecase := profile2.NewProfileUsecase(profileService, transactionService)
+	return profileUsecase
 }
 
 func InitializeAccountService() account3.AccountService {
@@ -133,8 +152,10 @@ func InitializeHealthService() health3.HealthService {
 func InitializeItemService() item.ItemService {
 	mysqlHandler := database.NewMysql()
 	userItemBoxMysqlRepository := userItemBox.NewUserItemBoxDao(mysqlHandler)
+	cloudWatchHandler := logger.NewCloudWatch()
+	userItemBoxCloudWatchRepository := userItemBox2.NewUserItemBoxDao(cloudWatchHandler)
 	masterItemMysqlRepository := masterItem.NewMasterItemDao(mysqlHandler)
-	itemService := item.NewItemService(userItemBoxMysqlRepository, masterItemMysqlRepository)
+	itemService := item.NewItemService(userItemBoxMysqlRepository, userItemBoxCloudWatchRepository, masterItemMysqlRepository)
 	return itemService
 }
 
@@ -148,6 +169,13 @@ func InitializeLoginBonusService() loginBonus3.LoginBonusService {
 	masterLoginBonusScheduleMysqlRepository := masterLoginBonusSchedule.NewMasterLoginBonusScheduleDao(mysqlHandler)
 	loginBonusService := loginBonus3.NewLoginBonusService(itemService, eventService, userLoginBonusMysqlRepository, masterLoginBonusMysqlRepository, masterLoginBonusItemMysqlRepository, masterLoginBonusScheduleMysqlRepository)
 	return loginBonusService
+}
+
+func InitializeProfileService() profile3.ProfileService {
+	mysqlHandler := database.NewMysql()
+	userProfileMysqlRepository := userProfile.NewUserProfileDao(mysqlHandler)
+	profileService := profile3.NewProfileService(userProfileMysqlRepository)
+	return profileService
 }
 
 func InitializeShardService() shard.ShardService {
