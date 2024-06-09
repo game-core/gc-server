@@ -75,7 +75,7 @@ func (s *loginBonusService) Receive(ctx context.Context, tx *gorm.DB, now time.T
 		return nil, errors.NewMethodError("s.getUser", err)
 	}
 
-	if err := s.receive(ctx, tx, req.UserId, masterLoginBonusItemModels); err != nil {
+	if err := s.receive(ctx, tx, now, req.UserId, masterLoginBonusItemModels); err != nil {
 		return nil, errors.NewMethodError("s.receive", err)
 	}
 
@@ -126,13 +126,13 @@ func (s *loginBonusService) getUser(ctx context.Context, now time.Time, userId s
 }
 
 // receive 受け取り
-func (s *loginBonusService) receive(ctx context.Context, tx *gorm.DB, userId string, masterLoginBonusItemModels masterLoginBonusItem.MasterLoginBonusItems) error {
+func (s *loginBonusService) receive(ctx context.Context, tx *gorm.DB, now time.Time, userId string, masterLoginBonusItemModels masterLoginBonusItem.MasterLoginBonusItems) error {
 	items := item.NewItems()
 	for _, masterLoginBonusItemModel := range masterLoginBonusItemModels {
 		items = append(items, item.SetItem(masterLoginBonusItemModel.MasterItemId, masterLoginBonusItemModel.Count))
 	}
 
-	if _, err := s.itemService.Receive(ctx, tx, item.SetItemReceiveRequest(userId, items)); err != nil {
+	if _, err := s.itemService.Receive(ctx, tx, now, item.SetItemReceiveRequest(userId, items)); err != nil {
 		return errors.NewMethodError("s.itemService.Receive", err)
 	}
 

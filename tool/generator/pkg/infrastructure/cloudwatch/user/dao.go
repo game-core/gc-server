@@ -22,9 +22,10 @@ package {{.Package}}
 import (
 	"context"
 	"time"
+	"fmt"
 
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
+	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 
 	{{.Import}}
 	"github.com/game-core/gc-server/config/logger"
@@ -200,6 +201,12 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 	// CreateList
 	methods = append(methods, s.createCreateList(yamlStruct))
 
+	// createToCloudWatch
+	methods = append(methods, s.createCreateToCloudWatch())
+
+	// createToFile
+	methods = append(methods, s.createCreateToFile())
+
 	return methods
 }
 
@@ -207,32 +214,25 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
 		`func (s *%sDao) Create(ctx context.Context, now time.Time, level logger.LogLevel, m *%s.%s) {
-			logGroupName := os.Getenv("USER_LOG_GROUP_NAME")
-			logStreamName := os.Getenv("USER_LOG_STREAM_NAME")
 			timestamp := now.Unix() * 1000
 			t := %s
 			message := string(logger.SetLogMessage(now, level, t).ToJson())
 		
-			if _, err := s.WriteCloudWatchConn.PutLogEvents(
-				ctx,
-				&cloudwatchlogs.PutLogEventsInput{
-					LogEvents: []types.InputLogEvent{
-						{
-							Timestamp: &timestamp,
-							Message:   &message,
-						},
-					},
-					LogGroupName:  &logGroupName,
-					LogStreamName: &logStreamName,
-				},
-			); err != nil {
-				errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
+			if os.Getenv("APP_ENV") == "prod" {
+				if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+					errors.NewMethodErrorLog("appendToFile", err)
+				}
+			} else if os.Getenv("APP_ENV") == "dev" {
+				if err := s.creteToFile("./log/gc_server_user.log", %s, message)); err != nil {
+					errors.NewMethodErrorLog("appendToFile", err)
+				}
 			}
 		}`,
 		changes.UpperCamelToCamel(yamlStruct.Name),
 		yamlStruct.Package,
 		yamlStruct.Name,
 		s.createTableSetter(yamlStruct),
+		"fmt.Sprintf(\"%s %s\\n\", now.Format(time.RFC3339)",
 	)
 }
 
@@ -240,8 +240,6 @@ func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
 		`func (s *%sDao) CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms %s.%s) {
-			logGroupName := os.Getenv("USER_LOG_GROUP_NAME")
-			logStreamName := os.Getenv("USER_LOG_STREAM_NAME")
 			timestamp := now.Unix() * 1000
 			ts := New%s()
 			for _, m := range ms {
@@ -250,20 +248,14 @@ func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 			}
 			message := string(logger.SetLogMessage(now, level, ts).ToJson())
 		
-			if _, err := s.WriteCloudWatchConn.PutLogEvents(
-				ctx,
-				&cloudwatchlogs.PutLogEventsInput{
-					LogEvents: []types.InputLogEvent{
-						{
-							Timestamp: &timestamp,
-							Message:   &message,
-						},
-					},
-					LogGroupName:  &logGroupName,
-					LogStreamName: &logStreamName,
-				},
-			); err != nil {
-				errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
+			if os.Getenv("APP_ENV") == "prod" {
+				if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+					errors.NewMethodErrorLog("appendToFile", err)
+				}
+			} else if os.Getenv("APP_ENV") == "dev" {
+				if err := s.creteToFile("./log/gc_server_user.log", %s, message)); err != nil {
+					errors.NewMethodErrorLog("appendToFile", err)
+				}
 			}
 		}`,
 		changes.UpperCamelToCamel(yamlStruct.Name),
@@ -271,7 +263,51 @@ func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 		changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
 		s.createTableSetter(yamlStruct),
+		"fmt.Sprintf(\"%s %s\\n\", now.Format(time.RFC3339)",
 	)
+}
+
+// createCreateToCloudWatch createToCloudWatch
+func (s *Dao) createCreateToCloudWatch() string {
+	return `func (s *userItemBoxDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
+		if _, err := s.WriteCloudWatchConn.PutLogEvents(
+			ctx,
+			&cloudwatchlogs.PutLogEventsInput{
+				LogEvents: []types.InputLogEvent{
+					{
+						Timestamp: &timestamp,
+						Message:   &message,
+					},
+				},
+				LogGroupName:  &logGroupName,
+				LogStreamName: &logStreamName,
+			},
+		); err != nil {
+			errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
+		}
+	
+		return nil
+	}`
+}
+
+// createCreateToFile createToFileを作成する
+func (s *Dao) createCreateToFile() string {
+	return `func (s *userItemBoxDao) creteToFile(fileName, message string) error {
+		f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+		defer func(f *os.File) {
+			if err := f.Close(); err != nil {
+				errors.NewMethodErrorLog("f.Close", err)
+			}
+		}(f)
+		if _, err := f.WriteString(message); err != nil {
+			return err
+		}
+	
+		return nil
+	}`
 }
 
 // checkKeys キーを確認する

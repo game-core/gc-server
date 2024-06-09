@@ -18,7 +18,7 @@ EXPOSE 50051
 CMD [ "/app/main" ]
 
 # Local
-FROM golang:1.21-alpine AS local
+FROM golang:1.21-alpine AS dev
 
 ENV CGO_ENABLED=0
 ENV ROOT=/go/src/app

@@ -7,6 +7,7 @@ package item
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	gomock "github.com/golang/mock/gomock"
 	gorm "gorm.io/gorm"
@@ -36,16 +37,16 @@ func (m *MockItemService) EXPECT() *MockItemServiceMockRecorder {
 }
 
 // Receive mocks base method.
-func (m *MockItemService) Receive(ctx context.Context, tx *gorm.DB, req *ItemReceiveRequest) (*ItemReceiveResponse, error) {
+func (m *MockItemService) Receive(ctx context.Context, tx *gorm.DB, now time.Time, req *ItemReceiveRequest) (*ItemReceiveResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Receive", ctx, tx, req)
+	ret := m.ctrl.Call(m, "Receive", ctx, tx, now, req)
 	ret0, _ := ret[0].(*ItemReceiveResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Receive indicates an expected call of Receive.
-func (mr *MockItemServiceMockRecorder) Receive(ctx, tx, req interface{}) *gomock.Call {
+func (mr *MockItemServiceMockRecorder) Receive(ctx, tx, now, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Receive", reflect.TypeOf((*MockItemService)(nil).Receive), ctx, tx, req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Receive", reflect.TypeOf((*MockItemService)(nil).Receive), ctx, tx, now, req)
 }

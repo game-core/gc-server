@@ -102,6 +102,7 @@ func TestNewItemService_Receive(t *testing.T) {
 						Receive(
 							nil,
 							nil,
+							gomock.Any(),
 							&item.ItemReceiveRequest{
 								UserId: "0:WntR-PyhOJeDiE5jodeR",
 								Items: item.Items{
@@ -281,6 +282,7 @@ func TestNewItemService_Receive(t *testing.T) {
 						Receive(
 							nil,
 							nil,
+							gomock.Any(),
 							&item.ItemReceiveRequest{
 								UserId: "0:WntR-PyhOJeDiE5jodeR",
 								Items: item.Items{
@@ -1107,6 +1109,7 @@ func TestNewItemService_Receive(t *testing.T) {
 						Receive(
 							nil,
 							nil,
+							gomock.Any(),
 							&item.ItemReceiveRequest{
 								UserId: "0:WntR-PyhOJeDiE5jodeR",
 								Items: item.Items{
@@ -1254,6 +1257,7 @@ func TestNewItemService_Receive(t *testing.T) {
 						Receive(
 							nil,
 							nil,
+							gomock.Any(),
 							&item.ItemReceiveRequest{
 								UserId: "0:WntR-PyhOJeDiE5jodeR",
 								Items: item.Items{
@@ -1423,6 +1427,7 @@ func TestNewItemService_Receive(t *testing.T) {
 						Receive(
 							nil,
 							nil,
+							gomock.Any(),
 							&item.ItemReceiveRequest{
 								UserId: "0:WntR-PyhOJeDiE5jodeR",
 								Items: item.Items{

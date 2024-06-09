@@ -50,6 +50,10 @@ func InitCloudWatch() (*CloudWatchHandler, error) {
 
 // dev 開発環境
 func (s *CloudWatchHandler) dev() error {
+	s.User = &CloudWatchConn{
+		ReadCloudWatchConn:  nil,
+		WriteCloudWatchConn: nil,
+	}
 	return nil
 }
 

@@ -2,11 +2,13 @@ package item
 
 import (
 	"context"
+	"gorm.io/gorm"
 	"reflect"
 	"testing"
+	"time"
 
+	"github.com/game-core/gc-server/config/logger"
 	"github.com/golang/mock/gomock"
-	"gorm.io/gorm"
 
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/pkg/domain/model/item/masterItem"
@@ -17,8 +19,9 @@ import (
 
 func TestNewItemService_NewItemService(t *testing.T) {
 	type args struct {
-		userItemBoxMysqlRepository userItemBox.UserItemBoxMysqlRepository
-		masterItemMysqlRepository  masterItem.MasterItemMysqlRepository
+		userItemBoxMysqlRepository      userItemBox.UserItemBoxMysqlRepository
+		userItemBoxCloudWatchRepository userItemBox.UserItemBoxCloudWatchRepository
+		masterItemMysqlRepository       masterItem.MasterItemMysqlRepository
 	}
 	tests := []struct {
 		name string
@@ -41,6 +44,7 @@ func TestNewItemService_NewItemService(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewItemService(
 				tt.args.userItemBoxMysqlRepository,
+				tt.args.userItemBoxCloudWatchRepository,
 				tt.args.masterItemMysqlRepository,
 			)
 			if !reflect.DeepEqual(got, tt.want) {
@@ -52,12 +56,14 @@ func TestNewItemService_NewItemService(t *testing.T) {
 
 func TestItemService_Receive(t *testing.T) {
 	type fields struct {
-		userItemBoxMysqlRepository func(ctrl *gomock.Controller) userItemBox.UserItemBoxMysqlRepository
-		masterItemMysqlRepository  func(ctrl *gomock.Controller) masterItem.MasterItemMysqlRepository
+		userItemBoxMysqlRepository      func(ctrl *gomock.Controller) userItemBox.UserItemBoxMysqlRepository
+		userItemBoxCloudWatchRepository func(ctrl *gomock.Controller) userItemBox.UserItemBoxCloudWatchRepository
+		masterItemMysqlRepository       func(ctrl *gomock.Controller) masterItem.MasterItemMysqlRepository
 	}
 	type args struct {
 		ctx context.Context
 		tx  *gorm.DB
+		now time.Time
 		req *ItemReceiveRequest
 	}
 	tests := []struct {
@@ -165,10 +171,32 @@ func TestItemService_Receive(t *testing.T) {
 						)
 					return m
 				},
+				userItemBoxCloudWatchRepository: func(ctrl *gomock.Controller) userItemBox.UserItemBoxCloudWatchRepository {
+					m := userItemBox.NewMockUserItemBoxCloudWatchRepository(ctrl)
+					m.EXPECT().CreateList(
+						nil,
+						gomock.Any(),
+						logger.LogLevel_Success,
+						userItemBox.UserItemBoxes{
+							{
+								UserId:       "0:testUserId",
+								MasterItemId: 1,
+								Count:        11,
+							},
+							{
+								UserId:       "0:testUserId",
+								MasterItemId: 4,
+								Count:        10,
+							},
+						},
+					)
+					return m
+				},
 			},
 			args: args{
 				ctx: nil,
 				tx:  nil,
+				now: time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
 				req: &ItemReceiveRequest{
 					UserId: "0:testUserId",
 					Items: Items{
@@ -234,10 +262,15 @@ func TestItemService_Receive(t *testing.T) {
 					m := userItemBox.NewMockUserItemBoxMysqlRepository(ctrl)
 					return m
 				},
+				userItemBoxCloudWatchRepository: func(ctrl *gomock.Controller) userItemBox.UserItemBoxCloudWatchRepository {
+					m := userItemBox.NewMockUserItemBoxCloudWatchRepository(ctrl)
+					return m
+				},
 			},
 			args: args{
 				ctx: nil,
 				tx:  nil,
+				now: time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
 				req: &ItemReceiveRequest{
 					UserId: "0:testUserId",
 					Items: Items{
@@ -305,10 +338,15 @@ func TestItemService_Receive(t *testing.T) {
 						)
 					return m
 				},
+				userItemBoxCloudWatchRepository: func(ctrl *gomock.Controller) userItemBox.UserItemBoxCloudWatchRepository {
+					m := userItemBox.NewMockUserItemBoxCloudWatchRepository(ctrl)
+					return m
+				},
 			},
 			args: args{
 				ctx: nil,
 				tx:  nil,
+				now: time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
 				req: &ItemReceiveRequest{
 					UserId: "0:testUserId",
 					Items: Items{
@@ -413,10 +451,15 @@ func TestItemService_Receive(t *testing.T) {
 						)
 					return m
 				},
+				userItemBoxCloudWatchRepository: func(ctrl *gomock.Controller) userItemBox.UserItemBoxCloudWatchRepository {
+					m := userItemBox.NewMockUserItemBoxCloudWatchRepository(ctrl)
+					return m
+				},
 			},
 			args: args{
 				ctx: nil,
 				tx:  nil,
+				now: time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
 				req: &ItemReceiveRequest{
 					UserId: "0:testUserId",
 					Items: Items{
@@ -440,11 +483,12 @@ func TestItemService_Receive(t *testing.T) {
 			ctrl := gomock.NewController(t)
 
 			s := &itemService{
-				userItemBoxMysqlRepository: tt.fields.userItemBoxMysqlRepository(ctrl),
-				masterItemMysqlRepository:  tt.fields.masterItemMysqlRepository(ctrl),
+				userItemBoxMysqlRepository:      tt.fields.userItemBoxMysqlRepository(ctrl),
+				userItemBoxCloudWatchRepository: tt.fields.userItemBoxCloudWatchRepository(ctrl),
+				masterItemMysqlRepository:       tt.fields.masterItemMysqlRepository(ctrl),
 			}
 
-			got, err := s.Receive(tt.args.ctx, tt.args.tx, tt.args.req)
+			got, err := s.Receive(tt.args.ctx, tt.args.tx, tt.args.now, tt.args.req)
 			if !reflect.DeepEqual(err, tt.wantErr) {
 				t.Errorf("Receive() error = %v, wantErr %v", err, tt.wantErr)
 				return

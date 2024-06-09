@@ -3,35 +3,40 @@ package item
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 
+	"github.com/game-core/gc-server/config/logger"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/pkg/domain/model/item/masterItem"
 	"github.com/game-core/gc-server/pkg/domain/model/item/userItemBox"
 )
 
 type ItemService interface {
-	Receive(ctx context.Context, tx *gorm.DB, req *ItemReceiveRequest) (*ItemReceiveResponse, error)
+	Receive(ctx context.Context, tx *gorm.DB, now time.Time, req *ItemReceiveRequest) (*ItemReceiveResponse, error)
 }
 
 type itemService struct {
-	userItemBoxMysqlRepository userItemBox.UserItemBoxMysqlRepository
-	masterItemMysqlRepository  masterItem.MasterItemMysqlRepository
+	userItemBoxMysqlRepository      userItemBox.UserItemBoxMysqlRepository
+	userItemBoxCloudWatchRepository userItemBox.UserItemBoxCloudWatchRepository
+	masterItemMysqlRepository       masterItem.MasterItemMysqlRepository
 }
 
 func NewItemService(
 	userItemBoxMysqlRepository userItemBox.UserItemBoxMysqlRepository,
+	userItemBoxCloudWatchRepository userItemBox.UserItemBoxCloudWatchRepository,
 	masterItemMysqlRepository masterItem.MasterItemMysqlRepository,
 ) ItemService {
 	return &itemService{
-		userItemBoxMysqlRepository: userItemBoxMysqlRepository,
-		masterItemMysqlRepository:  masterItemMysqlRepository,
+		userItemBoxMysqlRepository:      userItemBoxMysqlRepository,
+		userItemBoxCloudWatchRepository: userItemBoxCloudWatchRepository,
+		masterItemMysqlRepository:       masterItemMysqlRepository,
 	}
 }
 
 // Receive 受け取る
-func (s *itemService) Receive(ctx context.Context, tx *gorm.DB, req *ItemReceiveRequest) (*ItemReceiveResponse, error) {
+func (s *itemService) Receive(ctx context.Context, tx *gorm.DB, now time.Time, req *ItemReceiveRequest) (*ItemReceiveResponse, error) {
 	if err := s.checkItems(ctx, req.Items); err != nil {
 		return nil, errors.NewMethodError("s.checkItems", err)
 	}
@@ -46,6 +51,7 @@ func (s *itemService) Receive(ctx context.Context, tx *gorm.DB, req *ItemReceive
 		return nil, errors.NewMethodError("s.userItemBoxMysqlRepository.UpdateList", err)
 	}
 
+	s.userItemBoxCloudWatchRepository.CreateList(ctx, now, logger.LogLevel_Success, updateUserItemBoxModels)
 	return SetItemReceiveResponse(updateUserItemBoxModels), nil
 }
 
