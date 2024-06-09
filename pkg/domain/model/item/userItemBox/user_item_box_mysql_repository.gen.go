@@ -5,12 +5,18 @@ package userItemBox
 
 import (
 	"context"
-	"time"
 
-	"github.com/game-core/gc-server/config/logger"
+	"gorm.io/gorm"
 )
 
-type UserItemBoxCloudWatchRepository interface {
-	Create(ctx context.Context, now time.Time, level logger.LogLevel, m *UserItemBox)
-	CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms UserItemBoxes)
+type UserItemBoxMysqlRepository interface {
+	Find(ctx context.Context, userId string, masterItemId int64) (*UserItemBox, error)
+	FindOrNil(ctx context.Context, userId string, masterItemId int64) (*UserItemBox, error)
+	FindList(ctx context.Context, userId string) (UserItemBoxes, error)
+	Create(ctx context.Context, tx *gorm.DB, m *UserItemBox) (*UserItemBox, error)
+	CreateList(ctx context.Context, tx *gorm.DB, ms UserItemBoxes) (UserItemBoxes, error)
+	Update(ctx context.Context, tx *gorm.DB, m *UserItemBox) (*UserItemBox, error)
+	UpdateList(ctx context.Context, tx *gorm.DB, ms UserItemBoxes) (UserItemBoxes, error)
+	Delete(ctx context.Context, tx *gorm.DB, m *UserItemBox) error
+	DeleteList(ctx context.Context, tx *gorm.DB, ms UserItemBoxes) error
 }

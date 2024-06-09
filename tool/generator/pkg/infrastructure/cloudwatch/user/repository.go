@@ -85,7 +85,7 @@ func (s *CloudWatchRepository) createOutputFile(yamlStruct *YamlStruct, outputFi
 
 // getOutputFileName ファイル名を取得する
 func (s *CloudWatchRepository) getOutputFileName(dir, name string) string {
-	return filepath.Join(dir, fmt.Sprintf("%s_mysql_repository.gen.go", changes.UpperCamelToSnake(name)))
+	return filepath.Join(dir, fmt.Sprintf("%s_cloudwatch_repository.gen.go", changes.UpperCamelToSnake(name)))
 }
 
 // createTemplate テンプレートを作成する
@@ -118,7 +118,7 @@ func (s *CloudWatchRepository) createTemplate(yamlStruct *YamlStruct, outputFile
 // createMock mockを作成する
 func createMock(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		"//go:generate mockgen -source=./%s_mysql_repository.gen.go -destination=./%s_mysql_repository_mock.gen.go -package=%s",
+		"//go:generate mockgen -source=./%s_cloudwatch_repository.gen.go -destination=./%s_cloudwatch_repository_mock.gen.go -package=%s",
 		changes.UpperCamelToSnake(yamlStruct.Name),
 		changes.UpperCamelToSnake(yamlStruct.Name),
 		changes.UpperCamelToCamel(yamlStruct.Package),
