@@ -17,8 +17,8 @@ type CloudWatchHandler struct {
 }
 
 type CloudWatchConn struct {
-	ReadMysqlConn  *cloudwatchlogs.Client
-	WriteMysqlConn *cloudwatchlogs.Client
+	ReadCloudWatchConn  *cloudwatchlogs.Client
+	WriteCloudWatchConn *cloudwatchlogs.Client
 }
 
 // NewCloudWatch インスタンスを作成する
@@ -79,8 +79,8 @@ func (s *CloudWatchHandler) userDB() error {
 	}
 
 	s.User = &CloudWatchConn{
-		ReadMysqlConn:  cloudwatchlogs.NewFromConfig(readConn),
-		WriteMysqlConn: cloudwatchlogs.NewFromConfig(writeConn),
+		ReadCloudWatchConn:  cloudwatchlogs.NewFromConfig(readConn),
+		WriteCloudWatchConn: cloudwatchlogs.NewFromConfig(writeConn),
 	}
 
 	if err := s.createUserLog(logGroupName, logStreamName); err != nil {
@@ -110,10 +110,10 @@ func (s *CloudWatchHandler) createUserLogGroup(logGroupName string) error {
 		return errors.NewMethodError("s.checkUserLogGroupExist", err)
 	}
 	if !logGroupExists {
-		if _, err := s.User.WriteMysqlConn.CreateLogGroup(context.TODO(), &cloudwatchlogs.CreateLogGroupInput{
+		if _, err := s.User.WriteCloudWatchConn.CreateLogGroup(context.TODO(), &cloudwatchlogs.CreateLogGroupInput{
 			LogGroupName: &logGroupName,
 		}); err != nil {
-			return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogGroup", err)
+			return errors.NewMethodError("s.User.WriteCloudWatchConn.CreateLogGroup", err)
 		}
 	}
 
@@ -127,11 +127,11 @@ func (s *CloudWatchHandler) createUserLogStream(logGroupName, logStreamName stri
 		return errors.NewMethodError("s.checkUserLogStreamExist", err)
 	}
 	if !logStreamExists {
-		if _, err := s.User.WriteMysqlConn.CreateLogStream(context.TODO(), &cloudwatchlogs.CreateLogStreamInput{
+		if _, err := s.User.WriteCloudWatchConn.CreateLogStream(context.TODO(), &cloudwatchlogs.CreateLogStreamInput{
 			LogGroupName:  &logGroupName,
 			LogStreamName: &logStreamName,
 		}); err != nil {
-			return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogStream", err)
+			return errors.NewMethodError("s.User.WriteCloudWatchConn.CreateLogStream", err)
 		}
 	}
 
@@ -140,7 +140,7 @@ func (s *CloudWatchHandler) createUserLogStream(logGroupName, logStreamName stri
 
 // checkUserLogGroupExist ロググループが存在するか確認する
 func (s *CloudWatchHandler) checkUserLogGroupExist(logGroupName string) (bool, error) {
-	res, err := s.User.ReadMysqlConn.DescribeLogGroups(context.TODO(), &cloudwatchlogs.DescribeLogGroupsInput{
+	res, err := s.User.ReadCloudWatchConn.DescribeLogGroups(context.TODO(), &cloudwatchlogs.DescribeLogGroupsInput{
 		LogGroupNamePrefix: &logGroupName,
 	})
 	if err != nil {
@@ -158,7 +158,7 @@ func (s *CloudWatchHandler) checkUserLogGroupExist(logGroupName string) (bool, e
 
 // checkUserLogStreamExist ログストリームが存在するか確認する
 func (s *CloudWatchHandler) checkUserLogStreamExist(logGroupName, logStreamName string) (bool, error) {
-	res, err := s.User.ReadMysqlConn.DescribeLogStreams(context.TODO(), &cloudwatchlogs.DescribeLogStreamsInput{
+	res, err := s.User.ReadCloudWatchConn.DescribeLogStreams(context.TODO(), &cloudwatchlogs.DescribeLogStreamsInput{
 		LogGroupName:        &logGroupName,
 		LogStreamNamePrefix: &logStreamName,
 	})

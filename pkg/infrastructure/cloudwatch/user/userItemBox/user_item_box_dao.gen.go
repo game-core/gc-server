@@ -9,20 +9,19 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
 	"github.com/game-core/gc-server/config/logger"
-
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/pkg/domain/model/item/userItemBox"
 )
 
 type userItemBoxDao struct {
-	ReadMysqlConn  *cloudwatchlogs.Client
-	WriteMysqlConn *cloudwatchlogs.Client
+	ReadCloudWatchConn  *cloudwatchlogs.Client
+	WriteCloudWatchConn *cloudwatchlogs.Client
 }
 
 func NewUserItemBoxDao(conn *logger.CloudWatchHandler) userItemBox.UserItemBoxCloudWatchRepository {
 	return &userItemBoxDao{
-		ReadMysqlConn:  conn.User.ReadMysqlConn,
-		WriteMysqlConn: conn.User.WriteMysqlConn,
+		ReadCloudWatchConn:  conn.User.ReadCloudWatchConn,
+		WriteCloudWatchConn: conn.User.WriteCloudWatchConn,
 	}
 }
 
@@ -37,7 +36,7 @@ func (s *userItemBoxDao) Create(ctx context.Context, now time.Time, level logger
 	}
 	message := string(logger.SetLogMessage(now, level, t).ToJson())
 
-	if _, err := s.WriteMysqlConn.PutLogEvents(
+	if _, err := s.WriteCloudWatchConn.PutLogEvents(
 		ctx,
 		&cloudwatchlogs.PutLogEventsInput{
 			LogEvents: []types.InputLogEvent{
@@ -50,7 +49,7 @@ func (s *userItemBoxDao) Create(ctx context.Context, now time.Time, level logger
 			LogStreamName: &logStreamName,
 		},
 	); err != nil {
-		errors.NewMethodErrorLog("s.WriteMysqlConn.PutLogEvents", err)
+		errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
 	}
 }
 
@@ -69,7 +68,7 @@ func (s *userItemBoxDao) CreateList(ctx context.Context, now time.Time, level lo
 	}
 	message := string(logger.SetLogMessage(now, level, ts).ToJson())
 
-	if _, err := s.WriteMysqlConn.PutLogEvents(
+	if _, err := s.WriteCloudWatchConn.PutLogEvents(
 		ctx,
 		&cloudwatchlogs.PutLogEventsInput{
 			LogEvents: []types.InputLogEvent{
@@ -82,6 +81,6 @@ func (s *userItemBoxDao) CreateList(ctx context.Context, now time.Time, level lo
 			LogStreamName: &logStreamName,
 		},
 	); err != nil {
-		errors.NewMethodErrorLog("s.WriteMysqlConn.PutLogEvents", err)
+		errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
 	}
 }

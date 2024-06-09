@@ -43,6 +43,7 @@ gen_infra:
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/mysql/user/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/redis/common/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/redis/user/main.go
+	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/cloudwatch/user/main.go
 	$(DOCKER_COMPOSE) exec gen goimports -w .
 
 # sqlを生成
