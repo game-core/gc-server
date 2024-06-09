@@ -16,7 +16,7 @@ func (s *MasterShards) GetShardKey(ctx context.Context, masterShardMysqlReposito
 			return "", errors.NewMethodError("s.masterShardMysqlRepository.FindList", err)
 		}
 		if len(masterShards) <= 0 {
-			return "", errors.NewError("common_shard does not exist")
+			return "", errors.NewError("master_shard does not exist")
 		}
 
 		MasterShardInstances = masterShards
