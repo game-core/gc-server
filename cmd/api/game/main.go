@@ -8,6 +8,7 @@ import (
 	"github.com/game-core/gc-server/api/game/presentation/router"
 	apiConfig "github.com/game-core/gc-server/config/api"
 	"github.com/game-core/gc-server/config/database"
+	"github.com/game-core/gc-server/config/logger"
 )
 
 func main() {
@@ -17,6 +18,10 @@ func main() {
 
 	if _, err := database.InitRedis(); err != nil {
 		log.Fatalf("failed to database.InitRedis: %v", err)
+	}
+
+	if _, err := logger.InitCloudWatch(); err != nil {
+		log.Fatalf("failed to logger.InitCloudWatch: %v", err)
 	}
 
 	apiConfig := apiConfig.GetAppConfig()
