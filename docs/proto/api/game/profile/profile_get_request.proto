@@ -1,0 +1,8 @@
+// プロフィール取得リクエスト
+syntax = "proto3";
+
+package api.game;
+
+message ProfileGetRequest {
+  string user_id = 1;
+}

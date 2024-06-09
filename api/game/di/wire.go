@@ -11,16 +11,19 @@ import (
 	accountHandler "github.com/game-core/gc-server/api/game/presentation/handler/account"
 	healthHandler "github.com/game-core/gc-server/api/game/presentation/handler/health"
 	loginBonusHandler "github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
+	profileHandler "github.com/game-core/gc-server/api/game/presentation/handler/profile"
 	authInterceptor "github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	accountUsecase "github.com/game-core/gc-server/api/game/usecase/account"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
 	loginBonusUsecase "github.com/game-core/gc-server/api/game/usecase/loginBonus"
+	profileUsecase "github.com/game-core/gc-server/api/game/usecase/profile"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
 	eventService "github.com/game-core/gc-server/pkg/domain/model/event"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
 	itemService "github.com/game-core/gc-server/pkg/domain/model/item"
 	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
+	profileService "github.com/game-core/gc-server/pkg/domain/model/profile"
 	shardService "github.com/game-core/gc-server/pkg/domain/model/shard"
 	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
@@ -41,6 +44,7 @@ import (
 	userActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
 	userItemBoxMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
 	userLoginBonusMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
+	userProfileMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userProfile"
 	userTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userTransaction"
 	userAccountRedisDao "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccount"
 	userAccountTokenRedisDao "github.com/game-core/gc-server/pkg/infrastructure/redis/user/userAccountToken"
@@ -79,6 +83,14 @@ func InitializeLoginBonusHandler() loginBonusHandler.LoginBonusHandler {
 	return nil
 }
 
+func InitializeProfileHandler() profileHandler.ProfileHandler {
+	wire.Build(
+		profileHandler.NewProfileHandler,
+		InitializeProfileUsecase,
+	)
+	return nil
+}
+
 func InitializeAccountUsecase() accountUsecase.AccountUsecase {
 	wire.Build(
 		accountUsecase.NewAccountUsecase,
@@ -100,6 +112,15 @@ func InitializeLoginBonusUsecase() loginBonusUsecase.LoginBonusUsecase {
 	wire.Build(
 		loginBonusUsecase.NewLoginBonusUsecase,
 		InitializeLoginBonusService,
+		InitializeTransactionService,
+	)
+	return nil
+}
+
+func InitializeProfileUsecase() profileUsecase.ProfileUsecase {
+	wire.Build(
+		profileUsecase.NewProfileUsecase,
+		InitializeProfileService,
 		InitializeTransactionService,
 	)
 	return nil
@@ -170,6 +191,15 @@ func InitializeLoginBonusService() loginBonusService.LoginBonusService {
 		masterLoginBonusMysqlDao.NewMasterLoginBonusDao,
 		masterLoginBonusItemMysqlDao.NewMasterLoginBonusItemDao,
 		masterLoginBonusScheduleMysqlDao.NewMasterLoginBonusScheduleDao,
+	)
+	return nil
+}
+
+func InitializeProfileService() profileService.ProfileService {
+	wire.Build(
+		database.NewMysql,
+		profileService.NewProfileService,
+		userProfileMysqlDao.NewUserProfileDao,
 	)
 	return nil
 }

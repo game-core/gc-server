@@ -1,0 +1,10 @@
+// プロフィール作成レスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "profile/userProfile/user_profile.proto";
+
+message ProfileCreateResponse {
+  optional UserProfile user_profile = 1;
+}
