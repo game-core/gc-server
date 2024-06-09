@@ -31,7 +31,7 @@ func InitCloudWatch() (*CloudWatchHandler, error) {
 	handler := &CloudWatchHandler{}
 
 	switch os.Getenv("APP_ENV") {
-	case "main":
+	case "prod":
 		if err := handler.main(); err != nil {
 			return nil, errors.NewMethodError("handler.main", err)
 		}
@@ -65,6 +65,8 @@ func (s *CloudWatchHandler) main() error {
 // userDB コネクションを作成する
 func (s *CloudWatchHandler) userDB() error {
 	region := os.Getenv("AWS_REGION")
+	logGroupName := os.Getenv("USER_LOG_GROUP_NAME")
+	logStreamName := os.Getenv("USER_LOG_STREAM_NAME")
 
 	readConn, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
 	if err != nil {
@@ -81,7 +83,7 @@ func (s *CloudWatchHandler) userDB() error {
 		WriteMysqlConn: cloudwatchlogs.NewFromConfig(writeConn),
 	}
 
-	if err := s.createUserLog("", ""); err != nil {
+	if err := s.createUserLog(logGroupName, logStreamName); err != nil {
 		return errors.NewMethodError("s.createUserLog", err)
 	}
 
@@ -90,18 +92,85 @@ func (s *CloudWatchHandler) userDB() error {
 
 // createUserLog ロググループとログストリームを作成する
 func (s *CloudWatchHandler) createUserLog(logGroupName, logStreamName string) error {
-	if _, err := s.User.WriteMysqlConn.CreateLogGroup(context.TODO(), &cloudwatchlogs.CreateLogGroupInput{
-		LogGroupName: &logGroupName,
-	}); err != nil {
-		return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogGroup", err)
+	if err := s.createUserLogGroup(logGroupName); err != nil {
+		return errors.NewMethodError("s.createUserLogGroup", err)
 	}
 
-	if _, err := s.User.WriteMysqlConn.CreateLogStream(context.TODO(), &cloudwatchlogs.CreateLogStreamInput{
-		LogGroupName:  &logGroupName,
-		LogStreamName: &logStreamName,
-	}); err != nil {
-		return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogStream", err)
+	if err := s.createUserLogStream(logGroupName, logStreamName); err != nil {
+		return errors.NewMethodError("s.createUserLogStream", err)
 	}
 
 	return nil
+}
+
+// createUserLogGroup ロググループを作成
+func (s *CloudWatchHandler) createUserLogGroup(logGroupName string) error {
+	logGroupExists, err := s.checkUserLogGroupExist(logGroupName)
+	if err != nil {
+		return errors.NewMethodError("s.checkUserLogGroupExist", err)
+	}
+	if !logGroupExists {
+		if _, err := s.User.WriteMysqlConn.CreateLogGroup(context.TODO(), &cloudwatchlogs.CreateLogGroupInput{
+			LogGroupName: &logGroupName,
+		}); err != nil {
+			return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogGroup", err)
+		}
+	}
+
+	return nil
+}
+
+// createUserLogStream ログストリームを作成
+func (s *CloudWatchHandler) createUserLogStream(logGroupName, logStreamName string) error {
+	logStreamExists, err := s.checkUserLogStreamExist(logGroupName, logStreamName)
+	if err != nil {
+		return errors.NewMethodError("s.checkUserLogStreamExist", err)
+	}
+	if !logStreamExists {
+		if _, err := s.User.WriteMysqlConn.CreateLogStream(context.TODO(), &cloudwatchlogs.CreateLogStreamInput{
+			LogGroupName:  &logGroupName,
+			LogStreamName: &logStreamName,
+		}); err != nil {
+			return errors.NewMethodError("s.User.WriteMysqlConn.CreateLogStream", err)
+		}
+	}
+
+	return nil
+}
+
+// checkUserLogGroupExist ロググループが存在するか確認する
+func (s *CloudWatchHandler) checkUserLogGroupExist(logGroupName string) (bool, error) {
+	res, err := s.User.ReadMysqlConn.DescribeLogGroups(context.TODO(), &cloudwatchlogs.DescribeLogGroupsInput{
+		LogGroupNamePrefix: &logGroupName,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	for _, logGroup := range res.LogGroups {
+		if *logGroup.LogGroupName == logGroupName {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+// checkUserLogStreamExist ログストリームが存在するか確認する
+func (s *CloudWatchHandler) checkUserLogStreamExist(logGroupName, logStreamName string) (bool, error) {
+	res, err := s.User.ReadMysqlConn.DescribeLogStreams(context.TODO(), &cloudwatchlogs.DescribeLogStreamsInput{
+		LogGroupName:        &logGroupName,
+		LogStreamNamePrefix: &logStreamName,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	for _, logStream := range res.LogStreams {
+		if *logStream.LogStreamName == logStreamName {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
