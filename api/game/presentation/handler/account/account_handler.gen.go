@@ -3,7 +3,7 @@ package account
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/account"
+	"github.com/game-core/gc-server/api/game/presentation/proto/account"
 	accountUsecase "github.com/game-core/gc-server/api/game/usecase/account"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/tokens"

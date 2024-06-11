@@ -3,7 +3,7 @@ package health
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
 	"github.com/game-core/gc-server/internal/errors"
 )

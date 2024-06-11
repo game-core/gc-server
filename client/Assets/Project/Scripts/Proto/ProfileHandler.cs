@@ -35,10 +35,10 @@ namespace Api.Game {
             "LmdhbWUuUHJvZmlsZUNyZWF0ZVJlcXVlc3QaHy5hcGkuZ2FtZS5Qcm9maWxl",
             "Q3JlYXRlUmVzcG9uc2USSQoGVXBkYXRlEh4uYXBpLmdhbWUuUHJvZmlsZVVw",
             "ZGF0ZVJlcXVlc3QaHy5hcGkuZ2FtZS5Qcm9maWxlVXBkYXRlUmVzcG9uc2VC",
-            "qQEKDGNvbS5hcGkuZ2FtZUITUHJvZmlsZUhhbmRsZXJQcm90b1ABWkNnaXRo",
+            "qAEKDGNvbS5hcGkuZ2FtZUITUHJvZmlsZUhhbmRsZXJQcm90b1ABWkJnaXRo",
             "dWIuY29tL2dhbWUtY29yZS9nYy1zZXJ2ZXIvYXBpL2dhbWUvcHJlc2VudGF0",
-            "aW9uL3NlcnZlci9wcm9maWxlogIDQUdYqgIIQXBpLkdhbWXKAghBcGlcR2Ft",
-            "ZeICFEFwaVxHYW1lXEdQQk1ldGFkYXRh6gIJQXBpOjpHYW1lYgZwcm90bzM="));
+            "aW9uL3Byb3RvL3Byb2ZpbGWiAgNBR1iqAghBcGkuR2FtZcoCCEFwaVxHYW1l",
+            "4gIUQXBpXEdhbWVcR1BCTWV0YWRhdGHqAglBcGk6OkdhbWViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Api.Game.ProfileGetRequestReflection.Descriptor, global::Api.Game.ProfileGetResponseReflection.Descriptor, global::Api.Game.ProfileCreateRequestReflection.Descriptor, global::Api.Game.ProfileCreateResponseReflection.Descriptor, global::Api.Game.ProfileUpdateRequestReflection.Descriptor, global::Api.Game.ProfileUpdateResponseReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, null));

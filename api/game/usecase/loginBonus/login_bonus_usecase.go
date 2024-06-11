@@ -3,8 +3,8 @@ package loginBonus
 import (
 	"context"
 
-	loginBonusServer "github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
-	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus/userLoginBonus"
+	loginBonusProto "github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus/userLoginBonus"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/times"
 	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
@@ -12,7 +12,7 @@ import (
 )
 
 type LoginBonusUsecase interface {
-	Receive(ctx context.Context, req *loginBonusServer.LoginBonusReceiveRequest) (*loginBonusServer.LoginBonusReceiveResponse, error)
+	Receive(ctx context.Context, req *loginBonusProto.LoginBonusReceiveRequest) (*loginBonusProto.LoginBonusReceiveResponse, error)
 }
 
 type loginBonusUsecase struct {
@@ -31,7 +31,7 @@ func NewLoginBonusUsecase(
 }
 
 // Receive ログインボーナス受け取り
-func (s *loginBonusUsecase) Receive(ctx context.Context, req *loginBonusServer.LoginBonusReceiveRequest) (*loginBonusServer.LoginBonusReceiveResponse, error) {
+func (s *loginBonusUsecase) Receive(ctx context.Context, req *loginBonusProto.LoginBonusReceiveRequest) (*loginBonusProto.LoginBonusReceiveResponse, error) {
 	// transaction
 	tx, err := s.transactionService.UserMysqlBegin(ctx, req.UserId)
 	if err != nil {
@@ -46,7 +46,7 @@ func (s *loginBonusUsecase) Receive(ctx context.Context, req *loginBonusServer.L
 		return nil, errors.NewMethodError("s.loginBonusService.Receive", err)
 	}
 
-	return loginBonusServer.SetLoginBonusReceiveResponse(
+	return loginBonusProto.SetLoginBonusReceiveResponse(
 		userLoginBonus.SetUserLoginBonus(
 			res.UserLoginBonus.UserId,
 			res.UserLoginBonus.MasterLoginBonusId,

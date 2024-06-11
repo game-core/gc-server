@@ -3,7 +3,7 @@ package loginBonus
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
 	loginBonusUsecase "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	"github.com/game-core/gc-server/internal/errors"
 )

@@ -25,7 +25,7 @@ func main() {
 	// Server
 	s := grpc.NewServer()
 
-	log.Printf("gRPC server started")
+	log.Printf("gRPC proto started")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

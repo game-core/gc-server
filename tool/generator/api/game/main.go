@@ -55,7 +55,7 @@ func main() {
 			}
 
 			// setter
-			if err := NewSetter().generate(path, "../../../../api/game/presentation/server"); err != nil {
+			if err := NewSetter().generate(path, "../../../../api/game/presentation/proto"); err != nil {
 				log.Printf("failed to NewSetter().generate: %s", err)
 			}
 

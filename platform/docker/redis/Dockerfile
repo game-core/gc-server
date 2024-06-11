@@ -88,7 +88,7 @@ RUN set -eux; \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' /usr/src/redis/src/config.c; \
 	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' /usr/src/redis/src/config.c; \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' /usr/src/redis/src/config.c; \
-# for future reference, we modify this directly in the source instead of just supplying a default configuration flag because apparently "if you specify any argument to redis-server, [it assumes] you are going to specify everything"
+# for future reference, we modify this directly in the source instead of just supplying a default configuration flag because apparently "if you specify any argument to redis-proto, [it assumes] you are going to specify everything"
 # see also https://github.com/docker-library/redis/issues/4#issuecomment-50780840
 # (more exactly, this makes sure the default behavior of "save on SIGTERM" stays functional by default)
 	\
@@ -111,15 +111,15 @@ RUN set -eux; \
 	make -C /usr/src/redis -j "$(nproc)" all; \
 	make -C /usr/src/redis install; \
 	\
-# TODO https://github.com/redis/redis/pull/3494 (deduplicate "redis-server" copies)
-	serverMd5="$(md5sum /usr/local/bin/redis-server | cut -d' ' -f1)"; export serverMd5; \
+# TODO https://github.com/redis/redis/pull/3494 (deduplicate "redis-proto" copies)
+	serverMd5="$(md5sum /usr/local/bin/redis-proto | cut -d' ' -f1)"; export serverMd5; \
 	find /usr/local/bin/redis* -maxdepth 0 \
-		-type f -not -name redis-server \
+		-type f -not -name redis-proto \
 		-exec sh -eux -c ' \
 			md5="$(md5sum "$1" | cut -d" " -f1)"; \
 			test "$md5" = "$serverMd5"; \
 		' -- '{}' ';' \
-		-exec ln -svfT 'redis-server' '{}' ';' \
+		-exec ln -svfT 'redis-proto' '{}' ';' \
 	; \
 	\
 	rm -r /usr/src/redis; \
@@ -137,9 +137,9 @@ RUN set -eux; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 	redis-cli --version; \
-	redis-server --version; \
+	redis-proto --version; \
 	\
-	echo '{"spdxVersion":"SPDX-2.3","SPDXID":"SPDXRef-DOCUMENT","name":"redis-server-sbom","packages":[{"name":"redis-server","versionInfo":"7.2.4","SPDXID":"SPDXRef-Package--redis-server","externalRefs":[{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:generic/redis-server@7.2.4?os_name=debian&os_version=bookworm"}],"licenseDeclared":"BSD-3-Clause"}]}' > /usr/local/redis.spdx.json
+	echo '{"spdxVersion":"SPDX-2.3","SPDXID":"SPDXRef-DOCUMENT","name":"redis-proto-sbom","packages":[{"name":"redis-proto","versionInfo":"7.2.4","SPDXID":"SPDXRef-Package--redis-proto","externalRefs":[{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:generic/redis-proto@7.2.4?os_name=debian&os_version=bookworm"}],"licenseDeclared":"BSD-3-Clause"}]}' > /usr/local/redis.spdx.json
 
 RUN mkdir /data && chown redis:redis /data
 VOLUME /data

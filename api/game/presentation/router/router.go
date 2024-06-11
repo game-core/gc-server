@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/game-core/gc-server/api/game/di"
-	"github.com/game-core/gc-server/api/game/presentation/server/account"
-	"github.com/game-core/gc-server/api/game/presentation/server/health"
-	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/proto/account"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
 )
 
 func Router(lis net.Listener) {
@@ -28,7 +28,7 @@ func Router(lis net.Listener) {
 	health.RegisterHealthServer(s, healthHandler)
 	loginBonus.RegisterLoginBonusServer(s, loginBonusHandler)
 
-	log.Printf("gRPC server started")
+	log.Printf("gRPC proto started")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

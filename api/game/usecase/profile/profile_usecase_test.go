@@ -7,8 +7,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	profileServer "github.com/game-core/gc-server/api/game/presentation/server/profile"
-	"github.com/game-core/gc-server/api/game/presentation/server/profile/userProfile"
+	profileProto "github.com/game-core/gc-server/api/game/presentation/proto/profile"
+	"github.com/game-core/gc-server/api/game/presentation/proto/profile/userProfile"
 	"github.com/game-core/gc-server/internal/errors"
 	profileService "github.com/game-core/gc-server/pkg/domain/model/profile"
 	userProfileModel "github.com/game-core/gc-server/pkg/domain/model/profile/userProfile"
@@ -54,13 +54,13 @@ func TestProfileUsecase_Get(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *profileServer.ProfileGetRequest
+		req *profileProto.ProfileGetRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *profileServer.ProfileGetResponse
+		want    *profileProto.ProfileGetResponse
 		wantErr error
 	}{
 		{
@@ -94,11 +94,11 @@ func TestProfileUsecase_Get(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileGetRequest{
+				req: &profileProto.ProfileGetRequest{
 					UserId: "0:test",
 				},
 			},
-			want: &profileServer.ProfileGetResponse{
+			want: &profileProto.ProfileGetResponse{
 				UserProfile: &userProfile.UserProfile{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
@@ -132,7 +132,7 @@ func TestProfileUsecase_Get(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileGetRequest{
+				req: &profileProto.ProfileGetRequest{
 					UserId: "0:test",
 				},
 			},
@@ -168,13 +168,13 @@ func TestProfileUsecase_Create(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *profileServer.ProfileCreateRequest
+		req *profileProto.ProfileCreateRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *profileServer.ProfileCreateResponse
+		want    *profileProto.ProfileCreateResponse
 		wantErr error
 	}{
 		{
@@ -226,13 +226,13 @@ func TestProfileUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileCreateRequest{
+				req: &profileProto.ProfileCreateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",
 				},
 			},
-			want: &profileServer.ProfileCreateResponse{
+			want: &profileProto.ProfileCreateResponse{
 				UserProfile: &userProfile.UserProfile{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
@@ -264,7 +264,7 @@ func TestProfileUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileCreateRequest{
+				req: &profileProto.ProfileCreateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",
@@ -316,7 +316,7 @@ func TestProfileUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileCreateRequest{
+				req: &profileProto.ProfileCreateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",
@@ -354,13 +354,13 @@ func TestProfileUsecase_Update(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *profileServer.ProfileUpdateRequest
+		req *profileProto.ProfileUpdateRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *profileServer.ProfileUpdateResponse
+		want    *profileProto.ProfileUpdateResponse
 		wantErr error
 	}{
 		{
@@ -412,13 +412,13 @@ func TestProfileUsecase_Update(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileUpdateRequest{
+				req: &profileProto.ProfileUpdateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",
 				},
 			},
-			want: &profileServer.ProfileUpdateResponse{
+			want: &profileProto.ProfileUpdateResponse{
 				UserProfile: &userProfile.UserProfile{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
@@ -450,7 +450,7 @@ func TestProfileUsecase_Update(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileUpdateRequest{
+				req: &profileProto.ProfileUpdateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",
@@ -502,7 +502,7 @@ func TestProfileUsecase_Update(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &profileServer.ProfileUpdateRequest{
+				req: &profileProto.ProfileUpdateRequest{
 					UserId:  "0:test",
 					Name:    "test_user_profile",
 					Content: "test_user_profile_contest",

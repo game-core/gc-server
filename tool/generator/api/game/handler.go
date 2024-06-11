@@ -24,7 +24,7 @@ const handlerTemplate = `package {{.Package}}
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/{{.Package}}"
+	"github.com/game-core/gc-server/api/game/presentation/proto/{{.Package}}"
 	{{.Package}}Usecase "github.com/game-core/gc-server/api/game/usecase/{{.Package}}"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/tokens"

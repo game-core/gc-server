@@ -7,9 +7,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	healthServer "github.com/game-core/gc-server/api/game/presentation/server/health"
-	"github.com/game-core/gc-server/api/game/presentation/server/health/commonHealth"
-	"github.com/game-core/gc-server/api/game/presentation/server/health/masterHealth"
+	healthProto "github.com/game-core/gc-server/api/game/presentation/proto/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 	"github.com/game-core/gc-server/internal/errors"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
 	commonHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/commonHealth"
@@ -51,13 +51,13 @@ func TestHealthUsecase_Check(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *healthServer.HealthCheckRequest
+		req *healthProto.HealthCheckRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *healthServer.HealthCheckResponse
+		want    *healthProto.HealthCheckResponse
 		wantErr error
 	}{
 		{
@@ -95,14 +95,14 @@ func TestHealthUsecase_Check(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &healthServer.HealthCheckRequest{
+				req: &healthProto.HealthCheckRequest{
 					HealthId:         1,
 					Name:             "health",
 					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
 					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
 				},
 			},
-			want: &healthServer.HealthCheckResponse{
+			want: &healthProto.HealthCheckResponse{
 				CommonHealth: &commonHealth.CommonHealth{
 					HealthId:         1,
 					Name:             "health",
@@ -140,7 +140,7 @@ func TestHealthUsecase_Check(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &healthServer.HealthCheckRequest{
+				req: &healthProto.HealthCheckRequest{
 					HealthId:         1,
 					Name:             "health",
 					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,

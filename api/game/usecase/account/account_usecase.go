@@ -3,8 +3,8 @@ package account
 import (
 	"context"
 
-	accountServer "github.com/game-core/gc-server/api/game/presentation/server/account"
-	"github.com/game-core/gc-server/api/game/presentation/server/account/userAccount"
+	accountProto "github.com/game-core/gc-server/api/game/presentation/proto/account"
+	"github.com/game-core/gc-server/api/game/presentation/proto/account/userAccount"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/times"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
@@ -12,9 +12,9 @@ import (
 )
 
 type AccountUsecase interface {
-	Get(ctx context.Context, req *accountServer.AccountGetRequest) (*accountServer.AccountGetResponse, error)
-	Create(ctx context.Context, req *accountServer.AccountCreateRequest) (*accountServer.AccountCreateResponse, error)
-	Login(ctx context.Context, req *accountServer.AccountLoginRequest) (*accountServer.AccountLoginResponse, error)
+	Get(ctx context.Context, req *accountProto.AccountGetRequest) (*accountProto.AccountGetResponse, error)
+	Create(ctx context.Context, req *accountProto.AccountCreateRequest) (*accountProto.AccountCreateResponse, error)
+	Login(ctx context.Context, req *accountProto.AccountLoginRequest) (*accountProto.AccountLoginResponse, error)
 }
 
 type accountUsecase struct {
@@ -33,13 +33,13 @@ func NewAccountUsecase(
 }
 
 // Get アカウントを確認する
-func (s *accountUsecase) Get(ctx context.Context, req *accountServer.AccountGetRequest) (*accountServer.AccountGetResponse, error) {
+func (s *accountUsecase) Get(ctx context.Context, req *accountProto.AccountGetRequest) (*accountProto.AccountGetResponse, error) {
 	result, err := s.accountService.Get(ctx, accountService.SetAccountGetRequest(req.UserId))
 	if err != nil {
 		return nil, errors.NewMethodError("s.accountService.Get", err)
 	}
 
-	return accountServer.SetAccountGetResponse(
+	return accountProto.SetAccountGetResponse(
 		userAccount.SetUserAccount(
 			result.UserAccount.UserId,
 			result.UserAccount.Name,
@@ -51,7 +51,7 @@ func (s *accountUsecase) Get(ctx context.Context, req *accountServer.AccountGetR
 }
 
 // Create アカウントを作成する
-func (s *accountUsecase) Create(ctx context.Context, req *accountServer.AccountCreateRequest) (*accountServer.AccountCreateResponse, error) {
+func (s *accountUsecase) Create(ctx context.Context, req *accountProto.AccountCreateRequest) (*accountProto.AccountCreateResponse, error) {
 	userId, err := s.accountService.CreateUserId(ctx)
 	if err != nil {
 		return nil, errors.NewMethodError("s.accountService.CreateUserId", err)
@@ -71,7 +71,7 @@ func (s *accountUsecase) Create(ctx context.Context, req *accountServer.AccountC
 		return nil, errors.NewMethodError("s.accountService.Create", err)
 	}
 
-	return accountServer.SetAccountCreateResponse(
+	return accountProto.SetAccountCreateResponse(
 		userAccount.SetUserAccount(
 			result.UserAccount.UserId,
 			result.UserAccount.Name,
@@ -83,7 +83,7 @@ func (s *accountUsecase) Create(ctx context.Context, req *accountServer.AccountC
 }
 
 // Login アカウントをログインする
-func (s *accountUsecase) Login(ctx context.Context, req *accountServer.AccountLoginRequest) (*accountServer.AccountLoginResponse, error) {
+func (s *accountUsecase) Login(ctx context.Context, req *accountProto.AccountLoginRequest) (*accountProto.AccountLoginResponse, error) {
 	// transaction
 	mtx, err := s.transactionService.UserMysqlBegin(ctx, req.UserId)
 	if err != nil {
@@ -100,7 +100,7 @@ func (s *accountUsecase) Login(ctx context.Context, req *accountServer.AccountLo
 		return nil, errors.NewMethodError("s.accountService.Login", err)
 	}
 
-	return accountServer.SetAccountLoginResponse(
+	return accountProto.SetAccountLoginResponse(
 		result.Token,
 		userAccount.SetUserAccount(
 			result.UserAccount.UserId,

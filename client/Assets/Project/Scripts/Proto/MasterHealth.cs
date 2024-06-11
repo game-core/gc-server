@@ -29,11 +29,11 @@ namespace Api.Game {
             "ZV9lbnVtLnByb3RvIokBCgxNYXN0ZXJIZWFsdGgSGwoJaGVhbHRoX2lkGAEg",
             "ASgDUghoZWFsdGhJZBISCgRuYW1lGAIgASgJUgRuYW1lEkgKEm1hc3Rlcl9o",
             "ZWFsdGhfdHlwZRgDIAEoDjIaLmFwaS5nYW1lLk1hc3RlckhlYWx0aFR5cGVS",
-            "EG1hc3RlckhlYWx0aFR5cGVCswEKDGNvbS5hcGkuZ2FtZUIRTWFzdGVySGVh",
-            "bHRoUHJvdG9QAVpPZ2l0aHViLmNvbS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2Fw",
-            "aS9nYW1lL3ByZXNlbnRhdGlvbi9zZXJ2ZXIvaGVhbHRoL21hc3RlckhlYWx0",
-            "aKICA0FHWKoCCEFwaS5HYW1lygIIQXBpXEdhbWXiAhRBcGlcR2FtZVxHUEJN",
-            "ZXRhZGF0YeoCCUFwaTo6R2FtZWIGcHJvdG8z"));
+            "EG1hc3RlckhlYWx0aFR5cGVCsgEKDGNvbS5hcGkuZ2FtZUIRTWFzdGVySGVh",
+            "bHRoUHJvdG9QAVpOZ2l0aHViLmNvbS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2Fw",
+            "aS9nYW1lL3ByZXNlbnRhdGlvbi9wcm90by9oZWFsdGgvbWFzdGVySGVhbHRo",
+            "ogIDQUdYqgIIQXBpLkdhbWXKAghBcGlcR2FtZeICFEFwaVxHYW1lXEdQQk1l",
+            "dGFkYXRh6gIJQXBpOjpHYW1lYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Api.Game.MasterHealthTypeEnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

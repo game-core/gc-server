@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	loginBonusServer "github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
-	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus/userLoginBonus"
+	loginBonusProto "github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus/userLoginBonus"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/times"
 	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
@@ -56,13 +56,13 @@ func TestLoginBonusUsecase_Receive(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *loginBonusServer.LoginBonusReceiveRequest
+		req *loginBonusProto.LoginBonusReceiveRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *loginBonusServer.LoginBonusReceiveResponse
+		want    *loginBonusProto.LoginBonusReceiveResponse
 		wantErr error
 	}{
 		{
@@ -114,12 +114,12 @@ func TestLoginBonusUsecase_Receive(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &loginBonusServer.LoginBonusReceiveRequest{
+				req: &loginBonusProto.LoginBonusReceiveRequest{
 					UserId:             "0:test",
 					MasterLoginBonusId: 1,
 				},
 			},
-			want: &loginBonusServer.LoginBonusReceiveResponse{
+			want: &loginBonusProto.LoginBonusReceiveResponse{
 				UserLoginBonus: &userLoginBonus.UserLoginBonus{
 					UserId:             "0:WntR-PyhOJeDiE5jodeR",
 					MasterLoginBonusId: 1,
@@ -151,7 +151,7 @@ func TestLoginBonusUsecase_Receive(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &loginBonusServer.LoginBonusReceiveRequest{
+				req: &loginBonusProto.LoginBonusReceiveRequest{
 					UserId:             "0:test",
 					MasterLoginBonusId: 1,
 				},
@@ -202,7 +202,7 @@ func TestLoginBonusUsecase_Receive(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &loginBonusServer.LoginBonusReceiveRequest{
+				req: &loginBonusProto.LoginBonusReceiveRequest{
 					UserId:             "0:test",
 					MasterLoginBonusId: 1,
 				},

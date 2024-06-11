@@ -40,7 +40,7 @@ func (s *Setter) generate(file string, base string) error {
 		return err
 	}
 
-	outputDir := filepath.Join(base, filepath.Dir(strings.Replace(file, "/../../docs/yaml/api/game", "/presentation/server", -1)))
+	outputDir := filepath.Join(base, filepath.Dir(strings.Replace(file, "/../../docs/yaml/api/game", "/presentation/proto", -1)))
 	if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
 		return err
 	}
@@ -217,7 +217,7 @@ func (s *Setter) getTypeTime() string {
 // getTypeStructure structureの型を取得する
 func (s *Setter) getTypeStructure(fieldName, fieldPackage, structPackage string) string {
 	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/server/%s\"", fieldPackage))
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/proto/%s\"", fieldPackage))
 		return fmt.Sprintf("%s.%s", changes.Extraction(fieldPackage, "/", 1), changes.SnakeToUpperCamel(fieldName))
 	}
 
@@ -227,7 +227,7 @@ func (s *Setter) getTypeStructure(fieldName, fieldPackage, structPackage string)
 // getTypeStructures structuresの型を取得する
 func (s *Setter) getTypeStructures(fieldName, fieldPackage, structPackage string) string {
 	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/server/%s\"", fieldPackage))
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/proto/%s\"", fieldPackage))
 		return fmt.Sprintf("[]*%s.%s", changes.SnakeToCamel(changes.CamelToSnake(changes.Extraction(fieldPackage, "/", 1))), changes.SnakeToUpperCamel(changes.PluralToSingular(fieldName)))
 	}
 
@@ -237,7 +237,7 @@ func (s *Setter) getTypeStructures(fieldName, fieldPackage, structPackage string
 // getTypeEnum enumの型を取得する
 func (s *Setter) getTypeEnum(fieldName, fieldPackage, structPackage string) string {
 	if changes.Extraction(fieldPackage, "/", 1) != structPackage {
-		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/server/%s\"", fieldPackage))
+		importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("\"github.com/game-core/gc-server/api/game/presentation/proto/%s\"", fieldPackage))
 		return fmt.Sprintf("%s.%s", changes.SnakeToCamel(changes.CamelToSnake(changes.Extraction(fieldPackage, "/", 1))), changes.SnakeToUpperCamel(fieldName))
 	}
 

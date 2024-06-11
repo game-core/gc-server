@@ -56,7 +56,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "api/game/presentation/server/loginBonus";
+option go_package = "api/game/presentation/proto/loginBonus";
 
 message LoginBonusReceiveRequest {
   string user_id = 1;
@@ -104,7 +104,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "api/game/presentation/server/loginBonus";
+option go_package = "api/game/presentation/proto/loginBonus";
 
 import "login_bonus_receive_request.proto";
 import "login_bonus_receive_response.proto";
@@ -120,7 +120,7 @@ package loginBonus
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/loginBonus"
+	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
 	loginBonusUsecase "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	"github.com/game-core/gc-server/internal/errors"
 )

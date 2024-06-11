@@ -9,8 +9,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	accountServer "github.com/game-core/gc-server/api/game/presentation/server/account"
-	"github.com/game-core/gc-server/api/game/presentation/server/account/userAccount"
+	accountProto "github.com/game-core/gc-server/api/game/presentation/proto/account"
+	"github.com/game-core/gc-server/api/game/presentation/proto/account/userAccount"
 	"github.com/game-core/gc-server/internal/errors"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	userAccountModel "github.com/game-core/gc-server/pkg/domain/model/account/userAccount"
@@ -56,13 +56,13 @@ func TestAccountUsecase_Get(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *accountServer.AccountGetRequest
+		req *accountProto.AccountGetRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *accountServer.AccountGetResponse
+		want    *accountProto.AccountGetResponse
 		wantErr error
 	}{
 		{
@@ -98,11 +98,11 @@ func TestAccountUsecase_Get(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountGetRequest{
+				req: &accountProto.AccountGetRequest{
 					UserId: "0:test",
 				},
 			},
-			want: &accountServer.AccountGetResponse{
+			want: &accountProto.AccountGetResponse{
 				UserAccount: &userAccount.UserAccount{
 					UserId:   "0:test",
 					Name:     "test_user_account",
@@ -138,7 +138,7 @@ func TestAccountUsecase_Get(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountGetRequest{
+				req: &accountProto.AccountGetRequest{
 					UserId: "0:test",
 				},
 			},
@@ -174,13 +174,13 @@ func TestAccountUsecase_Create(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *accountServer.AccountCreateRequest
+		req *accountProto.AccountCreateRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *accountServer.AccountCreateResponse
+		want    *accountProto.AccountCreateResponse
 		wantErr error
 	}{
 		{
@@ -241,11 +241,11 @@ func TestAccountUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountCreateRequest{
+				req: &accountProto.AccountCreateRequest{
 					Name: "test_user_account",
 				},
 			},
-			want: &accountServer.AccountCreateResponse{
+			want: &accountProto.AccountCreateResponse{
 				UserAccount: &userAccount.UserAccount{
 					UserId:   "0:test",
 					Name:     "test_user_account",
@@ -278,7 +278,7 @@ func TestAccountUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountCreateRequest{
+				req: &accountProto.AccountCreateRequest{
 					Name: "test_user_account",
 				},
 			},
@@ -316,7 +316,7 @@ func TestAccountUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountCreateRequest{
+				req: &accountProto.AccountCreateRequest{
 					Name: "test_user_account",
 				},
 			},
@@ -373,7 +373,7 @@ func TestAccountUsecase_Create(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountCreateRequest{
+				req: &accountProto.AccountCreateRequest{
 					Name: "test_user_account",
 				},
 			},
@@ -409,13 +409,13 @@ func TestAccountUsecase_Login(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		req *accountServer.AccountLoginRequest
+		req *accountProto.AccountLoginRequest
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *accountServer.AccountLoginResponse
+		want    *accountProto.AccountLoginResponse
 		wantErr error
 	}{
 		{
@@ -481,12 +481,12 @@ func TestAccountUsecase_Login(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountLoginRequest{
+				req: &accountProto.AccountLoginRequest{
 					UserId:   "0:test",
 					Password: "test",
 				},
 			},
-			want: &accountServer.AccountLoginResponse{
+			want: &accountProto.AccountLoginResponse{
 				Token: "token",
 				UserAccount: &userAccount.UserAccount{
 					UserId:   "0:test",
@@ -521,7 +521,7 @@ func TestAccountUsecase_Login(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountLoginRequest{
+				req: &accountProto.AccountLoginRequest{
 					UserId:   "0:test",
 					Password: "test",
 				},
@@ -583,7 +583,7 @@ func TestAccountUsecase_Login(t *testing.T) {
 			},
 			args: args{
 				ctx: nil,
-				req: &accountServer.AccountLoginRequest{
+				req: &accountProto.AccountLoginRequest{
 					UserId:   "0:test",
 					Password: "test",
 				},

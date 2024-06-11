@@ -3,9 +3,9 @@ package health
 import (
 	"context"
 
-	healthServer "github.com/game-core/gc-server/api/game/presentation/server/health"
-	"github.com/game-core/gc-server/api/game/presentation/server/health/commonHealth"
-	"github.com/game-core/gc-server/api/game/presentation/server/health/masterHealth"
+	healthProto "github.com/game-core/gc-server/api/game/presentation/proto/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 	"github.com/game-core/gc-server/internal/errors"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
 	commonHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/commonHealth"
@@ -13,7 +13,7 @@ import (
 )
 
 type HealthUsecase interface {
-	Check(ctx context.Context, req *healthServer.HealthCheckRequest) (*healthServer.HealthCheckResponse, error)
+	Check(ctx context.Context, req *healthProto.HealthCheckRequest) (*healthProto.HealthCheckResponse, error)
 }
 
 type healthUsecase struct {
@@ -29,7 +29,7 @@ func NewHealthUsecase(
 }
 
 // Check ヘルスチェック
-func (s *healthUsecase) Check(ctx context.Context, req *healthServer.HealthCheckRequest) (*healthServer.HealthCheckResponse, error) {
+func (s *healthUsecase) Check(ctx context.Context, req *healthProto.HealthCheckRequest) (*healthProto.HealthCheckResponse, error) {
 	res, err := s.healthService.Check(
 		ctx,
 		healthService.SetHealthCheckRequest(
@@ -43,7 +43,7 @@ func (s *healthUsecase) Check(ctx context.Context, req *healthServer.HealthCheck
 		return nil, errors.NewMethodError("s.healthService.Check", err)
 	}
 
-	return healthServer.SetHealthCheckResponse(
+	return healthProto.SetHealthCheckResponse(
 		commonHealth.SetCommonHealth(
 			res.CommonHealth.HealthId,
 			res.CommonHealth.Name,

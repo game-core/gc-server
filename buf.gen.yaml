@@ -3,15 +3,15 @@ managed:
   enabled: true
   override:
     - file_option: go_package_prefix
-      value: github.com/game-core/gc-server/api/game/presentation/server
+      value: github.com/game-core/gc-server/api/game/presentation/proto
 
 plugins:
   # for Go gRPC Server
   - remote: buf.build/protocolbuffers/go
-    out: api/game/presentation/server
+    out: api/game/presentation/proto
     opt: paths=source_relative
   - remote: buf.build/grpc/go
-    out: api/game/presentation/server
+    out: api/game/presentation/proto
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false

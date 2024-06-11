@@ -3,7 +3,7 @@ package profile
 import (
 	"context"
 
-	"github.com/game-core/gc-server/api/game/presentation/server/profile"
+	"github.com/game-core/gc-server/api/game/presentation/proto/profile"
 	profileUsecase "github.com/game-core/gc-server/api/game/usecase/profile"
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/tokens"
