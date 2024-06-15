@@ -1,0 +1,35 @@
+name: MasterExchangeCost
+package: masterExchangeCost
+comment: "交換コスト"
+
+structure:
+  MasterExchangeCostId:
+    name: master_exchange_cost_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "交換コストID"
+  MasterExchangeItemId:
+    name: master_exchange_item_id
+    type: int64
+    nullable: false
+    number: 2
+    comment: "交換アイテムID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 3
+    comment: "交換コスト名"
+  Count:
+    name: count
+    type: int32
+    nullable: false
+    number: 4
+    comment: "個数"
+primary:
+  - MasterExchangeCostId
+unique:
+  - MasterExchangeCostId
+index:
+  - MasterExchangeItemId

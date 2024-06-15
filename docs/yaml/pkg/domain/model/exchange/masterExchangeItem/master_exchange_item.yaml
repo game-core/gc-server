@@ -1,0 +1,41 @@
+name: MasterExchangeItem
+package: masterExchangeItem
+comment: "交換アイテム"
+
+structure:
+  MasterExchangeItemId:
+    name: master_exchange_item_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "交換アイテムID"
+  MasterExchangeId:
+    name: master_exchange_id
+    type: int64
+    nullable: false
+    number: 2
+    comment: "交換ID"
+  MasterItemId:
+    name: master_item_id
+    type: int64
+    nullable: false
+    number: 3
+    comment: "アイテムID"
+  Name:
+    name: name
+    type: string
+    nullable: false
+    number: 4
+    comment: "交換アイテム名"
+  Count:
+    name: count
+    type: int32
+    nullable: false
+    number: 5
+    comment: "個数"
+primary:
+  - MasterExchangeItemId
+unique:
+  - MasterExchangeItemId
+index:
+  - MasterExchangeId

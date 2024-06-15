@@ -49,91 +49,9 @@ func (s *userLoginBonusDao) FindOrNil(ctx context.Context, userId string, master
 	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
 }
 
-func (s *userLoginBonusDao) FindByUserId(ctx context.Context, userId string) (*userLoginBonus.UserLoginBonus, error) {
-	t := NewUserLoginBonus()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-	if res.RowsAffected == 0 {
-		return nil, errors.NewError("record does not exist")
-	}
-
-	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
-}
-
-func (s *userLoginBonusDao) FindByUserIdAndMasterLoginBonusId(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
-	t := NewUserLoginBonus()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_login_bonus_id = ?", masterLoginBonusId).Find(t)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-	if res.RowsAffected == 0 {
-		return nil, errors.NewError("record does not exist")
-	}
-
-	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
-}
-
-func (s *userLoginBonusDao) FindOrNilByUserId(ctx context.Context, userId string) (*userLoginBonus.UserLoginBonus, error) {
-	t := NewUserLoginBonus()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-	if res.RowsAffected == 0 {
-		return nil, nil
-	}
-
-	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
-}
-
-func (s *userLoginBonusDao) FindOrNilByUserIdAndMasterLoginBonusId(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
-	t := NewUserLoginBonus()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_login_bonus_id = ?", masterLoginBonusId).Find(t)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-	if res.RowsAffected == 0 {
-		return nil, nil
-	}
-
-	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
-}
-
 func (s *userLoginBonusDao) FindList(ctx context.Context, userId string) (userLoginBonus.UserLoginBonuses, error) {
 	ts := NewUserLoginBonuses()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-
-	ms := userLoginBonus.NewUserLoginBonuses()
-	for _, t := range ts {
-		ms = append(ms, userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt))
-	}
-
-	return ms, nil
-}
-
-func (s *userLoginBonusDao) FindListByUserId(ctx context.Context, userId string) (userLoginBonus.UserLoginBonuses, error) {
-	ts := NewUserLoginBonuses()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
-	if err := res.Error; err != nil {
-		return nil, err
-	}
-
-	ms := userLoginBonus.NewUserLoginBonuses()
-	for _, t := range ts {
-		ms = append(ms, userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt))
-	}
-
-	return ms, nil
-}
-
-func (s *userLoginBonusDao) FindListByUserIdAndMasterLoginBonusId(ctx context.Context, userId string, masterLoginBonusId int64) (userLoginBonus.UserLoginBonuses, error) {
-	ts := NewUserLoginBonuses()
-	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_login_bonus_id = ?", masterLoginBonusId).Find(&ts)
 	if err := res.Error; err != nil {
 		return nil, err
 	}

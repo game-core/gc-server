@@ -1,6 +1,6 @@
-name: UserLoginBonus
-package: userLoginBonus
-comment: "ユーザーログインボーナス"
+name: UserExchange
+package: userExchange
+comment: "ユーザー交換"
 
 structure:
   UserId:
@@ -9,12 +9,12 @@ structure:
     nullable: false
     number: 1
     comment: "ユーザーID"
-  MasterLoginBonusId:
-    name: master_login_bonus_id
+  MasterExchangeId:
+    name: master_exchange_id
     type: int64
     nullable: false
     number: 2
-    comment: "ログインボーナスID"
+    comment: "交換ID"
   ReceivedAt:
     name: received_at
     type: time
@@ -34,6 +34,6 @@ structure:
     number: 5
     comment: "更新日時"
 primary:
-  - UserId,MasterLoginBonusId
+  - UserId,MasterExchangeId
 unique:
-  - UserId,MasterLoginBonusId
+  - UserId,MasterExchangeId

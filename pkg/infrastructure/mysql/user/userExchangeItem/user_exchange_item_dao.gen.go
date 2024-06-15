@@ -1,0 +1,232 @@
+// Package userExchangeItem ユーザー交換アイテム
+package userExchangeItem
+
+import (
+	"context"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+
+	"github.com/game-core/gc-server/config/database"
+	"github.com/game-core/gc-server/internal/errors"
+	"github.com/game-core/gc-server/internal/keys"
+	"github.com/game-core/gc-server/pkg/domain/model/exchange/userExchangeItem"
+)
+
+type userExchangeItemDao struct {
+	ShardMysqlConn *database.ShardMysqlConn
+}
+
+func NewUserExchangeItemDao(conn *database.MysqlHandler) userExchangeItem.UserExchangeItemMysqlRepository {
+	return &userExchangeItemDao{
+		ShardMysqlConn: conn.User,
+	}
+}
+
+func (s *userExchangeItemDao) Find(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, errors.NewError("record does not exist")
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindOrNil(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindList(ctx context.Context, userId string) (userExchangeItem.UserExchangeItems, error) {
+	ts := NewUserExchangeItems()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	ms := userExchangeItem.NewUserExchangeItems()
+	for _, t := range ts {
+		ms = append(ms, userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count))
+	}
+
+	return ms, nil
+}
+
+func (s *userExchangeItemDao) Create(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(m.UserId)].WriteMysqlConn
+	}
+
+	t := &UserExchangeItem{
+		UserId:               m.UserId,
+		MasterExchangeItemId: m.MasterExchangeItemId,
+		Count:                m.Count,
+	}
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Create(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return nil, errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	ts := NewUserExchangeItems()
+	for _, m := range ms {
+		t := &UserExchangeItem{
+			UserId:               m.UserId,
+			MasterExchangeItemId: m.MasterExchangeItemId,
+			Count:                m.Count,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
+func (s *userExchangeItemDao) Update(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(m.UserId)].WriteMysqlConn
+	}
+
+	t := &UserExchangeItem{
+		UserId:               m.UserId,
+		MasterExchangeItemId: m.MasterExchangeItemId,
+		Count:                m.Count,
+	}
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Select("user_id", "master_exchange_item_id", "count").Where("user_id = ?", m.UserId).Where("master_exchange_item_id = ?", m.MasterExchangeItemId).Updates(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
+	if len(ms) <= 0 {
+		return ms, nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return nil, errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	ts := NewUserExchangeItems()
+	for _, m := range ms {
+		t := &UserExchangeItem{
+			UserId:               m.UserId,
+			MasterExchangeItemId: m.MasterExchangeItemId,
+			Count:                m.Count,
+		}
+		ts = append(ts, t)
+	}
+
+	res := conn.Model(NewUserExchangeItem()).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "master_exchange_item_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"count"}),
+	}).WithContext(ctx).Create(ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
+func (s *userExchangeItemDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) error {
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(m.UserId)].WriteMysqlConn
+	}
+
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Where("user_id = ?", m.UserId).Where("master_exchange_item_id = ?", m.MasterExchangeItemId).Delete(NewUserExchangeItem())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *userExchangeItemDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) error {
+	if len(ms) <= 0 {
+		return nil
+	}
+
+	fms := ms[0]
+	for _, m := range ms {
+		if m.UserId != fms.UserId {
+			return errors.NewError("userId is invalid")
+		}
+	}
+
+	var conn *gorm.DB
+	if tx != nil {
+		conn = tx
+	} else {
+		conn = s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(fms.UserId)].WriteMysqlConn
+	}
+
+	var ks [][]interface{}
+	for _, m := range ms {
+		ks = append(ks, []interface{}{m.UserId, m.MasterExchangeItemId})
+	}
+
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Where("(user_id, master_exchange_item_id) IN ?", ks).Delete(NewUserExchangeItem())
+	if err := res.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
