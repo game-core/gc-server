@@ -62,7 +62,7 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				UserLoginBonus: &UserLoginBonus{
 					UserId:             "0:WntR-PyhOJeDiE5jodeR",
 					MasterLoginBonusId: 1,
-					ReceivedAt:         time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
+					ReceivedAt:         time.Date(2023, 1, 2, 9, 1, 0, 0, time.UTC),
 				},
 			},
 			args: args{
@@ -79,7 +79,7 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				UserLoginBonus: &UserLoginBonus{
 					UserId:             "0:WntR-PyhOJeDiE5jodeR",
 					MasterLoginBonusId: 1,
-					ReceivedAt:         time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
+					ReceivedAt:         time.Date(2023, 1, 2, 9, 1, 0, 0, time.UTC),
 				},
 			},
 			args: args{
