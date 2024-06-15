@@ -1,0 +1,19 @@
+name: ExchangeUpdateResponse
+package: exchange
+comment: "交換更新レスポンス"
+
+structure:
+  UserExchanges:
+    name: user_exchange
+    type: structure
+    package: exchange/userExchange
+    nullable: true
+    number: 1
+    comment: "ユーザー交換"
+  UserExchangeItems:
+    name: user_exchange_items
+    type: structures
+    package: exchange/userExchangeItems
+    nullable: false
+    number: 2
+    comment: "ユーザー交換アイテム一覧"

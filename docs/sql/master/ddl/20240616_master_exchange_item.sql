@@ -7,5 +7,6 @@ CREATE TABLE master_exchange_item
 	count INT NOT NULL COMMENT "個数",
 	PRIMARY KEY(master_exchange_item_id),
 	UNIQUE KEY(master_exchange_item_id),
+	INDEX(master_exchange_item_id),
 	INDEX(master_exchange_id)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

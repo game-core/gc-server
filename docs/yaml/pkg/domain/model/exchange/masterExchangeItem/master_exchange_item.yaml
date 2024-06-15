@@ -33,9 +33,3 @@ structure:
     nullable: false
     number: 5
     comment: "個数"
-primary:
-  - MasterExchangeItemId
-unique:
-  - MasterExchangeItemId
-index:
-  - MasterExchangeId

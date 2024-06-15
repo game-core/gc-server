@@ -10,7 +10,7 @@ type UserExchanges []*UserExchange
 type UserExchange struct {
 	UserId           string
 	MasterExchangeId int64
-	ReceivedAt       time.Time
+	ResetAt          time.Time
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -23,11 +23,11 @@ func NewUserExchanges() UserExchanges {
 	return UserExchanges{}
 }
 
-func SetUserExchange(userId string, masterExchangeId int64, receivedAt time.Time, createdAt time.Time, updatedAt time.Time) *UserExchange {
+func SetUserExchange(userId string, masterExchangeId int64, resetAt time.Time, createdAt time.Time, updatedAt time.Time) *UserExchange {
 	return &UserExchange{
 		UserId:           userId,
 		MasterExchangeId: masterExchangeId,
-		ReceivedAt:       receivedAt,
+		ResetAt:          resetAt,
 		CreatedAt:        createdAt,
 		UpdatedAt:        updatedAt,
 	}

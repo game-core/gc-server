@@ -33,7 +33,7 @@ func (s *userExchangeItemDao) Find(ctx context.Context, userId string, masterExc
 		return nil, errors.NewError("record does not exist")
 	}
 
-	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
 func (s *userExchangeItemDao) FindOrNil(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
@@ -46,7 +46,59 @@ func (s *userExchangeItemDao) FindOrNil(ctx context.Context, userId string, mast
 		return nil, nil
 	}
 
-	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, errors.NewError("record does not exist")
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, errors.NewError("record does not exist")
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
+}
+
+func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+	t := NewUserExchangeItem()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
 func (s *userExchangeItemDao) FindList(ctx context.Context, userId string) (userExchangeItem.UserExchangeItems, error) {
@@ -58,7 +110,37 @@ func (s *userExchangeItemDao) FindList(ctx context.Context, userId string) (user
 
 	ms := userExchangeItem.NewUserExchangeItems()
 	for _, t := range ts {
-		ms = append(ms, userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count))
+		ms = append(ms, userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count))
+	}
+
+	return ms, nil
+}
+
+func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (userExchangeItem.UserExchangeItems, error) {
+	ts := NewUserExchangeItems()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(&ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	ms := userExchangeItem.NewUserExchangeItems()
+	for _, t := range ts {
+		ms = append(ms, userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count))
+	}
+
+	return ms, nil
+}
+
+func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (userExchangeItem.UserExchangeItems, error) {
+	ts := NewUserExchangeItems()
+	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(&ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	ms := userExchangeItem.NewUserExchangeItems()
+	for _, t := range ts {
+		ms = append(ms, userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count))
 	}
 
 	return ms, nil
@@ -74,6 +156,7 @@ func (s *userExchangeItemDao) Create(ctx context.Context, tx *gorm.DB, m *userEx
 
 	t := &UserExchangeItem{
 		UserId:               m.UserId,
+		MasterExchangeId:     m.MasterExchangeId,
 		MasterExchangeItemId: m.MasterExchangeItemId,
 		Count:                m.Count,
 	}
@@ -82,7 +165,7 @@ func (s *userExchangeItemDao) Create(ctx context.Context, tx *gorm.DB, m *userEx
 		return nil, err
 	}
 
-	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
 func (s *userExchangeItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
@@ -108,6 +191,7 @@ func (s *userExchangeItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms us
 	for _, m := range ms {
 		t := &UserExchangeItem{
 			UserId:               m.UserId,
+			MasterExchangeId:     m.MasterExchangeId,
 			MasterExchangeItemId: m.MasterExchangeItemId,
 			Count:                m.Count,
 		}
@@ -132,15 +216,16 @@ func (s *userExchangeItemDao) Update(ctx context.Context, tx *gorm.DB, m *userEx
 
 	t := &UserExchangeItem{
 		UserId:               m.UserId,
+		MasterExchangeId:     m.MasterExchangeId,
 		MasterExchangeItemId: m.MasterExchangeItemId,
 		Count:                m.Count,
 	}
-	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Select("user_id", "master_exchange_item_id", "count").Where("user_id = ?", m.UserId).Where("master_exchange_item_id = ?", m.MasterExchangeItemId).Updates(t)
+	res := conn.Model(NewUserExchangeItem()).WithContext(ctx).Select("user_id", "master_exchange_id", "master_exchange_item_id", "count").Where("user_id = ?", m.UserId).Where("master_exchange_item_id = ?", m.MasterExchangeItemId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeItemId, t.Count), nil
+	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
 func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
@@ -166,6 +251,7 @@ func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms us
 	for _, m := range ms {
 		t := &UserExchangeItem{
 			UserId:               m.UserId,
+			MasterExchangeId:     m.MasterExchangeId,
 			MasterExchangeItemId: m.MasterExchangeItemId,
 			Count:                m.Count,
 		}
@@ -174,7 +260,7 @@ func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms us
 
 	res := conn.Model(NewUserExchangeItem()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}, {Name: "master_exchange_item_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"count"}),
+		DoUpdates: clause.AssignmentColumns([]string{"master_exchange_id", "count"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

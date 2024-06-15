@@ -1,6 +1,6 @@
-name: UserExchange
-package: userExchange
-comment: "ユーザー交換"
+name: ExchangeUpdateRequest
+package: exchange
+comment: "交換更新リクエスト"
 
 structure:
   UserId:
@@ -15,9 +15,3 @@ structure:
     nullable: false
     number: 2
     comment: "交換ID"
-  ResetAt:
-    name: reset_at
-    type: time
-    nullable: false
-    number: 3
-    comment: "リセット日時"

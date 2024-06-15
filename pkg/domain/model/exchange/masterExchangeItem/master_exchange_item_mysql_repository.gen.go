@@ -12,9 +12,12 @@ import (
 type MasterExchangeItemMysqlRepository interface {
 	Find(ctx context.Context, masterExchangeItemId int64) (*MasterExchangeItem, error)
 	FindOrNil(ctx context.Context, masterExchangeItemId int64) (*MasterExchangeItem, error)
+	FindByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*MasterExchangeItem, error)
 	FindByMasterExchangeId(ctx context.Context, masterExchangeId int64) (*MasterExchangeItem, error)
+	FindOrNilByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*MasterExchangeItem, error)
 	FindOrNilByMasterExchangeId(ctx context.Context, masterExchangeId int64) (*MasterExchangeItem, error)
 	FindList(ctx context.Context) (MasterExchangeItems, error)
+	FindListByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (MasterExchangeItems, error)
 	FindListByMasterExchangeId(ctx context.Context, masterExchangeId int64) (MasterExchangeItems, error)
 	Create(ctx context.Context, tx *gorm.DB, m *MasterExchangeItem) (*MasterExchangeItem, error)
 	CreateList(ctx context.Context, tx *gorm.DB, ms MasterExchangeItems) (MasterExchangeItems, error)

@@ -46,7 +46,7 @@ func (s *masterExchangeCostDao) Find(ctx context.Context, masterExchangeCostId i
 		return nil, errors.NewError("record does not exist")
 	}
 
-	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count)
+	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "Find", fmt.Sprintf("%d_", masterExchangeCostId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -68,7 +68,7 @@ func (s *masterExchangeCostDao) FindOrNil(ctx context.Context, masterExchangeCos
 		return nil, nil
 	}
 
-	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count)
+	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "FindOrNil", fmt.Sprintf("%d_", masterExchangeCostId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -90,7 +90,7 @@ func (s *masterExchangeCostDao) FindByMasterExchangeItemId(ctx context.Context, 
 		return nil, errors.NewError("record does not exist")
 	}
 
-	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count)
+	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "FindByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -112,7 +112,7 @@ func (s *masterExchangeCostDao) FindOrNilByMasterExchangeItemId(ctx context.Cont
 		return nil, nil
 	}
 
-	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count)
+	m := masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "FindOrNilByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -133,7 +133,7 @@ func (s *masterExchangeCostDao) FindList(ctx context.Context) (masterExchangeCos
 
 	ms := masterExchangeCost.NewMasterExchangeCosts()
 	for _, t := range ts {
-		ms = append(ms, masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count))
+		ms = append(ms, masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count))
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "FindList", ""), ms, cache.DefaultExpiration)
@@ -156,7 +156,7 @@ func (s *masterExchangeCostDao) FindListByMasterExchangeItemId(ctx context.Conte
 
 	ms := masterExchangeCost.NewMasterExchangeCosts()
 	for _, t := range ts {
-		ms = append(ms, masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count))
+		ms = append(ms, masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count))
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_cost", "FindListByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), ms, cache.DefaultExpiration)
@@ -174,6 +174,7 @@ func (s *masterExchangeCostDao) Create(ctx context.Context, tx *gorm.DB, m *mast
 	t := &MasterExchangeCost{
 		MasterExchangeCostId: m.MasterExchangeCostId,
 		MasterExchangeItemId: m.MasterExchangeItemId,
+		MasterItemId:         m.MasterItemId,
 		Name:                 m.Name,
 		Count:                m.Count,
 	}
@@ -182,7 +183,7 @@ func (s *masterExchangeCostDao) Create(ctx context.Context, tx *gorm.DB, m *mast
 		return nil, err
 	}
 
-	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count), nil
+	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count), nil
 }
 
 func (s *masterExchangeCostDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
@@ -202,6 +203,7 @@ func (s *masterExchangeCostDao) CreateList(ctx context.Context, tx *gorm.DB, ms 
 		t := &MasterExchangeCost{
 			MasterExchangeCostId: m.MasterExchangeCostId,
 			MasterExchangeItemId: m.MasterExchangeItemId,
+			MasterItemId:         m.MasterItemId,
 			Name:                 m.Name,
 			Count:                m.Count,
 		}
@@ -227,15 +229,16 @@ func (s *masterExchangeCostDao) Update(ctx context.Context, tx *gorm.DB, m *mast
 	t := &MasterExchangeCost{
 		MasterExchangeCostId: m.MasterExchangeCostId,
 		MasterExchangeItemId: m.MasterExchangeItemId,
+		MasterItemId:         m.MasterItemId,
 		Name:                 m.Name,
 		Count:                m.Count,
 	}
-	res := conn.Model(NewMasterExchangeCost()).WithContext(ctx).Select("master_exchange_cost_id", "master_exchange_item_id", "name", "count").Where("master_exchange_cost_id = ?", m.MasterExchangeCostId).Updates(t)
+	res := conn.Model(NewMasterExchangeCost()).WithContext(ctx).Select("master_exchange_cost_id", "master_exchange_item_id", "master_item_id", "name", "count").Where("master_exchange_cost_id = ?", m.MasterExchangeCostId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.Name, t.Count), nil
+	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count), nil
 }
 
 func (s *masterExchangeCostDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
@@ -255,6 +258,7 @@ func (s *masterExchangeCostDao) UpdateList(ctx context.Context, tx *gorm.DB, ms 
 		t := &MasterExchangeCost{
 			MasterExchangeCostId: m.MasterExchangeCostId,
 			MasterExchangeItemId: m.MasterExchangeItemId,
+			MasterItemId:         m.MasterItemId,
 			Name:                 m.Name,
 			Count:                m.Count,
 		}
@@ -263,7 +267,7 @@ func (s *masterExchangeCostDao) UpdateList(ctx context.Context, tx *gorm.DB, ms 
 
 	res := conn.Model(NewMasterExchangeCost()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "master_exchange_cost_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"master_exchange_item_id", "name", "count"}),
+		DoUpdates: clause.AssignmentColumns([]string{"master_exchange_item_id", "master_item_id", "name", "count"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

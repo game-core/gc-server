@@ -33,7 +33,7 @@ func (s *userExchangeDao) Find(ctx context.Context, userId string, masterExchang
 		return nil, errors.NewError("record does not exist")
 	}
 
-	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ReceivedAt), nil
+	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
 func (s *userExchangeDao) FindOrNil(ctx context.Context, userId string, masterExchangeId int64) (*userExchange.UserExchange, error) {
@@ -46,7 +46,7 @@ func (s *userExchangeDao) FindOrNil(ctx context.Context, userId string, masterEx
 		return nil, nil
 	}
 
-	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ReceivedAt), nil
+	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
 func (s *userExchangeDao) FindList(ctx context.Context, userId string) (userExchange.UserExchanges, error) {
@@ -58,7 +58,7 @@ func (s *userExchangeDao) FindList(ctx context.Context, userId string) (userExch
 
 	ms := userExchange.NewUserExchanges()
 	for _, t := range ts {
-		ms = append(ms, userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ReceivedAt))
+		ms = append(ms, userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt))
 	}
 
 	return ms, nil
@@ -75,14 +75,14 @@ func (s *userExchangeDao) Create(ctx context.Context, tx *gorm.DB, m *userExchan
 	t := &UserExchange{
 		UserId:           m.UserId,
 		MasterExchangeId: m.MasterExchangeId,
-		ReceivedAt:       m.ReceivedAt,
+		ResetAt:          m.ResetAt,
 	}
 	res := conn.Model(NewUserExchange()).WithContext(ctx).Create(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ReceivedAt), nil
+	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
 func (s *userExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
@@ -109,7 +109,7 @@ func (s *userExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms userEx
 		t := &UserExchange{
 			UserId:           m.UserId,
 			MasterExchangeId: m.MasterExchangeId,
-			ReceivedAt:       m.ReceivedAt,
+			ResetAt:          m.ResetAt,
 		}
 		ts = append(ts, t)
 	}
@@ -133,14 +133,14 @@ func (s *userExchangeDao) Update(ctx context.Context, tx *gorm.DB, m *userExchan
 	t := &UserExchange{
 		UserId:           m.UserId,
 		MasterExchangeId: m.MasterExchangeId,
-		ReceivedAt:       m.ReceivedAt,
+		ResetAt:          m.ResetAt,
 	}
-	res := conn.Model(NewUserExchange()).WithContext(ctx).Select("user_id", "master_exchange_id", "received_at").Where("user_id = ?", m.UserId).Where("master_exchange_id = ?", m.MasterExchangeId).Updates(t)
+	res := conn.Model(NewUserExchange()).WithContext(ctx).Select("user_id", "master_exchange_id", "reset_at").Where("user_id = ?", m.UserId).Where("master_exchange_id = ?", m.MasterExchangeId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ReceivedAt), nil
+	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
 func (s *userExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
@@ -167,14 +167,14 @@ func (s *userExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userEx
 		t := &UserExchange{
 			UserId:           m.UserId,
 			MasterExchangeId: m.MasterExchangeId,
-			ReceivedAt:       m.ReceivedAt,
+			ResetAt:          m.ResetAt,
 		}
 		ts = append(ts, t)
 	}
 
 	res := conn.Model(NewUserExchange()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}, {Name: "master_exchange_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"received_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"reset_at"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

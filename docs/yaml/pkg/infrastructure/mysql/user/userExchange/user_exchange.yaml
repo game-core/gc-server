@@ -15,12 +15,12 @@ structure:
     nullable: false
     number: 2
     comment: "交換ID"
-  ReceivedAt:
-    name: received_at
+  ResetAt:
+    name: reset_at
     type: time
     nullable: false
     number: 3
-    comment: "受け取り日時"
+    comment: "リセット日時"
   CreatedAt:
     name: created_at
     type: time

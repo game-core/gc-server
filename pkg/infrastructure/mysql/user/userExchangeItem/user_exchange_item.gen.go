@@ -9,6 +9,7 @@ type UserExchangeItems []*UserExchangeItem
 
 type UserExchangeItem struct {
 	UserId               string
+	MasterExchangeId     int64
 	MasterExchangeItemId int64
 	Count                int32
 	CreatedAt            time.Time
@@ -23,9 +24,10 @@ func NewUserExchangeItems() UserExchangeItems {
 	return UserExchangeItems{}
 }
 
-func SetUserExchangeItem(userId string, masterExchangeItemId int64, count int32, createdAt time.Time, updatedAt time.Time) *UserExchangeItem {
+func SetUserExchangeItem(userId string, masterExchangeId int64, masterExchangeItemId int64, count int32, createdAt time.Time, updatedAt time.Time) *UserExchangeItem {
 	return &UserExchangeItem{
 		UserId:               userId,
+		MasterExchangeId:     masterExchangeId,
 		MasterExchangeItemId: masterExchangeItemId,
 		Count:                count,
 		CreatedAt:            createdAt,

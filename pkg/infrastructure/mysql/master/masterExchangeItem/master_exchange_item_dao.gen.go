@@ -73,6 +73,28 @@ func (s *masterExchangeItemDao) FindOrNil(ctx context.Context, masterExchangeIte
 	return m, nil
 }
 
+func (s *masterExchangeItemDao) FindByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeItem.MasterExchangeItem, error) {
+	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_item", "FindByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
+	if found {
+		if cachedEntity, ok := cachedResult.(*masterExchangeItem.MasterExchangeItem); ok {
+			return cachedEntity, nil
+		}
+	}
+
+	t := NewMasterExchangeItem()
+	res := s.ReadMysqlConn.WithContext(ctx).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, errors.NewError("record does not exist")
+	}
+
+	m := masterExchangeItem.SetMasterExchangeItem(t.MasterExchangeItemId, t.MasterExchangeId, t.MasterItemId, t.Name, t.Count)
+	s.Cache.Set(cashes.CreateCacheKey("master_exchange_item", "FindByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), m, cache.DefaultExpiration)
+	return m, nil
+}
+
 func (s *masterExchangeItemDao) FindByMasterExchangeId(ctx context.Context, masterExchangeId int64) (*masterExchangeItem.MasterExchangeItem, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_item", "FindByMasterExchangeId", fmt.Sprintf("%d_", masterExchangeId)))
 	if found {
@@ -92,6 +114,28 @@ func (s *masterExchangeItemDao) FindByMasterExchangeId(ctx context.Context, mast
 
 	m := masterExchangeItem.SetMasterExchangeItem(t.MasterExchangeItemId, t.MasterExchangeId, t.MasterItemId, t.Name, t.Count)
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_item", "FindByMasterExchangeId", fmt.Sprintf("%d_", masterExchangeId)), m, cache.DefaultExpiration)
+	return m, nil
+}
+
+func (s *masterExchangeItemDao) FindOrNilByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeItem.MasterExchangeItem, error) {
+	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_item", "FindOrNilByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
+	if found {
+		if cachedEntity, ok := cachedResult.(*masterExchangeItem.MasterExchangeItem); ok {
+			return cachedEntity, nil
+		}
+	}
+
+	t := NewMasterExchangeItem()
+	res := s.ReadMysqlConn.WithContext(ctx).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+	if res.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	m := masterExchangeItem.SetMasterExchangeItem(t.MasterExchangeItemId, t.MasterExchangeId, t.MasterItemId, t.Name, t.Count)
+	s.Cache.Set(cashes.CreateCacheKey("master_exchange_item", "FindOrNilByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), m, cache.DefaultExpiration)
 	return m, nil
 }
 
@@ -137,6 +181,29 @@ func (s *masterExchangeItemDao) FindList(ctx context.Context) (masterExchangeIte
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_exchange_item", "FindList", ""), ms, cache.DefaultExpiration)
+	return ms, nil
+}
+
+func (s *masterExchangeItemDao) FindListByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (masterExchangeItem.MasterExchangeItems, error) {
+	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_item", "FindListByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
+	if found {
+		if cachedEntity, ok := cachedResult.(masterExchangeItem.MasterExchangeItems); ok {
+			return cachedEntity, nil
+		}
+	}
+
+	ts := NewMasterExchangeItems()
+	res := s.ReadMysqlConn.WithContext(ctx).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(&ts)
+	if err := res.Error; err != nil {
+		return nil, err
+	}
+
+	ms := masterExchangeItem.NewMasterExchangeItems()
+	for _, t := range ts {
+		ms = append(ms, masterExchangeItem.SetMasterExchangeItem(t.MasterExchangeItemId, t.MasterExchangeId, t.MasterItemId, t.Name, t.Count))
+	}
+
+	s.Cache.Set(cashes.CreateCacheKey("master_exchange_item", "FindListByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)), ms, cache.DefaultExpiration)
 	return ms, nil
 }
 

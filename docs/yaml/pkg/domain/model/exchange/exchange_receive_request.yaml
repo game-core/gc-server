@@ -1,6 +1,6 @@
-name: UserExchangeItem
-package: userExchangeItem
-comment: "ユーザー交換アイテム"
+name: ExchangeReceiveRequest
+package: exchange
+comment: "交換受け取りリクエスト"
 
 structure:
   UserId:
@@ -9,21 +9,15 @@ structure:
     nullable: false
     number: 1
     comment: "ユーザーID"
-  MasterExchangeId:
-    name: master_exchange_id
-    type: int64
-    nullable: false
-    number: 2
-    comment: "交換ID"
   MasterExchangeItemId:
     name: master_exchange_item_id
     type: int64
     nullable: false
-    number: 3
+    number: 2
     comment: "交換アイテムID"
   Count:
     name: count
     type: int32
     nullable: false
-    number: 4
-    comment: "残りのアイテム数"
+    number: 3
+    comment: "アイテム数"

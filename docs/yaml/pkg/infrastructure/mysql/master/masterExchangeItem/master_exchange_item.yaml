@@ -38,4 +38,5 @@ primary:
 unique:
   - MasterExchangeItemId
 index:
+  - MasterExchangeItemId
   - MasterExchangeId
