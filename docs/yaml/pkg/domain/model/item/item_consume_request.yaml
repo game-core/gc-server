@@ -1,0 +1,18 @@
+name: ItemConsumeRequest
+package: item
+comment: "アイテム消費リクエスト"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  Items:
+    name: items
+    type: structures
+    package: item
+    nullable: false
+    number: 2
+    comment: "アイテム一覧"

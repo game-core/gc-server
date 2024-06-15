@@ -1,6 +1,6 @@
-name: ItemReceiveResponse
+name: ItemConsumeResponse
 package: item
-comment: "アイテム受け取りレスポンス"
+comment: "アイテム消費レスポンス"
 
 structure:
   UserItemBoxes:
@@ -9,4 +9,4 @@ structure:
     package: item/userItemBox
     nullable: false
     number: 1
-    comment: "受け取ったユーザーアイテムボックス一覧"
+    comment: "消費したユーザーアイテムボックス一覧"
