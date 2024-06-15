@@ -70,7 +70,7 @@ func (s *loginBonusService) Receive(ctx context.Context, tx *gorm.DB, now time.T
 		return nil, errors.NewMethodError("s.masterLoginBonusItemMysqlRepository.FindListByMasterLoginBonusScheduleId", err)
 	}
 
-	userLoginBonusModel, err := s.getUser(ctx, now, req.UserId, req.MasterLoginBonusId, masterLoginBonusEventModel.ResetHour)
+	userLoginBonusModel, err := s.getUser(ctx, now, req.UserId, req.MasterLoginBonusId, masterLoginBonusEventModel.ResetHour, masterLoginBonusEventModel.IntervalHour)
 	if err != nil {
 		return nil, errors.NewMethodError("s.getUser", err)
 	}
@@ -112,13 +112,13 @@ func (s *loginBonusService) getSchedule(ctx context.Context, now time.Time, mast
 }
 
 // getUser 取得する
-func (s *loginBonusService) getUser(ctx context.Context, now time.Time, userId string, masterLoginBonusId int64, resetHour int32) (*userLoginBonus.UserLoginBonus, error) {
+func (s *loginBonusService) getUser(ctx context.Context, now time.Time, userId string, masterLoginBonusId int64, resetHour, intervalHour int32) (*userLoginBonus.UserLoginBonus, error) {
 	userLoginBonusModel, err := s.userLoginBonusMysqlRepository.FindOrNil(ctx, userId, masterLoginBonusId)
 	if err != nil {
 		return nil, errors.NewMethodError("s.userLoginBonusMysqlRepository.FindOrNil", err)
 	}
 
-	if userLoginBonusModel.CheckReceived(resetHour, now) {
+	if userLoginBonusModel.CheckReceived(resetHour, intervalHour, now) {
 		return nil, errors.NewError("already received")
 	}
 

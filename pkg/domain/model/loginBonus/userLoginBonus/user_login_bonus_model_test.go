@@ -11,8 +11,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 		UserLoginBonus *UserLoginBonus
 	}
 	type args struct {
-		resetHour int32
-		now       time.Time
+		resetHour    int32
+		intervalHour int32
+		now          time.Time
 	}
 	tests := []struct {
 		name    string
@@ -31,8 +32,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				},
 			},
 			args: args{
-				resetHour: 9,
-				now:       time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
+				resetHour:    9,
+				intervalHour: 24,
+				now:          time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
 			},
 			want:    false,
 			wantErr: nil,
@@ -47,8 +49,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				},
 			},
 			args: args{
-				resetHour: 9,
-				now:       time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
+				resetHour:    9,
+				intervalHour: 24,
+				now:          time.Date(2023, 1, 2, 9, 0, 0, 0, time.UTC),
 			},
 			want:    false,
 			wantErr: nil,
@@ -63,8 +66,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				},
 			},
 			args: args{
-				resetHour: 9,
-				now:       time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
+				resetHour:    9,
+				intervalHour: 24,
+				now:          time.Date(2023, 1, 2, 10, 0, 0, 0, time.UTC),
 			},
 			want:    true,
 			wantErr: nil,
@@ -79,8 +83,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				},
 			},
 			args: args{
-				resetHour: 9,
-				now:       time.Date(2023, 1, 3, 8, 0, 0, 0, time.UTC),
+				resetHour:    9,
+				intervalHour: 24,
+				now:          time.Date(2023, 1, 3, 8, 0, 0, 0, time.UTC),
 			},
 			want:    true,
 			wantErr: nil,
@@ -91,8 +96,9 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 				UserLoginBonus: nil,
 			},
 			args: args{
-				resetHour: 9,
-				now:       time.Date(2023, 1, 3, 8, 0, 0, 0, time.UTC),
+				resetHour:    9,
+				intervalHour: 24,
+				now:          time.Date(2023, 1, 3, 8, 0, 0, 0, time.UTC),
 			},
 			want:    false,
 			wantErr: nil,
@@ -100,7 +106,7 @@ func TestUserLoginBonus_CheckReceived(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.fields.UserLoginBonus.CheckReceived(tt.args.resetHour, tt.args.now)
+			got := tt.fields.UserLoginBonus.CheckReceived(tt.args.resetHour, tt.args.intervalHour, tt.args.now)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CheckReceived() = %v, want %v", got, tt.want)
 			}
