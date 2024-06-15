@@ -131,6 +131,7 @@ func (s *exchangeService) getMasterExchangeItemModelsAndMasterExchangeCostModels
 	return masterExchangeItemModels, masterExchangeCostModels, nil
 }
 
+// getMasterExchangeItemModelsAndMasterExchangeCostModels ユーザーデータを取得する
 func (s *exchangeService) getUserExchangeModelAndUserExchangeItemModel(ctx context.Context, userId string, masterExchangeItemId int64, count int32) (*userExchange.UserExchange, *userExchangeItem.UserExchangeItem, error) {
 	userExchangeItemModel, err := s.userExchangeItemMysqlRepository.Find(ctx, userId, masterExchangeItemId)
 	if err != nil {
