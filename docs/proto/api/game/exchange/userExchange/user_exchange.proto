@@ -1,0 +1,12 @@
+// ユーザー交換
+syntax = "proto3";
+
+package api.game;
+
+import "google/protobuf/timestamp.proto";
+
+message UserExchange {
+  string user_id = 1;
+  int64 master_exchange_id = 2;
+  google.protobuf.Timestamp reset_at = 3;
+}

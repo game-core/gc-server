@@ -1,0 +1,10 @@
+// 交換受け取りリクエスト
+syntax = "proto3";
+
+package api.game;
+
+message ExchangeReceiveRequest {
+  string user_id = 1;
+  int64 master_exchange_item_id = 2;
+  int32 count = 3;
+}

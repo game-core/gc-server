@@ -1,0 +1,12 @@
+// 交換更新レスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "exchange/userExchange/user_exchange.proto";
+import "exchange/userExchangeItem/user_exchange_item.proto";
+
+message ExchangeUpdateResponse {
+  optional UserExchange user_exchange = 1;
+  repeated UserExchangeItem user_exchange_items = 2;
+}

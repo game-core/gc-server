@@ -10,17 +10,20 @@ import (
 	"github.com/game-core/gc-server/config/logger"
 
 	accountHandler "github.com/game-core/gc-server/api/game/presentation/handler/account"
+	exchangeHandler "github.com/game-core/gc-server/api/game/presentation/handler/exchange"
 	healthHandler "github.com/game-core/gc-server/api/game/presentation/handler/health"
 	loginBonusHandler "github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
 	profileHandler "github.com/game-core/gc-server/api/game/presentation/handler/profile"
 	authInterceptor "github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	accountUsecase "github.com/game-core/gc-server/api/game/usecase/account"
+	exchangeUsecase "github.com/game-core/gc-server/api/game/usecase/exchange"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
 	loginBonusUsecase "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	profileUsecase "github.com/game-core/gc-server/api/game/usecase/profile"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
 	eventService "github.com/game-core/gc-server/pkg/domain/model/event"
+	exchangeService "github.com/game-core/gc-server/pkg/domain/model/exchange"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
 	itemService "github.com/game-core/gc-server/pkg/domain/model/item"
 	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
@@ -35,6 +38,9 @@ import (
 	masterActionStepMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionStep"
 	masterActionTriggerMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionTrigger"
 	masterEventMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterEvent"
+	masterExchangeMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchange"
+	masterExchangeCostMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchangeCost"
+	masterExchangeItemMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchangeItem"
 	masterHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterHealth"
 	masterItemMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterItem"
 	masterLoginBonusMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonus"
@@ -44,6 +50,8 @@ import (
 	masterTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterTransaction"
 	userAccountMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAccount"
 	userActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
+	userExchangeMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userExchange"
+	userExchangeItemMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userExchangeItem"
 	userItemBoxMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
 	userLoginBonusMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
 	userProfileMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userProfile"
@@ -65,6 +73,14 @@ func InitializeAccountHandler() accountHandler.AccountHandler {
 	wire.Build(
 		accountHandler.NewAccountHandler,
 		InitializeAccountUsecase,
+	)
+	return nil
+}
+
+func InitializeExchangeHandler() exchangeHandler.ExchangeHandler {
+	wire.Build(
+		exchangeHandler.NewExchangeHandler,
+		InitializeExchangeUsecase,
 	)
 	return nil
 }
@@ -97,6 +113,15 @@ func InitializeAccountUsecase() accountUsecase.AccountUsecase {
 	wire.Build(
 		accountUsecase.NewAccountUsecase,
 		InitializeAccountService,
+		InitializeTransactionService,
+	)
+	return nil
+}
+
+func InitializeExchangeUsecase() exchangeUsecase.ExchangeUsecase {
+	wire.Build(
+		exchangeUsecase.NewExchangeUsecase,
+		InitializeExchangeService,
 		InitializeTransactionService,
 	)
 	return nil
@@ -159,6 +184,21 @@ func InitializeEventService() eventService.EventService {
 		database.NewMysql,
 		eventService.NewEventService,
 		masterEventMysqlDao.NewMasterEventDao,
+	)
+	return nil
+}
+
+func InitializeExchangeService() exchangeService.ExchangeService {
+	wire.Build(
+		database.NewMysql,
+		exchangeService.NewExchangeService,
+		InitializeItemService,
+		InitializeEventService,
+		masterExchangeMysqlDao.NewMasterExchangeDao,
+		masterExchangeCostMysqlDao.NewMasterExchangeCostDao,
+		masterExchangeItemMysqlDao.NewMasterExchangeItemDao,
+		userExchangeMysqlDao.NewUserExchangeDao,
+		userExchangeItemMysqlDao.NewUserExchangeItemDao,
 	)
 	return nil
 }

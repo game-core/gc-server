@@ -1,0 +1,10 @@
+// 交換
+syntax = "proto3";
+
+package api.game;
+
+message MasterExchange {
+  int64 master_exchange_id = 1;
+  int64 master_event_id = 2;
+  string name = 3;
+}

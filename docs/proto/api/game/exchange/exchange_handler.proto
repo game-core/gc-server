@@ -1,0 +1,14 @@
+// 交換
+syntax = "proto3";
+
+package api.game;
+
+import "exchange/exchange_update_request.proto";
+import "exchange/exchange_update_response.proto";
+import "exchange/exchange_receive_request.proto";
+import "exchange/exchange_receive_response.proto";
+
+service Exchange {
+  rpc Update (ExchangeUpdateRequest) returns (ExchangeUpdateResponse);
+  rpc Receive (ExchangeReceiveRequest) returns (ExchangeReceiveResponse);
+}

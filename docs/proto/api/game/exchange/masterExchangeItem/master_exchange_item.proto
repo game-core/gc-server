@@ -1,0 +1,12 @@
+// 交換アイテム
+syntax = "proto3";
+
+package api.game;
+
+message MasterExchangeItem {
+  int64 master_exchange_item_id = 1;
+  int64 master_exchange_id = 2;
+  int64 master_item_id = 3;
+  string name = 4;
+  int32 count = 5;
+}

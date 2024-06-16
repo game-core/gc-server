@@ -1,0 +1,17 @@
+name: ExchangeUpdateRequest
+package: exchange
+comment: "交換更新リクエスト"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  MasterExchangeId:
+    name: master_exchange_id
+    type: int64
+    nullable: false
+    number: 2
+    comment: "交換ID"

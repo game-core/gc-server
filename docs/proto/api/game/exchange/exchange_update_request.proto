@@ -1,0 +1,9 @@
+// 交換更新リクエスト
+syntax = "proto3";
+
+package api.game;
+
+message ExchangeUpdateRequest {
+  string user_id = 1;
+  int64 master_exchange_id = 2;
+}

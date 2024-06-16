@@ -1,0 +1,21 @@
+name: Exchange
+package: exchange
+comment: "交換"
+
+structure:
+  Update:
+    name: update
+    method: unary
+    auth: false
+    request: ExchangeUpdateRequest
+    response: ExchangeUpdateResponse
+    number: 1
+    comment: "更新"
+  Receive:
+    name: receive
+    method: unary
+    auth: false
+    request: ExchangeReceiveRequest
+    response: ExchangeReceiveResponse
+    number: 2
+    comment: "受け取り"

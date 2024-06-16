@@ -1,0 +1,23 @@
+name: ExchangeReceiveRequest
+package: exchange
+comment: "交換受け取りリクエスト"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーID"
+  MasterExchangeItemId:
+    name: master_exchange_item_id
+    type: int64
+    nullable: false
+    number: 2
+    comment: "交換アイテムID"
+  Count:
+    name: count
+    type: int32
+    nullable: false
+    number: 3
+    comment: "アイテム数"

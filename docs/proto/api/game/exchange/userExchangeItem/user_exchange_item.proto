@@ -1,0 +1,11 @@
+// ユーザー交換アイテム
+syntax = "proto3";
+
+package api.game;
+
+message UserExchangeItem {
+  string user_id = 1;
+  int64 master_exchange_id = 2;
+  int64 master_exchange_item_id = 3;
+  int32 count = 4;
+}

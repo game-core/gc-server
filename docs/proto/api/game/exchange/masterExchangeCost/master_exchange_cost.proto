@@ -1,0 +1,12 @@
+// 交換コスト
+syntax = "proto3";
+
+package api.game;
+
+message MasterExchangeCost {
+  int64 master_exchange_cost_id = 1;
+  int64 master_exchange_item_id = 2;
+  int64 master_item_id = 3;
+  string name = 4;
+  int32 count = 5;
+}
