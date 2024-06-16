@@ -4,7 +4,7 @@ package masterExchangeItem
 func (s MasterExchangeItems) ExtractMasterExchangeId() int64 {
 	for _, masterExchangeItem := range s {
 		if masterExchangeItem != nil {
-			return masterExchangeItem.MasterItemId
+			return masterExchangeItem.MasterExchangeId
 		}
 	}
 
