@@ -137,7 +137,7 @@ func (s *exchangeService) getUserExchangeModelAndUserExchangeItemModel(ctx conte
 	if err != nil {
 		return nil, nil, errors.NewMethodError("s.userExchangeItemMysqlRepository.Find", err)
 	}
-	if count < userExchangeItemModel.Count {
+	if count > userExchangeItemModel.Count {
 		return nil, nil, errors.NewError("over limit")
 	}
 
