@@ -8,6 +8,7 @@ import (
 
 	"github.com/game-core/gc-server/api/game/di"
 	"github.com/game-core/gc-server/api/game/presentation/proto/account"
+	"github.com/game-core/gc-server/api/game/presentation/proto/exchange"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health"
 	"github.com/game-core/gc-server/api/game/presentation/proto/loginBonus"
 )
@@ -17,6 +18,7 @@ func Router(lis net.Listener) {
 	authInterceptor := di.InitializeAuthInterceptor()
 	accountHandler := di.InitializeAccountHandler()
 	healthHandler := di.InitializeHealthHandler()
+	exchangeHandler := di.InitializeExchangeHandler()
 	loginBonusHandler := di.InitializeLoginBonusHandler()
 
 	// Server
@@ -26,6 +28,7 @@ func Router(lis net.Listener) {
 
 	account.RegisterAccountServer(s, accountHandler)
 	health.RegisterHealthServer(s, healthHandler)
+	exchange.RegisterExchangeServer(s, exchangeHandler)
 	loginBonus.RegisterLoginBonusServer(s, loginBonusHandler)
 
 	log.Printf("gRPC proto started")
