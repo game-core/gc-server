@@ -30,11 +30,12 @@ type Structure struct {
 }
 
 type TemplateStruct struct {
-	Package string
-	Name    string
-	Comment string
-	Script  string
-	Import  string
+	Package    string
+	Name       string
+	PluralName string
+	Comment    string
+	Script     string
+	Import     string
 }
 
 var importCode = ""

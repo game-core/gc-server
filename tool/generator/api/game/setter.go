@@ -24,6 +24,8 @@ import (
 	{{.Import}}
 )
 
+type {{.PluralName}} []*{{.Name}}
+
 {{.Script}}
 `
 
@@ -115,11 +117,12 @@ func (s *Setter) createTemplate(yamlStruct *YamlStruct, outputFile *os.File) err
 		outputFile,
 		"templateCode",
 		TemplateStruct{
-			Name:    yamlStruct.Name,
-			Package: yamlStruct.Package,
-			Comment: yamlStruct.Comment,
-			Script:  s.createScript(yamlStruct),
-			Import:  importCode,
+			Name:       yamlStruct.Name,
+			PluralName: changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name))),
+			Package:    yamlStruct.Package,
+			Comment:    yamlStruct.Comment,
+			Script:     s.createScript(yamlStruct),
+			Import:     importCode,
 		},
 	); err != nil {
 		return err
@@ -140,7 +143,33 @@ func (s *Setter) createScript(yamlStruct *YamlStruct) string {
 		returnScript = append(returnScript, fmt.Sprintf("%s: %s,", changes.SnakeToUpperCamel(field.Name), changes.SnakeToCamel(field.Name)))
 	}
 
-	return fmt.Sprintf(`%s`, s.createSetter(yamlStruct.Name, strings.Join(paramScript, ","), strings.Join(returnScript, "\n")))
+	return fmt.Sprintf(
+		`%s
+
+		%s
+		`,
+		s.createNew(yamlStruct.Name, changes.SnakeToUpperCamel(changes.SingularToPlural(changes.UpperCamelToSnake(yamlStruct.Name)))),
+		s.createSetter(yamlStruct.Name, strings.Join(paramScript, ","), strings.Join(returnScript, "\n")),
+	)
+}
+
+// createNew Newを作成する
+func (s *Setter) createNew(name, pluralName string) string {
+	return fmt.Sprintf(
+		`func New%s() *%s {
+			return &%s{}
+		}
+
+		func New%s() %s {
+			return %s{}
+		}`,
+		name,
+		name,
+		name,
+		pluralName,
+		pluralName,
+		pluralName,
+	)
 }
 
 // createSetter Setterを作成する

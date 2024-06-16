@@ -5,10 +5,8 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/exchange/userExchangeItem"
 )
 
-type UserExchangeItems []*UserExchangeItem
-
 func SetUserExchangeItems(userExchangeItemModels userExchangeItem.UserExchangeItems) UserExchangeItems {
-	var userExchangeItems UserExchangeItems
+	userExchangeItems := NewUserExchangeItems()
 	for _, userExchangeItemModel := range userExchangeItemModels {
 		userExchangeItems = append(
 			userExchangeItems,

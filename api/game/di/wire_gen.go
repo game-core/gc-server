@@ -8,11 +8,13 @@ package di
 
 import (
 	"github.com/game-core/gc-server/api/game/presentation/handler/account"
+	"github.com/game-core/gc-server/api/game/presentation/handler/exchange"
 	"github.com/game-core/gc-server/api/game/presentation/handler/health"
 	"github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
 	"github.com/game-core/gc-server/api/game/presentation/handler/profile"
 	"github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
 	account2 "github.com/game-core/gc-server/api/game/usecase/account"
+	exchange2 "github.com/game-core/gc-server/api/game/usecase/exchange"
 	health2 "github.com/game-core/gc-server/api/game/usecase/health"
 	loginBonus2 "github.com/game-core/gc-server/api/game/usecase/loginBonus"
 	profile2 "github.com/game-core/gc-server/api/game/usecase/profile"
@@ -21,6 +23,7 @@ import (
 	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
 	"github.com/game-core/gc-server/pkg/domain/model/action"
 	"github.com/game-core/gc-server/pkg/domain/model/event"
+	exchange3 "github.com/game-core/gc-server/pkg/domain/model/exchange"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
 	"github.com/game-core/gc-server/pkg/domain/model/item"
 	loginBonus3 "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
@@ -35,6 +38,9 @@ import (
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionStep"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterActionTrigger"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterEvent"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchange"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchangeCost"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterExchangeItem"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterItem"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterLoginBonus"
@@ -44,6 +50,8 @@ import (
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAccount"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userAction"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userExchange"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userExchangeItem"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userItemBox"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userLoginBonus"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/user/userProfile"
@@ -65,6 +73,12 @@ func InitializeAccountHandler() account.AccountHandler {
 	accountUsecase := InitializeAccountUsecase()
 	accountHandler := account.NewAccountHandler(accountUsecase)
 	return accountHandler
+}
+
+func InitializeExchangeHandler() exchange.ExchangeHandler {
+	exchangeUsecase := InitializeExchangeUsecase()
+	exchangeHandler := exchange.NewExchangeHandler(exchangeUsecase)
+	return exchangeHandler
 }
 
 func InitializeHealthHandler() health.HealthHandler {
@@ -90,6 +104,13 @@ func InitializeAccountUsecase() account2.AccountUsecase {
 	transactionService := InitializeTransactionService()
 	accountUsecase := account2.NewAccountUsecase(accountService, transactionService)
 	return accountUsecase
+}
+
+func InitializeExchangeUsecase() exchange2.ExchangeUsecase {
+	exchangeService := InitializeExchangeService()
+	transactionService := InitializeTransactionService()
+	exchangeUsecase := exchange2.NewExchangeUsecase(exchangeService, transactionService)
+	return exchangeUsecase
 }
 
 func InitializeHealthUsecase() health2.HealthUsecase {
@@ -139,6 +160,19 @@ func InitializeEventService() event.EventService {
 	masterEventMysqlRepository := masterEvent.NewMasterEventDao(mysqlHandler)
 	eventService := event.NewEventService(masterEventMysqlRepository)
 	return eventService
+}
+
+func InitializeExchangeService() exchange3.ExchangeService {
+	itemService := InitializeItemService()
+	eventService := InitializeEventService()
+	mysqlHandler := database.NewMysql()
+	masterExchangeMysqlRepository := masterExchange.NewMasterExchangeDao(mysqlHandler)
+	masterExchangeCostMysqlRepository := masterExchangeCost.NewMasterExchangeCostDao(mysqlHandler)
+	masterExchangeItemMysqlRepository := masterExchangeItem.NewMasterExchangeItemDao(mysqlHandler)
+	userExchangeMysqlRepository := userExchange.NewUserExchangeDao(mysqlHandler)
+	userExchangeItemMysqlRepository := userExchangeItem.NewUserExchangeItemDao(mysqlHandler)
+	exchangeService := exchange3.NewExchangeService(itemService, eventService, masterExchangeMysqlRepository, masterExchangeCostMysqlRepository, masterExchangeItemMysqlRepository, userExchangeMysqlRepository, userExchangeItemMysqlRepository)
+	return exchangeService
 }
 
 func InitializeHealthService() health3.HealthService {

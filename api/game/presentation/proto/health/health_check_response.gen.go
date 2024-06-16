@@ -6,6 +6,16 @@ import (
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 )
 
+type HealthCheckResponses []*HealthCheckResponse
+
+func NewHealthCheckResponse() *HealthCheckResponse {
+	return &HealthCheckResponse{}
+}
+
+func NewHealthCheckResponses() HealthCheckResponses {
+	return HealthCheckResponses{}
+}
+
 func SetHealthCheckResponse(commonHealth *commonHealth.CommonHealth, masterHealth *masterHealth.MasterHealth) *HealthCheckResponse {
 	return &HealthCheckResponse{
 		CommonHealth: commonHealth,
