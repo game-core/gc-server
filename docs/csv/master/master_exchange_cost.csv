@@ -1,2 +1,3 @@
 master_exchange_cost_id,master_exchange_item_id,master_item_id,name,count
 1,1,1,交換所コスト1,1
+2,2,1,交換所コスト2,1

@@ -1,2 +1,3 @@
 master_exchange_item_id,master_exchange_id,master_item_id,name,count
-1,1,1,交換所コスト1,10
+1,1,1,交換所アイテム1,10
+2,1,2,交換所アイテム2,5
