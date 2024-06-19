@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.local
     build:
-      target: dev
+      target: prod
       context: .
       dockerfile: ./docker/web/Dockerfile
     volumes:

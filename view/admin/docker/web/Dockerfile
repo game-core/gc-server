@@ -1,22 +1,33 @@
-FROM node:18.12.0-alpine AS dev
+FROM node:22.0.0-alpine AS builder
 
 WORKDIR /web
 RUN apk upgrade --update && apk add bash && apk --no-cache add git
-COPY package.json yarn.lock ./
+
+COPY .. .
+
 RUN yarn install
-COPY . .
+RUN yarn build
+
+FROM node:22.0.0-alpine AS dev
+
+WORKDIR /web
+RUN apk upgrade --update && apk add bash && apk --no-cache add git
+
+COPY .. .
+
+RUN yarn install
 RUN yarn build
 
 EXPOSE 3000
 
 CMD ["yarn", "dev"]
 
-FROM node:18.12.0-alpine AS prod
+FROM node:22.0.0-alpine AS prod
 
 WORKDIR /web
-COPY --from=development /web/package.json /web/yarn.lock ./
-COPY --from=development /web/.nuxt ./.nuxt
-COPY --from=development /web/nuxt.config.ts ./
+COPY --from=builder /web/package.json ./
+COPY --from=builder /web/yarn.lock ./
+COPY --from=builder /web/.output ./.output
 RUN yarn install
 
 EXPOSE 3000
