@@ -5,5 +5,5 @@ docker_up:
 	$(DOCKER_COMPOSE) up -d --build
 
 # コンテナに接続
-web_conn:
-	$(DOCKER_COMPOSE) exec web sh
+view_conn:
+	$(DOCKER_COMPOSE) exec view sh
