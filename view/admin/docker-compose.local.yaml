@@ -1,6 +1,6 @@
 version: '3.8'
 
-name: gc-server-web
+name: gc-server-view
 
 volumes:
   node_modules:
@@ -8,16 +8,16 @@ volumes:
 
 services:
   web:
-    container_name: gc-server-web
+    container_name: gc-server-view
     env_file:
       - .env.local
     build:
       target: prod
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: platform/docker/view/Dockerfile
     volumes:
-      - .:/web:cached
-      - node_modules:/web/node_modules
+      - .:/view:cached
+      - node_modules:/view/node_modules
     ports:
       - "3000:3000"
     tty: true
