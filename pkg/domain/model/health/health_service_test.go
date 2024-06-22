@@ -8,12 +8,14 @@ import (
 	"github.com/golang/mock/gomock"
 
 	"github.com/game-core/gc-server/internal/errors"
+	"github.com/game-core/gc-server/pkg/domain/model/health/adminHealth"
 	"github.com/game-core/gc-server/pkg/domain/model/health/commonHealth"
 	"github.com/game-core/gc-server/pkg/domain/model/health/masterHealth"
 )
 
 func TestNewHealthService_NewHealthService(t *testing.T) {
 	type args struct {
+		adminHealthMysqlRepository  adminHealth.AdminHealthMysqlRepository
 		commonHealthMysqlRepository commonHealth.CommonHealthMysqlRepository
 		masterHealthMysqlRepository masterHealth.MasterHealthMysqlRepository
 	}
@@ -25,10 +27,12 @@ func TestNewHealthService_NewHealthService(t *testing.T) {
 		{
 			name: "正常",
 			args: args{
+				adminHealthMysqlRepository:  nil,
 				commonHealthMysqlRepository: nil,
 				masterHealthMysqlRepository: nil,
 			},
 			want: &healthService{
+				adminHealthMysqlRepository:  nil,
 				commonHealthMysqlRepository: nil,
 				masterHealthMysqlRepository: nil,
 			},
@@ -37,6 +41,7 @@ func TestNewHealthService_NewHealthService(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewHealthService(
+				tt.args.adminHealthMysqlRepository,
 				tt.args.commonHealthMysqlRepository,
 				tt.args.masterHealthMysqlRepository,
 			)
@@ -49,6 +54,7 @@ func TestNewHealthService_NewHealthService(t *testing.T) {
 
 func TestHealthService_Check(t *testing.T) {
 	type fields struct {
+		adminHealthMysqlRepository  func(ctrl *gomock.Controller) adminHealth.AdminHealthMysqlRepository
 		commonHealthMysqlRepository func(ctrl *gomock.Controller) commonHealth.CommonHealthMysqlRepository
 		masterHealthMysqlRepository func(ctrl *gomock.Controller) masterHealth.MasterHealthMysqlRepository
 	}
@@ -66,6 +72,23 @@ func TestHealthService_Check(t *testing.T) {
 		{
 			name: "正常：取得できる",
 			fields: fields{
+				adminHealthMysqlRepository: func(ctrl *gomock.Controller) adminHealth.AdminHealthMysqlRepository {
+					m := adminHealth.NewMockAdminHealthMysqlRepository(ctrl)
+					m.EXPECT().
+						Find(
+							nil,
+							int64(1),
+						).
+						Return(
+							&adminHealth.AdminHealth{
+								HealthId:        1,
+								Name:            "test",
+								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+							},
+							nil,
+						)
+					return m
+				},
 				commonHealthMysqlRepository: func(ctrl *gomock.Controller) commonHealth.CommonHealthMysqlRepository {
 					m := commonHealth.NewMockCommonHealthMysqlRepository(ctrl)
 					m.EXPECT().
@@ -104,13 +127,16 @@ func TestHealthService_Check(t *testing.T) {
 			args: args{
 				ctx: nil,
 				req: &HealthCheckRequest{
-					HealthId:         1,
-					Name:             "test",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					HealthId: 1,
+					Name:     "test",
 				},
 			},
 			want: &HealthCheckResponse{
+				AdminHealth: &adminHealth.AdminHealth{
+					HealthId:        1,
+					Name:            "test",
+					AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+				},
 				CommonHealth: &commonHealth.CommonHealth{
 					HealthId:         1,
 					Name:             "test",
@@ -125,8 +151,60 @@ func TestHealthService_Check(t *testing.T) {
 			wantErr: nil,
 		},
 		{
+			name: "異常： failed to s.adminHealthMysqlRepository.Find: test",
+			fields: fields{
+				adminHealthMysqlRepository: func(ctrl *gomock.Controller) adminHealth.AdminHealthMysqlRepository {
+					m := adminHealth.NewMockAdminHealthMysqlRepository(ctrl)
+					m.EXPECT().
+						Find(
+							nil,
+							int64(1),
+						).
+						Return(
+							nil,
+							errors.NewTestError(),
+						)
+					return m
+				},
+				commonHealthMysqlRepository: func(ctrl *gomock.Controller) commonHealth.CommonHealthMysqlRepository {
+					m := commonHealth.NewMockCommonHealthMysqlRepository(ctrl)
+					return m
+				},
+				masterHealthMysqlRepository: func(ctrl *gomock.Controller) masterHealth.MasterHealthMysqlRepository {
+					m := masterHealth.NewMockMasterHealthMysqlRepository(ctrl)
+					return m
+				},
+			},
+			args: args{
+				ctx: nil,
+				req: &HealthCheckRequest{
+					HealthId: 1,
+					Name:     "test",
+				},
+			},
+			want:    nil,
+			wantErr: errors.NewError("failed to s.adminHealthMysqlRepository.Find: test"),
+		},
+		{
 			name: "異常： failed to s.commonHealthMysqlRepository.Find: test",
 			fields: fields{
+				adminHealthMysqlRepository: func(ctrl *gomock.Controller) adminHealth.AdminHealthMysqlRepository {
+					m := adminHealth.NewMockAdminHealthMysqlRepository(ctrl)
+					m.EXPECT().
+						Find(
+							nil,
+							int64(1),
+						).
+						Return(
+							&adminHealth.AdminHealth{
+								HealthId:        1,
+								Name:            "test",
+								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+							},
+							nil,
+						)
+					return m
+				},
 				commonHealthMysqlRepository: func(ctrl *gomock.Controller) commonHealth.CommonHealthMysqlRepository {
 					m := commonHealth.NewMockCommonHealthMysqlRepository(ctrl)
 					m.EXPECT().
@@ -148,10 +226,8 @@ func TestHealthService_Check(t *testing.T) {
 			args: args{
 				ctx: nil,
 				req: &HealthCheckRequest{
-					HealthId:         1,
-					Name:             "test",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					HealthId: 1,
+					Name:     "test",
 				},
 			},
 			want:    nil,
@@ -160,6 +236,23 @@ func TestHealthService_Check(t *testing.T) {
 		{
 			name: "異常： failed to s.masterHealthMysqlRepository.Find: test",
 			fields: fields{
+				adminHealthMysqlRepository: func(ctrl *gomock.Controller) adminHealth.AdminHealthMysqlRepository {
+					m := adminHealth.NewMockAdminHealthMysqlRepository(ctrl)
+					m.EXPECT().
+						Find(
+							nil,
+							int64(1),
+						).
+						Return(
+							&adminHealth.AdminHealth{
+								HealthId:        1,
+								Name:            "test",
+								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+							},
+							nil,
+						)
+					return m
+				},
 				commonHealthMysqlRepository: func(ctrl *gomock.Controller) commonHealth.CommonHealthMysqlRepository {
 					m := commonHealth.NewMockCommonHealthMysqlRepository(ctrl)
 					m.EXPECT().
@@ -194,10 +287,8 @@ func TestHealthService_Check(t *testing.T) {
 			args: args{
 				ctx: nil,
 				req: &HealthCheckRequest{
-					HealthId:         1,
-					Name:             "test",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					HealthId: 1,
+					Name:     "test",
 				},
 			},
 			want:    nil,
@@ -209,6 +300,7 @@ func TestHealthService_Check(t *testing.T) {
 			ctrl := gomock.NewController(t)
 
 			s := &healthService{
+				adminHealthMysqlRepository:  tt.fields.adminHealthMysqlRepository(ctrl),
 				commonHealthMysqlRepository: tt.fields.commonHealthMysqlRepository(ctrl),
 				masterHealthMysqlRepository: tt.fields.masterHealthMysqlRepository(ctrl),
 			}

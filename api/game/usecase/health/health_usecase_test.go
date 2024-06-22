@@ -8,10 +8,12 @@ import (
 	"github.com/golang/mock/gomock"
 
 	healthProto "github.com/game-core/gc-server/api/game/presentation/proto/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/adminHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 	"github.com/game-core/gc-server/internal/errors"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
+	adminHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/adminHealth"
 	commonHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/commonHealth"
 	masterHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/masterHealth"
 )
@@ -69,14 +71,16 @@ func TestHealthUsecase_Check(t *testing.T) {
 						Check(
 							gomock.Any(),
 							&healthService.HealthCheckRequest{
-								HealthId:         1,
-								Name:             "health",
-								CommonHealthType: commonHealthModel.CommonHealthType_CommonSuccess,
-								MasterHealthType: masterHealthModel.MasterHealthType_MasterSuccess,
+								HealthId: 1,
 							},
 						).
 						Return(
 							&healthService.HealthCheckResponse{
+								AdminHealth: &adminHealthModel.AdminHealth{
+									HealthId:        1,
+									Name:            "health",
+									AdminHealthType: adminHealthModel.AdminHealthType_AdminSuccess,
+								},
 								CommonHealth: &commonHealthModel.CommonHealth{
 									HealthId:         1,
 									Name:             "health",
@@ -96,13 +100,15 @@ func TestHealthUsecase_Check(t *testing.T) {
 			args: args{
 				ctx: nil,
 				req: &healthProto.HealthCheckRequest{
-					HealthId:         1,
-					Name:             "health",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					HealthId: 1,
 				},
 			},
 			want: &healthProto.HealthCheckResponse{
+				AdminHealth: &adminHealth.AdminHealth{
+					HealthId:        1,
+					Name:            "health",
+					AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+				},
 				CommonHealth: &commonHealth.CommonHealth{
 					HealthId:         1,
 					Name:             "health",
@@ -125,10 +131,7 @@ func TestHealthUsecase_Check(t *testing.T) {
 						Check(
 							gomock.Any(),
 							&healthService.HealthCheckRequest{
-								HealthId:         1,
-								Name:             "health",
-								CommonHealthType: commonHealthModel.CommonHealthType_CommonSuccess,
-								MasterHealthType: masterHealthModel.MasterHealthType_MasterSuccess,
+								HealthId: 1,
 							},
 						).
 						Return(
@@ -141,10 +144,7 @@ func TestHealthUsecase_Check(t *testing.T) {
 			args: args{
 				ctx: nil,
 				req: &healthProto.HealthCheckRequest{
-					HealthId:         1,
-					Name:             "health",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					HealthId: 1,
 				},
 			},
 			want:    nil,

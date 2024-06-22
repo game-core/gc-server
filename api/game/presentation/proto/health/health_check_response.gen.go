@@ -2,6 +2,7 @@
 package health
 
 import (
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/adminHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 )
@@ -16,8 +17,9 @@ func NewHealthCheckResponses() HealthCheckResponses {
 	return HealthCheckResponses{}
 }
 
-func SetHealthCheckResponse(commonHealth *commonHealth.CommonHealth, masterHealth *masterHealth.MasterHealth) *HealthCheckResponse {
+func SetHealthCheckResponse(adminHealth *adminHealth.AdminHealth, commonHealth *commonHealth.CommonHealth, masterHealth *masterHealth.MasterHealth) *HealthCheckResponse {
 	return &HealthCheckResponse{
+		AdminHealth:  adminHealth,
 		CommonHealth: commonHealth,
 		MasterHealth: masterHealth,
 	}

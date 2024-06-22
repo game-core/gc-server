@@ -25,21 +25,23 @@ namespace Api.Game {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiJoZWFsdGgvaGVhbHRoX2NoZWNrX3Jlc3BvbnNlLnByb3RvEghhcGkuZ2Ft",
-            "ZRonaGVhbHRoL2NvbW1vbkhlYWx0aC9jb21tb25faGVhbHRoLnByb3RvGido",
-            "ZWFsdGgvbWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGgucHJvdG8ivQEKE0hl",
-            "YWx0aENoZWNrUmVzcG9uc2USQAoNY29tbW9uX2hlYWx0aBgBIAEoCzIWLmFw",
-            "aS5nYW1lLkNvbW1vbkhlYWx0aEgAUgxjb21tb25IZWFsdGiIAQESQAoNbWFz",
-            "dGVyX2hlYWx0aBgCIAEoCzIWLmFwaS5nYW1lLk1hc3RlckhlYWx0aEgBUgxt",
-            "YXN0ZXJIZWFsdGiIAQFCEAoOX2NvbW1vbl9oZWFsdGhCEAoOX21hc3Rlcl9o",
-            "ZWFsdGhCrAEKDGNvbS5hcGkuZ2FtZUIYSGVhbHRoQ2hlY2tSZXNwb25zZVBy",
-            "b3RvUAFaQWdpdGh1Yi5jb20vZ2FtZS1jb3JlL2djLXNlcnZlci9hcGkvZ2Ft",
-            "ZS9wcmVzZW50YXRpb24vcHJvdG8vaGVhbHRoogIDQUdYqgIIQXBpLkdhbWXK",
-            "AghBcGlcR2FtZeICFEFwaVxHYW1lXEdQQk1ldGFkYXRh6gIJQXBpOjpHYW1l",
-            "YgZwcm90bzM="));
+            "ZRolaGVhbHRoL2FkbWluSGVhbHRoL2FkbWluX2hlYWx0aC5wcm90bxonaGVh",
+            "bHRoL2NvbW1vbkhlYWx0aC9jb21tb25faGVhbHRoLnByb3RvGidoZWFsdGgv",
+            "bWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGgucHJvdG8ijQIKE0hlYWx0aENo",
+            "ZWNrUmVzcG9uc2USPQoMYWRtaW5faGVhbHRoGAEgASgLMhUuYXBpLmdhbWUu",
+            "QWRtaW5IZWFsdGhIAFILYWRtaW5IZWFsdGiIAQESQAoNY29tbW9uX2hlYWx0",
+            "aBgCIAEoCzIWLmFwaS5nYW1lLkNvbW1vbkhlYWx0aEgBUgxjb21tb25IZWFs",
+            "dGiIAQESQAoNbWFzdGVyX2hlYWx0aBgDIAEoCzIWLmFwaS5nYW1lLk1hc3Rl",
+            "ckhlYWx0aEgCUgxtYXN0ZXJIZWFsdGiIAQFCDwoNX2FkbWluX2hlYWx0aEIQ",
+            "Cg5fY29tbW9uX2hlYWx0aEIQCg5fbWFzdGVyX2hlYWx0aEKsAQoMY29tLmFw",
+            "aS5nYW1lQhhIZWFsdGhDaGVja1Jlc3BvbnNlUHJvdG9QAVpBZ2l0aHViLmNv",
+            "bS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2FwaS9nYW1lL3ByZXNlbnRhdGlvbi9w",
+            "cm90by9oZWFsdGiiAgNBR1iqAghBcGkuR2FtZcoCCEFwaVxHYW1l4gIUQXBp",
+            "XEdhbWVcR1BCTWV0YWRhdGHqAglBcGk6OkdhbWViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Api.Game.CommonHealthReflection.Descriptor, global::Api.Game.MasterHealthReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Api.Game.AdminHealthReflection.Descriptor, global::Api.Game.CommonHealthReflection.Descriptor, global::Api.Game.MasterHealthReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.HealthCheckResponse), global::Api.Game.HealthCheckResponse.Parser, new[]{ "CommonHealth", "MasterHealth" }, new[]{ "CommonHealth", "MasterHealth" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.HealthCheckResponse), global::Api.Game.HealthCheckResponse.Parser, new[]{ "AdminHealth", "CommonHealth", "MasterHealth" }, new[]{ "AdminHealth", "CommonHealth", "MasterHealth" }, null, null, null)
           }));
     }
     #endregion
@@ -81,6 +83,7 @@ namespace Api.Game {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public HealthCheckResponse(HealthCheckResponse other) : this() {
+      adminHealth_ = other.adminHealth_ != null ? other.adminHealth_.Clone() : null;
       commonHealth_ = other.commonHealth_ != null ? other.commonHealth_.Clone() : null;
       masterHealth_ = other.masterHealth_ != null ? other.masterHealth_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -92,8 +95,20 @@ namespace Api.Game {
       return new HealthCheckResponse(this);
     }
 
+    /// <summary>Field number for the "admin_health" field.</summary>
+    public const int AdminHealthFieldNumber = 1;
+    private global::Api.Game.AdminHealth adminHealth_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Api.Game.AdminHealth AdminHealth {
+      get { return adminHealth_; }
+      set {
+        adminHealth_ = value;
+      }
+    }
+
     /// <summary>Field number for the "common_health" field.</summary>
-    public const int CommonHealthFieldNumber = 1;
+    public const int CommonHealthFieldNumber = 2;
     private global::Api.Game.CommonHealth commonHealth_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -105,7 +120,7 @@ namespace Api.Game {
     }
 
     /// <summary>Field number for the "master_health" field.</summary>
-    public const int MasterHealthFieldNumber = 2;
+    public const int MasterHealthFieldNumber = 3;
     private global::Api.Game.MasterHealth masterHealth_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -131,6 +146,7 @@ namespace Api.Game {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (!object.Equals(AdminHealth, other.AdminHealth)) return false;
       if (!object.Equals(CommonHealth, other.CommonHealth)) return false;
       if (!object.Equals(MasterHealth, other.MasterHealth)) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -140,6 +156,7 @@ namespace Api.Game {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (adminHealth_ != null) hash ^= AdminHealth.GetHashCode();
       if (commonHealth_ != null) hash ^= CommonHealth.GetHashCode();
       if (masterHealth_ != null) hash ^= MasterHealth.GetHashCode();
       if (_unknownFields != null) {
@@ -160,12 +177,16 @@ namespace Api.Game {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (commonHealth_ != null) {
+      if (adminHealth_ != null) {
         output.WriteRawTag(10);
+        output.WriteMessage(AdminHealth);
+      }
+      if (commonHealth_ != null) {
+        output.WriteRawTag(18);
         output.WriteMessage(CommonHealth);
       }
       if (masterHealth_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(MasterHealth);
       }
       if (_unknownFields != null) {
@@ -178,12 +199,16 @@ namespace Api.Game {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (commonHealth_ != null) {
+      if (adminHealth_ != null) {
         output.WriteRawTag(10);
+        output.WriteMessage(AdminHealth);
+      }
+      if (commonHealth_ != null) {
+        output.WriteRawTag(18);
         output.WriteMessage(CommonHealth);
       }
       if (masterHealth_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(MasterHealth);
       }
       if (_unknownFields != null) {
@@ -196,6 +221,9 @@ namespace Api.Game {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (adminHealth_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(AdminHealth);
+      }
       if (commonHealth_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CommonHealth);
       }
@@ -213,6 +241,12 @@ namespace Api.Game {
     public void MergeFrom(HealthCheckResponse other) {
       if (other == null) {
         return;
+      }
+      if (other.adminHealth_ != null) {
+        if (adminHealth_ == null) {
+          AdminHealth = new global::Api.Game.AdminHealth();
+        }
+        AdminHealth.MergeFrom(other.AdminHealth);
       }
       if (other.commonHealth_ != null) {
         if (commonHealth_ == null) {
@@ -242,13 +276,20 @@ namespace Api.Game {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
+            if (adminHealth_ == null) {
+              AdminHealth = new global::Api.Game.AdminHealth();
+            }
+            input.ReadMessage(AdminHealth);
+            break;
+          }
+          case 18: {
             if (commonHealth_ == null) {
               CommonHealth = new global::Api.Game.CommonHealth();
             }
             input.ReadMessage(CommonHealth);
             break;
           }
-          case 18: {
+          case 26: {
             if (masterHealth_ == null) {
               MasterHealth = new global::Api.Game.MasterHealth();
             }
@@ -271,13 +312,20 @@ namespace Api.Game {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
+            if (adminHealth_ == null) {
+              AdminHealth = new global::Api.Game.AdminHealth();
+            }
+            input.ReadMessage(AdminHealth);
+            break;
+          }
+          case 18: {
             if (commonHealth_ == null) {
               CommonHealth = new global::Api.Game.CommonHealth();
             }
             input.ReadMessage(CommonHealth);
             break;
           }
-          case 18: {
+          case 26: {
             if (masterHealth_ == null) {
               MasterHealth = new global::Api.Game.MasterHealth();
             }

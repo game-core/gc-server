@@ -4,12 +4,11 @@ import (
 	"context"
 
 	healthProto "github.com/game-core/gc-server/api/game/presentation/proto/health"
+	"github.com/game-core/gc-server/api/game/presentation/proto/health/adminHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
 	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
 	"github.com/game-core/gc-server/internal/errors"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
-	commonHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/commonHealth"
-	masterHealthModel "github.com/game-core/gc-server/pkg/domain/model/health/masterHealth"
 )
 
 type HealthUsecase interface {
@@ -34,9 +33,6 @@ func (s *healthUsecase) Check(ctx context.Context, req *healthProto.HealthCheckR
 		ctx,
 		healthService.SetHealthCheckRequest(
 			req.HealthId,
-			req.Name,
-			commonHealthModel.CommonHealthType(req.CommonHealthType),
-			masterHealthModel.MasterHealthType(req.MasterHealthType),
 		),
 	)
 	if err != nil {
@@ -44,6 +40,11 @@ func (s *healthUsecase) Check(ctx context.Context, req *healthProto.HealthCheckR
 	}
 
 	return healthProto.SetHealthCheckResponse(
+		adminHealth.SetAdminHealth(
+			res.AdminHealth.HealthId,
+			res.AdminHealth.Name,
+			adminHealth.AdminHealthType(res.AdminHealth.AdminHealthType),
+		),
 		commonHealth.SetCommonHealth(
 			res.CommonHealth.HealthId,
 			res.CommonHealth.Name,

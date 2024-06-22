@@ -31,6 +31,7 @@ import (
 	shardService "github.com/game-core/gc-server/pkg/domain/model/shard"
 	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
 	userItemBoxCloudWatchDao "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
+	adminHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql//adminHealth"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	commonTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	masterActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -207,6 +208,7 @@ func InitializeHealthService() healthService.HealthService {
 	wire.Build(
 		database.NewMysql,
 		healthService.NewHealthService,
+		adminHealthMysqlDao.NewAdminHealthDao,
 		commonHealthMysqlDao.NewCommonHealthDao,
 		masterHealthMysqlDao.NewMasterHealthDao,
 	)

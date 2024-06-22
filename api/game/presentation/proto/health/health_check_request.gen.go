@@ -1,11 +1,6 @@
 // Package health ヘルスチェックリクエスト
 package health
 
-import (
-	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
-	"github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
-)
-
 type HealthCheckRequests []*HealthCheckRequest
 
 func NewHealthCheckRequest() *HealthCheckRequest {
@@ -16,11 +11,8 @@ func NewHealthCheckRequests() HealthCheckRequests {
 	return HealthCheckRequests{}
 }
 
-func SetHealthCheckRequest(healthId int64, name string, commonHealthType commonHealth.CommonHealthType, masterHealthType masterHealth.MasterHealthType) *HealthCheckRequest {
+func SetHealthCheckRequest(healthId int64) *HealthCheckRequest {
 	return &HealthCheckRequest{
-		HealthId:         healthId,
-		Name:             name,
-		CommonHealthType: commonHealthType,
-		MasterHealthType: masterHealthType,
+		HealthId: healthId,
 	}
 }
