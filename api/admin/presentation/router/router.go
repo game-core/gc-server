@@ -22,7 +22,7 @@ func Router(lis net.Listener) {
 
 	health.RegisterHealthServer(s, healthHandler)
 
-	log.Printf("gRPC proto started")
+	log.Printf("gRPC server started")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

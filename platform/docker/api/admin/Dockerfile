@@ -13,7 +13,7 @@ FROM alpine AS prod
 WORKDIR /app
 COPY --from=builder /app/main .
 
-EXPOSE 50051
+EXPOSE 8001
 
 CMD [ "/app/main" ]
 
@@ -27,6 +27,6 @@ ENV GO111MODULE=on
 COPY .. .
 RUN apk upgrade --update && apk add bash && apk --no-cache add git
 
-EXPOSE 50051
+EXPOSE 8001
 
 CMD [ "go", "run", "cmd/api/admin/main.go" ]
