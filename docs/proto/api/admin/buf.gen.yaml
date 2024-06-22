@@ -15,3 +15,8 @@ plugins:
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
+  # for TypeScript gRPC Client
+  - remote: buf.build/connectrpc/es:v1.4.0
+    out: ./../../../../view/admin/proto
+  - remote: buf.build/bufbuild/es
+    out: ./../../../../view/admin/proto
