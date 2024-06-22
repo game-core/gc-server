@@ -8,6 +8,8 @@ docker_up:
 # MySQLに接続
 mysql_conn:
 	$(DOCKER_COMPOSE) exec mysql mysql --host=localhost --user=mysql_user --password=mysql_password
+mysql_conn_admin:
+	$(DOCKER_COMPOSE) exec mysql mysql --host=localhost --user=mysql_user --password=mysql_password game_admin
 mysql_conn_common:
 	$(DOCKER_COMPOSE) exec mysql mysql --host=localhost --user=mysql_user --password=mysql_password game_common
 mysql_conn_master:
@@ -38,6 +40,7 @@ gen_domain:
 
 # infraを生成
 gen_infra:
+	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/mysql/admin/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/mysql/common/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/mysql/master/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/pkg/infrastructure/mysql/user/main.go

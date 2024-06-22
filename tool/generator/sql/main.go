@@ -60,6 +60,10 @@ func main() {
 		log.Printf("failed to coomon: %s", err)
 	}
 
+	if err := generate("../../../docs/yaml/pkg/infrastructure/mysql/admin", "../../../docs/sql/admin/ddl"); err != nil {
+		log.Printf("failed to coomon: %s", err)
+	}
+
 	if err := generate("../../../docs/yaml/pkg/infrastructure/mysql/master", "../../../docs/sql/master/ddl"); err != nil {
 		log.Printf("failed to master: %s", err)
 	}
