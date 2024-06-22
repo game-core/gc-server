@@ -11,17 +11,16 @@ import (
 )
 
 func Router(lis net.Listener) {
-	// DI
-	authInterceptor := di.InitializeAuthInterceptor()
-	healthHandler := di.InitializeHealthHandler()
-
-	// Server
 	s := grpc.NewServer(
-		grpc.UnaryInterceptor(authInterceptor.JwtAuth),
+		grpc.UnaryInterceptor(di.InitializeAuthInterceptor().JwtAuth),
 	)
+	
+	health.RegisterHealthServer(s, di.InitializeHealthHandler())
 
-	health.RegisterHealthServer(s, healthHandler)
+	serve(lis, s)
+}
 
+func serve(lis net.Listener, s *grpc.Server) {
 	log.Printf("gRPC server started")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
