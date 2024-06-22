@@ -74,7 +74,7 @@ func (s *exchangeService) Update(ctx context.Context, tx *gorm.DB, now time.Time
 
 // Receive 受け取り
 func (s *exchangeService) Receive(ctx context.Context, tx *gorm.DB, now time.Time, req *ExchangeReceiveRequest) (*ExchangeReceiveResponse, error) {
-	masterExchangeItemModels, masterExchangeCostModels, err := s.getMasterExchangeItemModelsAndMasterExchangeCostModels(ctx, now, req.MasterExchangeItemId)
+	masterExchangeItemModel, masterExchangeCostModels, err := s.getMasterExchangeItemModelAndMasterExchangeCostModels(ctx, now, req.MasterExchangeItemId)
 	if err != nil {
 		return nil, errors.NewMethodError("s.getMasterExchangeItemModelsAndMasterExchangeCostModels", err)
 	}
@@ -88,7 +88,7 @@ func (s *exchangeService) Receive(ctx context.Context, tx *gorm.DB, now time.Tim
 		return nil, errors.NewMethodError("s.consume", err)
 	}
 
-	if err := s.receive(ctx, tx, now, req.UserId, masterExchangeItemModels); err != nil {
+	if err := s.receive(ctx, tx, now, req.UserId, masterExchangeItemModel.MasterItemId, req.Count); err != nil {
 		return nil, errors.NewMethodError("s.receive", err)
 	}
 
@@ -109,9 +109,9 @@ func (s *exchangeService) Receive(ctx context.Context, tx *gorm.DB, now time.Tim
 	return SetExchangeReceiveResponse(userExchangeModel, updateUserExchangeItemModel), nil
 }
 
-// getMasterExchangeItemModelsAndMasterExchangeCostModels マスターデータを取得する
-func (s *exchangeService) getMasterExchangeItemModelsAndMasterExchangeCostModels(ctx context.Context, now time.Time, masterExchangeItemId int64) (masterExchangeItem.MasterExchangeItems, masterExchangeCost.MasterExchangeCosts, error) {
-	masterExchangeItemModels, err := s.masterExchangeItemMysqlRepository.FindListByMasterExchangeItemId(ctx, masterExchangeItemId)
+// getMasterExchangeItemModelAndMasterExchangeCostModels マスターデータを取得する
+func (s *exchangeService) getMasterExchangeItemModelAndMasterExchangeCostModels(ctx context.Context, now time.Time, masterExchangeItemId int64) (*masterExchangeItem.MasterExchangeItem, masterExchangeCost.MasterExchangeCosts, error) {
+	masterExchangeItemModel, err := s.masterExchangeItemMysqlRepository.Find(ctx, masterExchangeItemId)
 	if err != nil {
 		return nil, nil, errors.NewMethodError("s.masterExchangeItemMysqlRepository.Find", err)
 	}
@@ -120,7 +120,7 @@ func (s *exchangeService) getMasterExchangeItemModelsAndMasterExchangeCostModels
 		return nil, nil, errors.NewMethodError("s.masterExchangeCostMysqlRepository.FindByMasterExchangeItemId", err)
 	}
 
-	masterExchangeModel, err := s.masterExchangeMysqlRepository.Find(ctx, masterExchangeItemModels.ExtractMasterExchangeId())
+	masterExchangeModel, err := s.masterExchangeMysqlRepository.Find(ctx, masterExchangeItemModel.MasterExchangeId)
 	if err != nil {
 		return nil, nil, errors.NewMethodError("s.masterExchangeMysqlRepository.Find", err)
 	}
@@ -128,7 +128,7 @@ func (s *exchangeService) getMasterExchangeItemModelsAndMasterExchangeCostModels
 		return nil, nil, errors.NewMethodError("s.getEvent", err)
 	}
 
-	return masterExchangeItemModels, masterExchangeCostModels, nil
+	return masterExchangeItemModel, masterExchangeCostModels, nil
 }
 
 // getMasterExchangeItemModelsAndMasterExchangeCostModels ユーザーデータを取得する
@@ -177,12 +177,10 @@ func (s *exchangeService) consume(ctx context.Context, tx *gorm.DB, now time.Tim
 	return nil
 }
 
-// receive アイテムを消費する
-func (s *exchangeService) receive(ctx context.Context, tx *gorm.DB, now time.Time, userId string, masterExchangeItemModels masterExchangeItem.MasterExchangeItems) error {
+// receive アイテムを受け取る
+func (s *exchangeService) receive(ctx context.Context, tx *gorm.DB, now time.Time, userId string, masterItemId int64, count int32) error {
 	items := item.NewItems()
-	for _, masterExchangeCostModel := range masterExchangeItemModels {
-		items = append(items, item.SetItem(masterExchangeCostModel.MasterItemId, masterExchangeCostModel.Count))
-	}
+	items = append(items, item.SetItem(masterItemId, count))
 
 	if _, err := s.itemService.Receive(ctx, tx, now, item.SetItemReceiveRequest(userId, items)); err != nil {
 		return errors.NewMethodError("s.itemService.Receive", err)
