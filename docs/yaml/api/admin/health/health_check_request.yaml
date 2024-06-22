@@ -1,0 +1,11 @@
+name: HealthCheckRequest
+package: health
+comment: "ヘルスチェックリクエスト"
+
+structure:
+  HealthId:
+    name: health_id
+    type: int64
+    nullable: false
+    number: 1
+    comment: "ヘルスID"

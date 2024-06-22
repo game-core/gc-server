@@ -1,0 +1,26 @@
+name: HealthCheckResponse
+package: health
+comment: "ヘルスチェックレスポンス"
+
+structure:
+  AdminHealth:
+    name: admin_health
+    type: structure
+    package: health/adminHealth
+    nullable: true
+    number: 1
+    comment: "ヘルスチェック"
+  CommonHealth:
+    name: common_health
+    type: structure
+    package: health/commonHealth
+    nullable: true
+    number: 2
+    comment: "ヘルスチェック"
+  MasterHealth:
+    name: master_health
+    type: structure
+    package: health/masterHealth
+    nullable: true
+    number: 3
+    comment: "ヘルスチェック"

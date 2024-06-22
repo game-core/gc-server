@@ -51,6 +51,22 @@ services:
       - mysql
       - redis
 
+  api-admin:
+    env_file:
+      - .env.local
+    build:
+      target: dev
+      context: .
+      dockerfile: ./platform/docker/api/admin/Dockerfile
+    volumes:
+      - ./:/go/src/app
+    ports:
+      - "50051:50051"
+    tty: true
+    depends_on:
+      - mysql
+      - redis
+
   api-game:
     env_file:
       - .env.local
@@ -61,7 +77,7 @@ services:
     volumes:
       - ./:/go/src/app
     ports:
-      - "50051:50051"
+      - "50052:50051"
     tty: true
     depends_on:
       - mysql

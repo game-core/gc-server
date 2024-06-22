@@ -25,12 +25,14 @@ gen_conn:
 
 # apiを生成
 gen_api:
+	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/api/admin/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/api/game/main.go
-	buf generate
+	cd docs/proto/api/game && buf generate && cd ../../../
 	$(DOCKER_COMPOSE) exec gen goimports -w .
 
 # diを生成
 gen_di:
+	$(DOCKER_COMPOSE) exec gen wire api/admin/di/wire.go
 	$(DOCKER_COMPOSE) exec gen wire api/game/di/wire.go
 
 # domainを生成

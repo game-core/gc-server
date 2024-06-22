@@ -17,7 +17,7 @@ EXPOSE 50051
 
 CMD [ "/app/main" ]
 
-# Local
+# Dev
 FROM golang:1.21-alpine AS dev
 
 ENV CGO_ENABLED=0

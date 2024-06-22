@@ -1,0 +1,8 @@
+// ヘルスチェックリクエスト
+syntax = "proto3";
+
+package api.game;
+
+message HealthCheckRequest {
+  int64 health_id = 1;
+}

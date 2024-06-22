@@ -5,7 +5,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY .. .
-RUN go build -o main /app/cmd/api/admin/main.go
+RUN go build -o main /app/cmd/api/game/main.go
 
 # Prod
 FROM alpine AS prod
@@ -29,4 +29,4 @@ RUN apk upgrade --update && apk add bash && apk --no-cache add git
 
 EXPOSE 50051
 
-CMD [ "go", "run", "cmd/api/admin/main.go" ]
+CMD [ "go", "run", "cmd/api/game/main.go" ]

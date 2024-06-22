@@ -1,0 +1,14 @@
+// ヘルスチェックレスポンス
+syntax = "proto3";
+
+package api.game;
+
+import "health/adminHealth/admin_health.proto";
+import "health/commonHealth/common_health.proto";
+import "health/masterHealth/master_health.proto";
+
+message HealthCheckResponse {
+  optional AdminHealth admin_health = 1;
+  optional CommonHealth common_health = 2;
+  optional MasterHealth master_health = 3;
+}
