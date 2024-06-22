@@ -36,6 +36,21 @@ func (m *MockItemService) EXPECT() *MockItemServiceMockRecorder {
 	return m.recorder
 }
 
+// Consume mocks base method.
+func (m *MockItemService) Consume(ctx context.Context, tx *gorm.DB, now time.Time, req *ItemConsumeRequest) (*ItemConsumeResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Consume", ctx, tx, now, req)
+	ret0, _ := ret[0].(*ItemConsumeResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Consume indicates an expected call of Consume.
+func (mr *MockItemServiceMockRecorder) Consume(ctx, tx, now, req interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Consume", reflect.TypeOf((*MockItemService)(nil).Consume), ctx, tx, now, req)
+}
+
 // Receive mocks base method.
 func (m *MockItemService) Receive(ctx context.Context, tx *gorm.DB, now time.Time, req *ItemReceiveRequest) (*ItemReceiveResponse, error) {
 	m.ctrl.T.Helper()
