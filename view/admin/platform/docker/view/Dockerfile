@@ -16,7 +16,6 @@ RUN apk upgrade --update && apk add bash && apk --no-cache add git
 COPY .. .
 
 RUN yarn install
-RUN yarn build
 
 EXPOSE 3000
 
