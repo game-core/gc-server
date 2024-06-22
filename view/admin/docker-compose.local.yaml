@@ -7,7 +7,7 @@ volumes:
     driver: local
 
 services:
-  web:
+  view:
     container_name: gc-server-view
     env_file:
       - .env.local
