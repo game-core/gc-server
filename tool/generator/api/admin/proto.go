@@ -17,7 +17,7 @@ import (
 const protoTemplate = `// {{.Comment}}
 syntax = "proto3";
 
-package api.game;
+package api.admin;
 
 {{.Script}}
 `

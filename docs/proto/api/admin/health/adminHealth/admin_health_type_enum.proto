@@ -1,7 +1,7 @@
 // ヘルスチェックタイプ
 syntax = "proto3";
 
-package api.game;
+package api.admin;
 
 enum AdminHealthType {
   AdminNone = 0;

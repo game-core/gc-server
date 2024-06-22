@@ -1,7 +1,7 @@
 // ヘルスチェック
 syntax = "proto3";
 
-package api.game;
+package api.admin;
 
 import "health/commonHealth/common_health_type_enum.proto";
 

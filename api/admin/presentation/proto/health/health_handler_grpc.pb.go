@@ -22,7 +22,7 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	Health_Check_FullMethodName = "/api.game.Health/Check"
+	Health_Check_FullMethodName = "/api.admin.Health/Check"
 )
 
 // HealthClient is the client API for Health service.
@@ -98,7 +98,7 @@ func _Health_Check_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Health_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.game.Health",
+	ServiceName: "api.admin.Health",
 	HandlerType: (*HealthServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

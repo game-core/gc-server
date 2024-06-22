@@ -1,7 +1,7 @@
 // ヘルスチェックレスポンス
 syntax = "proto3";
 
-package api.game;
+package api.admin;
 
 import "health/adminHealth/admin_health.proto";
 import "health/commonHealth/common_health.proto";
