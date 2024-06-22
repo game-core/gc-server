@@ -12,6 +12,7 @@ import (
 var MysqlHandlerInstance *MysqlHandler
 
 type MysqlHandler struct {
+	Admin  *MysqlConn
 	Common *MysqlConn
 	Master *MysqlConn
 	User   *ShardMysqlConn
@@ -35,6 +36,10 @@ func NewMysql() *MysqlHandler {
 func InitMysql() (*MysqlHandler, error) {
 	db := &MysqlHandler{}
 
+	if err := db.adminDB(); err != nil {
+		return nil, err
+	}
+
 	if err := db.commonDB(); err != nil {
 		return nil, err
 	}
@@ -50,6 +55,46 @@ func InitMysql() (*MysqlHandler, error) {
 	MysqlHandlerInstance = db
 
 	return MysqlHandlerInstance, nil
+}
+
+// adminDB コネクションを作成する
+func (s *MysqlHandler) adminDB() error {
+	readMysqlConn := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		os.Getenv("ADMIN_MYSQL_USER"),
+		os.Getenv("ADMIN_MYSQL_PASSWORD"),
+		os.Getenv("ADMIN_MYSQL_READ_HOST"),
+		os.Getenv("ADMIN_MYSQL_DATABASE"),
+	)
+
+	writeMysqlConn := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		os.Getenv("ADMIN_MYSQL_USER"),
+		os.Getenv("ADMIN_MYSQL_PASSWORD"),
+		os.Getenv("ADMIN_MYSQL_WRITE_HOST"),
+		os.Getenv("ADMIN_MYSQL_DATABASE"),
+	)
+
+	readDB, err := gorm.Open(mysql.New(mysql.Config{
+		DSN: readMysqlConn,
+	}), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	writeDB, err := gorm.Open(mysql.New(mysql.Config{
+		DSN: writeMysqlConn,
+	}), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	s.Admin = &MysqlConn{
+		ReadMysqlConn:  readDB,
+		WriteMysqlConn: writeDB,
+	}
+
+	return nil
 }
 
 // commonDB コネクションを作成する
