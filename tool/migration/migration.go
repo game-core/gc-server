@@ -13,6 +13,11 @@ import (
 )
 
 func main() {
+	if err := migrateAdminDB("./docs/sql/admin/ddl"); err != nil {
+		fmt.Println("error migrating the database:", err)
+		return
+	}
+
 	if err := migrateCommonDB("./docs/sql/common/ddl"); err != nil {
 		fmt.Println("error migrating the database:", err)
 		return
@@ -29,6 +34,56 @@ func main() {
 	}
 
 	fmt.Println("migration completed successfully.")
+}
+
+func migrateAdminDB(migrationsDir string) error {
+	dataSourceName := fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		os.Getenv("ADMIN_MYSQL_USER"),
+		os.Getenv("ADMIN_MYSQL_PASSWORD"),
+		os.Getenv("ADMIN_MYSQL_WRITE_HOST"),
+		os.Getenv("ADMIN_MYSQL_DATABASE"),
+	)
+
+	db, err := sql.Open("mysql", dataSourceName)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	files, err := ioutil.ReadDir(migrationsDir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".sql") {
+			filePath := filepath.Join(migrationsDir, file.Name())
+			query, err := ioutil.ReadFile(filePath)
+			if err != nil {
+				return fmt.Errorf("error reading SQL file %s: %v", file.Name(), err)
+			}
+
+			tx, err := db.Begin()
+			if err != nil {
+				return err
+			}
+
+			if _, err := tx.Exec(string(query)); err != nil {
+				tx.Rollback()
+				return fmt.Errorf("error executing SQL file %s: %v", file.Name(), err)
+			}
+
+			if err := tx.Commit(); err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			fmt.Printf("executed migration %s\n", file.Name())
+		}
+	}
+
+	return nil
 }
 
 func migrateCommonDB(migrationsDir string) error {

@@ -31,6 +31,7 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction"
 	userItemBox2 "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -177,9 +178,10 @@ func InitializeExchangeService() exchange3.ExchangeService {
 
 func InitializeHealthService() health3.HealthService {
 	mysqlHandler := database.NewMysql()
+	adminHealthMysqlRepository := adminHealth.NewAdminHealthDao(mysqlHandler)
 	commonHealthMysqlRepository := commonHealth.NewCommonHealthDao(mysqlHandler)
 	masterHealthMysqlRepository := masterHealth.NewMasterHealthDao(mysqlHandler)
-	healthService := health3.NewHealthService(commonHealthMysqlRepository, masterHealthMysqlRepository)
+	healthService := health3.NewHealthService(adminHealthMysqlRepository, commonHealthMysqlRepository, masterHealthMysqlRepository)
 	return healthService
 }
 

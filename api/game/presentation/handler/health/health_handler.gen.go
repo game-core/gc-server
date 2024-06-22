@@ -6,7 +6,6 @@ import (
 	"github.com/game-core/gc-server/api/game/presentation/proto/health"
 	healthUsecase "github.com/game-core/gc-server/api/game/usecase/health"
 	"github.com/game-core/gc-server/internal/errors"
-	"github.com/game-core/gc-server/internal/tokens"
 )
 
 type HealthHandler interface {
@@ -27,12 +26,11 @@ func NewHealthHandler(
 }
 
 // Check ヘルスチェック
-		func (s *healthHandler) Check(ctx context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
-			res, err := s.healthUsecase.Check(ctx, req)
-			if err != nil {
-				return nil, errors.NewMethodError("s.healthUsecase.Check", err)
-			}
-		
-			return res, nil
-		}
-		
+func (s *healthHandler) Check(ctx context.Context, req *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
+	res, err := s.healthUsecase.Check(ctx, req)
+	if err != nil {
+		return nil, errors.NewMethodError("s.healthUsecase.Check", err)
+	}
+
+	return res, nil
+}

@@ -28,7 +28,9 @@ gen_api:
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/api/admin/main.go
 	$(DOCKER_COMPOSE) exec gen go generate ./tool/generator/api/game/main.go
 	cd docs/proto/api/game && buf generate && cd ../../../
+	cd docs/proto/api/admin && buf generate && cd ../../../
 	$(DOCKER_COMPOSE) exec gen goimports -w .
+	make gen_di
 
 # diを生成
 gen_di:

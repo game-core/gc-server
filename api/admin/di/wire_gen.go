@@ -7,30 +7,23 @@
 package di
 
 import (
-	"github.com/game-core/gc-server/api/game/presentation/handler/account"
-	"github.com/game-core/gc-server/api/game/presentation/handler/exchange"
-	"github.com/game-core/gc-server/api/game/presentation/handler/health"
-	"github.com/game-core/gc-server/api/game/presentation/handler/loginBonus"
-	"github.com/game-core/gc-server/api/game/presentation/handler/profile"
-	"github.com/game-core/gc-server/api/game/presentation/interceptor/auth"
-	account2 "github.com/game-core/gc-server/api/game/usecase/account"
-	exchange2 "github.com/game-core/gc-server/api/game/usecase/exchange"
-	health2 "github.com/game-core/gc-server/api/game/usecase/health"
-	loginBonus2 "github.com/game-core/gc-server/api/game/usecase/loginBonus"
-	profile2 "github.com/game-core/gc-server/api/game/usecase/profile"
+	"github.com/game-core/gc-server/api/admin/presentation/handler/health"
+	"github.com/game-core/gc-server/api/admin/presentation/interceptor/auth"
+	health2 "github.com/game-core/gc-server/api/admin/usecase/health"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
-	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
+	"github.com/game-core/gc-server/pkg/domain/model/account"
 	"github.com/game-core/gc-server/pkg/domain/model/action"
 	"github.com/game-core/gc-server/pkg/domain/model/event"
-	exchange3 "github.com/game-core/gc-server/pkg/domain/model/exchange"
+	"github.com/game-core/gc-server/pkg/domain/model/exchange"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
 	"github.com/game-core/gc-server/pkg/domain/model/item"
-	loginBonus3 "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
-	profile3 "github.com/game-core/gc-server/pkg/domain/model/profile"
+	"github.com/game-core/gc-server/pkg/domain/model/loginBonus"
+	"github.com/game-core/gc-server/pkg/domain/model/profile"
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction"
 	userItemBox2 "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -69,48 +62,10 @@ func InitializeAuthInterceptor() auth.AuthInterceptor {
 	return authInterceptor
 }
 
-func InitializeAccountHandler() account.AccountHandler {
-	accountUsecase := InitializeAccountUsecase()
-	accountHandler := account.NewAccountHandler(accountUsecase)
-	return accountHandler
-}
-
-func InitializeExchangeHandler() exchange.ExchangeHandler {
-	exchangeUsecase := InitializeExchangeUsecase()
-	exchangeHandler := exchange.NewExchangeHandler(exchangeUsecase)
-	return exchangeHandler
-}
-
 func InitializeHealthHandler() health.HealthHandler {
 	healthUsecase := InitializeHealthUsecase()
 	healthHandler := health.NewHealthHandler(healthUsecase)
 	return healthHandler
-}
-
-func InitializeLoginBonusHandler() loginBonus.LoginBonusHandler {
-	loginBonusUsecase := InitializeLoginBonusUsecase()
-	loginBonusHandler := loginBonus.NewLoginBonusHandler(loginBonusUsecase)
-	return loginBonusHandler
-}
-
-func InitializeProfileHandler() profile.ProfileHandler {
-	profileUsecase := InitializeProfileUsecase()
-	profileHandler := profile.NewProfileHandler(profileUsecase)
-	return profileHandler
-}
-
-func InitializeAccountUsecase() account2.AccountUsecase {
-	accountService := InitializeAccountService()
-	transactionService := InitializeTransactionService()
-	accountUsecase := account2.NewAccountUsecase(accountService, transactionService)
-	return accountUsecase
-}
-
-func InitializeExchangeUsecase() exchange2.ExchangeUsecase {
-	exchangeService := InitializeExchangeService()
-	transactionService := InitializeTransactionService()
-	exchangeUsecase := exchange2.NewExchangeUsecase(exchangeService, transactionService)
-	return exchangeUsecase
 }
 
 func InitializeHealthUsecase() health2.HealthUsecase {
@@ -119,28 +74,14 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 	return healthUsecase
 }
 
-func InitializeLoginBonusUsecase() loginBonus2.LoginBonusUsecase {
-	loginBonusService := InitializeLoginBonusService()
-	transactionService := InitializeTransactionService()
-	loginBonusUsecase := loginBonus2.NewLoginBonusUsecase(loginBonusService, transactionService)
-	return loginBonusUsecase
-}
-
-func InitializeProfileUsecase() profile2.ProfileUsecase {
-	profileService := InitializeProfileService()
-	transactionService := InitializeTransactionService()
-	profileUsecase := profile2.NewProfileUsecase(profileService, transactionService)
-	return profileUsecase
-}
-
-func InitializeAccountService() account3.AccountService {
+func InitializeAccountService() account.AccountService {
 	shardService := InitializeShardService()
 	mysqlHandler := database.NewMysql()
 	userAccountMysqlRepository := userAccount.NewUserAccountDao(mysqlHandler)
 	redisHandler := database.NewRedis()
 	userAccountRedisRepository := userAccount2.NewUserAccountDao(redisHandler)
 	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenDao(redisHandler)
-	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
+	accountService := account.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 
@@ -162,7 +103,7 @@ func InitializeEventService() event.EventService {
 	return eventService
 }
 
-func InitializeExchangeService() exchange3.ExchangeService {
+func InitializeExchangeService() exchange.ExchangeService {
 	itemService := InitializeItemService()
 	eventService := InitializeEventService()
 	mysqlHandler := database.NewMysql()
@@ -171,15 +112,16 @@ func InitializeExchangeService() exchange3.ExchangeService {
 	masterExchangeItemMysqlRepository := masterExchangeItem.NewMasterExchangeItemDao(mysqlHandler)
 	userExchangeMysqlRepository := userExchange.NewUserExchangeDao(mysqlHandler)
 	userExchangeItemMysqlRepository := userExchangeItem.NewUserExchangeItemDao(mysqlHandler)
-	exchangeService := exchange3.NewExchangeService(itemService, eventService, masterExchangeMysqlRepository, masterExchangeCostMysqlRepository, masterExchangeItemMysqlRepository, userExchangeMysqlRepository, userExchangeItemMysqlRepository)
+	exchangeService := exchange.NewExchangeService(itemService, eventService, masterExchangeMysqlRepository, masterExchangeCostMysqlRepository, masterExchangeItemMysqlRepository, userExchangeMysqlRepository, userExchangeItemMysqlRepository)
 	return exchangeService
 }
 
 func InitializeHealthService() health3.HealthService {
 	mysqlHandler := database.NewMysql()
+	adminHealthMysqlRepository := adminHealth.NewAdminHealthDao(mysqlHandler)
 	commonHealthMysqlRepository := commonHealth.NewCommonHealthDao(mysqlHandler)
 	masterHealthMysqlRepository := masterHealth.NewMasterHealthDao(mysqlHandler)
-	healthService := health3.NewHealthService(commonHealthMysqlRepository, masterHealthMysqlRepository)
+	healthService := health3.NewHealthService(adminHealthMysqlRepository, commonHealthMysqlRepository, masterHealthMysqlRepository)
 	return healthService
 }
 
@@ -193,7 +135,7 @@ func InitializeItemService() item.ItemService {
 	return itemService
 }
 
-func InitializeLoginBonusService() loginBonus3.LoginBonusService {
+func InitializeLoginBonusService() loginBonus.LoginBonusService {
 	itemService := InitializeItemService()
 	eventService := InitializeEventService()
 	mysqlHandler := database.NewMysql()
@@ -201,14 +143,14 @@ func InitializeLoginBonusService() loginBonus3.LoginBonusService {
 	masterLoginBonusMysqlRepository := masterLoginBonus.NewMasterLoginBonusDao(mysqlHandler)
 	masterLoginBonusItemMysqlRepository := masterLoginBonusItem.NewMasterLoginBonusItemDao(mysqlHandler)
 	masterLoginBonusScheduleMysqlRepository := masterLoginBonusSchedule.NewMasterLoginBonusScheduleDao(mysqlHandler)
-	loginBonusService := loginBonus3.NewLoginBonusService(itemService, eventService, userLoginBonusMysqlRepository, masterLoginBonusMysqlRepository, masterLoginBonusItemMysqlRepository, masterLoginBonusScheduleMysqlRepository)
+	loginBonusService := loginBonus.NewLoginBonusService(itemService, eventService, userLoginBonusMysqlRepository, masterLoginBonusMysqlRepository, masterLoginBonusItemMysqlRepository, masterLoginBonusScheduleMysqlRepository)
 	return loginBonusService
 }
 
-func InitializeProfileService() profile3.ProfileService {
+func InitializeProfileService() profile.ProfileService {
 	mysqlHandler := database.NewMysql()
 	userProfileMysqlRepository := userProfile.NewUserProfileDao(mysqlHandler)
-	profileService := profile3.NewProfileService(userProfileMysqlRepository)
+	profileService := profile.NewProfileService(userProfileMysqlRepository)
 	return profileService
 }
 

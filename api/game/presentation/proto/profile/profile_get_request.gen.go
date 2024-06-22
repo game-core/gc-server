@@ -1,24 +1,18 @@
-
 // Package profile プロフィール取得リクエスト
 package profile
-
-import (
-	
-)
 
 type ProfileGetRequests []*ProfileGetRequest
 
 func NewProfileGetRequest() *ProfileGetRequest {
-			return &ProfileGetRequest{}
-		}
+	return &ProfileGetRequest{}
+}
 
-		func NewProfileGetRequests() ProfileGetRequests {
-			return ProfileGetRequests{}
-		}
+func NewProfileGetRequests() ProfileGetRequests {
+	return ProfileGetRequests{}
+}
 
-		func SetProfileGetRequest(userId string) *ProfileGetRequest {
-			return &ProfileGetRequest{
-				UserId: userId,
-			}
-		}
-		
+func SetProfileGetRequest(userId string) *ProfileGetRequest {
+	return &ProfileGetRequest{
+		UserId: userId,
+	}
+}

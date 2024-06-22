@@ -1,26 +1,20 @@
-
 // Package userProfile ユーザープロフィール
 package userProfile
-
-import (
-	
-)
 
 type UserProfiles []*UserProfile
 
 func NewUserProfile() *UserProfile {
-			return &UserProfile{}
-		}
+	return &UserProfile{}
+}
 
-		func NewUserProfiles() UserProfiles {
-			return UserProfiles{}
-		}
+func NewUserProfiles() UserProfiles {
+	return UserProfiles{}
+}
 
-		func SetUserProfile(userId string,name string,content string) *UserProfile {
-			return &UserProfile{
-				UserId: userId,
-Name: name,
-Content: content,
-			}
-		}
-		
+func SetUserProfile(userId string, name string, content string) *UserProfile {
+	return &UserProfile{
+		UserId:  userId,
+		Name:    name,
+		Content: content,
+	}
+}
