@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.local
     build:
-      target: prod
+      target: dev
       context: .
       dockerfile: platform/docker/view/Dockerfile
     volumes:
