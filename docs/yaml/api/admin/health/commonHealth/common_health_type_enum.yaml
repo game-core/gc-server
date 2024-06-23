@@ -1,5 +1,5 @@
 name: CommonHealthType
-package: CommonHealth.ts
+package: CommonHealth
 comment: "ヘルスチェックタイプ"
 
 structure:

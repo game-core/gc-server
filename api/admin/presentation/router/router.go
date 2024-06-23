@@ -14,7 +14,7 @@ func Router(lis net.Listener) {
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(di.InitializeAuthInterceptor().JwtAuth),
 	)
-	
+
 	health.RegisterHealthServer(s, di.InitializeHealthHandler())
 
 	serve(lis, s)
