@@ -4,7 +4,7 @@
 
 - 起動
 ```
-make docker_apply
+make docker_up
 ```
 - マイグレーション
   - `./docs/sql`配下のsqlファイルが実行される
