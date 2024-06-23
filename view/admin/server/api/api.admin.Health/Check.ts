@@ -1,5 +1,5 @@
 import { ApiClient } from "~/pkg/infrastructure/ApiClient";
-import type { HealthCheckResponse } from "~/pkg/domain/model/health/HealthCheckResponse";
+import type { HealthCheckResponse } from "~/pkg/domain/model/health/HealthCheckResponse.gen";
 
 export default defineEventHandler(
   async (event): Promise<HealthCheckResponse> => {
