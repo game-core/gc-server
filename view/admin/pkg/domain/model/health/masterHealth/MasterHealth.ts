@@ -1,4 +1,4 @@
-import type {MasterHealthType} from "~/pkg/domain/health/masterHealth/MasterHealthType";
+import type {MasterHealthType} from "~/pkg/domain/model/health/masterHealth/MasterHealthType";
 
 export type MasterHealth = {
     "healthId": number;

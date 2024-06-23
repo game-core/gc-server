@@ -13,9 +13,9 @@
 <script setup lang="ts">
 import {ref} from "vue"
 import {ApiClient} from "~/pkg/infrastructure/ApiClient"
-import {HealthService} from "~/pkg/domain/health/HealthService"
-import type {HealthCheckRequest} from "~/pkg/domain/health/HealthCheckRequest"
-import type {HealthCheckResponse} from "~/pkg/domain/health/HealthCheckResponse"
+import {HealthService} from "~/pkg/domain/model/health/HealthService"
+import type {HealthCheckRequest} from "~/pkg/domain/model/health/HealthCheckRequest"
+import type {HealthCheckResponse} from "~/pkg/domain/model/health/HealthCheckResponse"
 
 const response = ref<HealthCheckResponse | null>(null)
 

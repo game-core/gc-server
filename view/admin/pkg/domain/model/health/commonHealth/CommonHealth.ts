@@ -1,4 +1,4 @@
-import type {CommonHealthType} from "~/pkg/domain/health/commonHealth/CommonHealthType";
+import type {CommonHealthType} from "~/pkg/domain/model/health/commonHealth/CommonHealthType";
 
 export type CommonHealth = {
   "healthId": number;

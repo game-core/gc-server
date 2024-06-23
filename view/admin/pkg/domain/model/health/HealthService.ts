@@ -1,6 +1,6 @@
 import {ApiClient} from "~/pkg/infrastructure/ApiClient"
-import type {HealthCheckRequest} from "~/pkg/domain/health/HealthCheckRequest";
-import type {HealthCheckResponse} from "~/pkg/domain/health/HealthCheckResponse";
+import type {HealthCheckRequest} from "~/pkg/domain/model/health/HealthCheckRequest";
+import type {HealthCheckResponse} from "~/pkg/domain/model/health/HealthCheckResponse";
 
 export class HealthService {
     private apiClient: ApiClient
