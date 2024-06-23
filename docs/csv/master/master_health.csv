@@ -1,3 +1,3 @@
-health_id,name,master_health_type
+health_id,name,master_health_enum
 1,Health1,1
 2,Health2,1
