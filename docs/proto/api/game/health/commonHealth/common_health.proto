@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package api.game;
 
-import "health/commonHealth/common_health_type_enum.proto";
+import "health/CommonHealth.ts/common_health_type_enum.proto";
 
 message CommonHealth {
   int64 health_id = 1;

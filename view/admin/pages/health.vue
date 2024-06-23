@@ -1,15 +1,15 @@
 <template>
   <div>
-    <HealthCheck />
+    <Check />
   </div>
 </template>
 
 <script lang="ts">
-import HealthCheck from "~/components/health/HealthCheck.vue";
+import Check from "~/components/health/Check.vue";
 
 export default {
   components: {
-    HealthCheck,
+    Check,
   },
 };
 </script>

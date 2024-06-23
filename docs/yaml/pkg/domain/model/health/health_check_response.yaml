@@ -13,7 +13,7 @@ structure:
   CommonHealth:
     name: common_health
     type: structure
-    package: health/commonHealth
+    package: health/CommonHealth.ts
     nullable: true
     number: 2
     comment: "ヘルスチェック"

@@ -4,7 +4,7 @@ syntax = "proto3";
 package api.admin;
 
 import "health/adminHealth/admin_health.proto";
-import "health/commonHealth/common_health.proto";
+import "health/CommonHealth.ts/common_health.proto";
 import "health/masterHealth/master_health.proto";
 
 message HealthCheckResponse {

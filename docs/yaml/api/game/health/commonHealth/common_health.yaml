@@ -1,5 +1,5 @@
 name: CommonHealth
-package: commonHealth
+package: CommonHealth.ts
 comment: "ヘルスチェック"
 
 structure:
@@ -18,7 +18,7 @@ structure:
   CommonHealthType:
     name: common_health_type
     type: enum
-    package: health/commonHealth
+    package: health/CommonHealth.ts
     nullable: false
     number: 3
     comment: "ヘルスチェックタイプ"
