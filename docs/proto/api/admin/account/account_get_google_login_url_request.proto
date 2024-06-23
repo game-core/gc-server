@@ -1,0 +1,8 @@
+// アカウントGoogleログインURL取得リクエスト
+syntax = "proto3";
+
+package api.admin;
+
+message AccountGetGoogleLoginUrlRequest {
+  string message = 1;
+}

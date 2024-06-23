@@ -7,12 +7,14 @@
 package di
 
 import (
+	"github.com/game-core/gc-server/api/admin/presentation/handler/account"
 	"github.com/game-core/gc-server/api/admin/presentation/handler/health"
 	"github.com/game-core/gc-server/api/admin/presentation/interceptor/auth"
+	account2 "github.com/game-core/gc-server/api/admin/usecase/account"
 	health2 "github.com/game-core/gc-server/api/admin/usecase/health"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
-	"github.com/game-core/gc-server/pkg/domain/model/account"
+	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
 	"github.com/game-core/gc-server/pkg/domain/model/action"
 	"github.com/game-core/gc-server/pkg/domain/model/event"
 	"github.com/game-core/gc-server/pkg/domain/model/exchange"
@@ -62,10 +64,23 @@ func InitializeAuthInterceptor() auth.AuthInterceptor {
 	return authInterceptor
 }
 
+func InitializeAccountHandler() account.AccountHandler {
+	accountUsecase := InitializeAccountUsecase()
+	accountHandler := account.NewAccountHandler(accountUsecase)
+	return accountHandler
+}
+
 func InitializeHealthHandler() health.HealthHandler {
 	healthUsecase := InitializeHealthUsecase()
 	healthHandler := health.NewHealthHandler(healthUsecase)
 	return healthHandler
+}
+
+func InitializeAccountUsecase() account2.AccountUsecase {
+	accountService := InitializeAccountService()
+	transactionService := InitializeTransactionService()
+	accountUsecase := account2.NewAccountUsecase(accountService, transactionService)
+	return accountUsecase
 }
 
 func InitializeHealthUsecase() health2.HealthUsecase {
@@ -74,14 +89,14 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 	return healthUsecase
 }
 
-func InitializeAccountService() account.AccountService {
+func InitializeAccountService() account3.AccountService {
 	shardService := InitializeShardService()
 	mysqlHandler := database.NewMysql()
 	userAccountMysqlRepository := userAccount.NewUserAccountDao(mysqlHandler)
 	redisHandler := database.NewRedis()
 	userAccountRedisRepository := userAccount2.NewUserAccountDao(redisHandler)
 	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenDao(redisHandler)
-	accountService := account.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
+	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 

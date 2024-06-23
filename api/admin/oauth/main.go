@@ -11,6 +11,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/oauth2/v2"
+	"google.golang.org/api/option"
 )
 
 var (

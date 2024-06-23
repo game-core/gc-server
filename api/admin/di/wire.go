@@ -9,8 +9,10 @@ import (
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
 
+	accountHandler "github.com/game-core/gc-server/api/admin/presentation/handler/account"
 	healthHandler "github.com/game-core/gc-server/api/admin/presentation/handler/health"
 	authInterceptor "github.com/game-core/gc-server/api/admin/presentation/interceptor/auth"
+	accountUsecase "github.com/game-core/gc-server/api/admin/usecase/account"
 	healthUsecase "github.com/game-core/gc-server/api/admin/usecase/health"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
@@ -62,10 +64,27 @@ func InitializeAuthInterceptor() authInterceptor.AuthInterceptor {
 	return nil
 }
 
+func InitializeAccountHandler() accountHandler.AccountHandler {
+	wire.Build(
+		accountHandler.NewAccountHandler,
+		InitializeAccountUsecase,
+	)
+	return nil
+}
+
 func InitializeHealthHandler() healthHandler.HealthHandler {
 	wire.Build(
 		healthHandler.NewHealthHandler,
 		InitializeHealthUsecase,
+	)
+	return nil
+}
+
+func InitializeAccountUsecase() accountUsecase.AccountUsecase {
+	wire.Build(
+		accountUsecase.NewAccountUsecase,
+		InitializeAccountService,
+		InitializeTransactionService,
 	)
 	return nil
 }

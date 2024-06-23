@@ -1,0 +1,11 @@
+name: AccountGetGoogleLoginUrlResponse
+package: account
+comment: "アカウントGoogleログインURL取得レスポンス"
+
+structure:
+  Url:
+    name: url
+    type: string
+    nullable: false
+    number: 1
+    comment: "URL"

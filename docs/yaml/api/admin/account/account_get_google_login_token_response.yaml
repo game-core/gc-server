@@ -1,0 +1,12 @@
+name: AccountGetGoogleLoginTokenResponse
+package: account
+comment: "アカウントGoogleログインToken取得レスポンス"
+
+structure:
+  AdminAccountGoogleToken:
+    name: admin_account_google_token
+    type: structure
+    package: account/adminAccountGoogleToken
+    nullable: true
+    number: 1
+    comment: "管理者アカウントのGoogleToken"

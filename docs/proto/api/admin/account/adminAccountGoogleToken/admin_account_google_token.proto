@@ -1,0 +1,12 @@
+// 管理者アカウントのGoogleToken
+syntax = "proto3";
+
+package api.admin;
+
+import "google/protobuf/timestamp.proto";
+
+message AdminAccountGoogleToken {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expired_at = 3;
+}

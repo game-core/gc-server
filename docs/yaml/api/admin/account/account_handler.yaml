@@ -1,0 +1,21 @@
+name: Account
+package: account
+comment: "アカウント"
+
+structure:
+  GetGoogleLoginUrl:
+    name: get_google_login_url
+    method: unary
+    auth: false
+    request: AccountGetGoogleLoginUrlRequest
+    response: AccountGetGoogleLoginUrlResponse
+    number: 1
+    comment: "GoogleログインURLを取得する"
+  GetGoogleLoginToken:
+    name: get_google_login_token
+    method: unary
+    auth: false
+    request: AccountGetGoogleLoginTokenRequest
+    response: AccountGetGoogleLoginTokenResponse
+    number: 1
+    comment: "GoogleログインTokenを取得する"

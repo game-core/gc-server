@@ -28,6 +28,16 @@ func CreateRoomId() (string, error) {
 	return uuid, nil
 }
 
+// CreateStateOauthCookie RoomIdを作成する
+func CreateStateOauthCookie() (string, error) {
+	uuid, err := gonanoid.New(20)
+	if err != nil {
+		return "", err
+	}
+
+	return uuid, nil
+}
+
 // GetShardKeyByUserId ユーザIDからシャードキーを取得する
 func GetShardKeyByUserId(userID string) string {
 	return strings.Split(userID, ":")[0]
