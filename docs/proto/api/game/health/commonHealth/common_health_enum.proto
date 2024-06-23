@@ -1,0 +1,9 @@
+// ヘルスチェックタイプ
+syntax = "proto3";
+
+package api.game;
+
+enum CommonHealthEnum {
+  CommonNone = 0;
+  CommonSuccess = 1;
+}

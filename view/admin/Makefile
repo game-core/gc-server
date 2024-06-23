@@ -7,3 +7,7 @@ docker_up:
 # コンテナに接続
 view_conn:
 	$(DOCKER_COMPOSE) exec view sh
+
+# フォーマット
+view_fmt:
+	$(DOCKER_COMPOSE) exec view yarn prettier --write .

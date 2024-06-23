@@ -12,7 +12,7 @@ using scg = global::System.Collections.Generic;
 namespace Api.Game {
 
   /// <summary>Holder for reflection information generated from health/masterHealth/master_health_type_enum.proto</summary>
-  public static partial class MasterHealthTypeEnumReflection {
+  public static partial class MasterHealthEnumEnumReflection {
 
     #region Descriptor
     /// <summary>File descriptor for health/masterHealth/master_health_type_enum.proto</summary>
@@ -21,7 +21,7 @@ namespace Api.Game {
     }
     private static pbr::FileDescriptor descriptor;
 
-    static MasterHealthTypeEnumReflection() {
+    static MasterHealthEnumEnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CjFoZWFsdGgvbWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGhfdHlwZV9lbnVt",
@@ -33,13 +33,13 @@ namespace Api.Game {
             "4gIUQXBpXEdhbWVcR1BCTWV0YWRhdGHqAglBcGk6OkdhbWViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.MasterHealthType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.MasterHealthEnum), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum MasterHealthType {
+  public enum MasterHealthEnum {
     [pbr::OriginalName("MasterNone")] MasterNone = 0,
     [pbr::OriginalName("MasterSuccess")] MasterSuccess = 1,
   }

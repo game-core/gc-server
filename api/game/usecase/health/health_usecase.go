@@ -43,17 +43,17 @@ func (s *healthUsecase) Check(ctx context.Context, req *healthProto.HealthCheckR
 		adminHealth.SetAdminHealth(
 			res.AdminHealth.HealthId,
 			res.AdminHealth.Name,
-			adminHealth.AdminHealthType(res.AdminHealth.AdminHealthType),
+			adminHealth.AdminHealthEnum(res.AdminHealth.AdminHealthEnum),
 		),
 		commonHealth.SetCommonHealth(
 			res.CommonHealth.HealthId,
 			res.CommonHealth.Name,
-			commonHealth.CommonHealthType(res.CommonHealth.CommonHealthType),
+			commonHealth.CommonHealthEnum(res.CommonHealth.CommonHealthEnum),
 		),
 		masterHealth.SetMasterHealth(
 			res.MasterHealth.HealthId,
 			res.MasterHealth.Name,
-			masterHealth.MasterHealthType(res.MasterHealth.MasterHealthType),
+			masterHealth.MasterHealthEnum(res.MasterHealth.MasterHealthEnum),
 		),
 	), nil
 }

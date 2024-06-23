@@ -72,3 +72,5 @@ gen_master:
 # フォーマット
 gen_fmt:
 	$(DOCKER_COMPOSE) exec gen goimports -w .
+view_fmt:
+	cd ./view/admin && make view_fmt && cd ../../

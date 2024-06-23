@@ -79,17 +79,17 @@ func TestHealthUsecase_Check(t *testing.T) {
 								AdminHealth: &adminHealthModel.AdminHealth{
 									HealthId:        1,
 									Name:            "health",
-									AdminHealthType: adminHealthModel.AdminHealthType_AdminSuccess,
+									AdminHealthEnum: adminHealthModel.AdminHealthEnum_AdminSuccess,
 								},
 								CommonHealth: &commonHealthModel.CommonHealth{
 									HealthId:         1,
 									Name:             "health",
-									CommonHealthType: commonHealthModel.CommonHealthType_CommonSuccess,
+									CommonHealthEnum: commonHealthModel.CommonHealthEnum_CommonSuccess,
 								},
 								MasterHealth: &masterHealthModel.MasterHealth{
 									HealthId:         1,
 									Name:             "health",
-									MasterHealthType: masterHealthModel.MasterHealthType_MasterSuccess,
+									MasterHealthEnum: masterHealthModel.MasterHealthEnum_MasterSuccess,
 								},
 							},
 							nil,
@@ -107,17 +107,17 @@ func TestHealthUsecase_Check(t *testing.T) {
 				AdminHealth: &adminHealth.AdminHealth{
 					HealthId:        1,
 					Name:            "health",
-					AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+					AdminHealthEnum: adminHealth.AdminHealthEnum_AdminSuccess,
 				},
 				CommonHealth: &commonHealth.CommonHealth{
 					HealthId:         1,
 					Name:             "health",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
+					CommonHealthEnum: commonHealth.CommonHealthEnum_CommonSuccess,
 				},
 				MasterHealth: &masterHealth.MasterHealth{
 					HealthId:         1,
 					Name:             "health",
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					MasterHealthEnum: masterHealth.MasterHealthEnum_MasterSuccess,
 				},
 			},
 			wantErr: nil,

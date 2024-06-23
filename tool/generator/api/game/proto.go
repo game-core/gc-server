@@ -202,7 +202,7 @@ func (s *Proto) createStructure(yamlStruct *YamlStruct) string {
 			}
 			fe = fmt.Sprintf("repeated %s %s = %v;", changes.SnakeToUpperCamel(changes.PluralToSingular(field.Name)), field.Name, field.Number)
 		case "enum":
-			imports = append(imports, fmt.Sprintf("import \"%s/%s_enum.proto\";", field.Package, changes.PluralToSingular(field.Name)))
+			imports = append(imports, fmt.Sprintf("import \"%s/%s.proto\";", field.Package, changes.PluralToSingular(field.Name)))
 			fe = fmt.Sprintf("%s %s = %v;", changes.SnakeToUpperCamel(field.Name), field.Name, field.Number)
 		case "time":
 			check := true

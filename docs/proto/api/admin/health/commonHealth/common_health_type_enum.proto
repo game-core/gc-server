@@ -1,9 +1,0 @@
-// ヘルスチェックタイプ
-syntax = "proto3";
-
-package api.admin;
-
-enum CommonHealthType {
-  CommonNone = 0;
-  CommonSuccess = 1;
-}

@@ -11,10 +11,10 @@ func NewAdminHealths() AdminHealths {
 	return AdminHealths{}
 }
 
-func SetAdminHealth(healthId int64, name string, adminHealthType AdminHealthType) *AdminHealth {
+func SetAdminHealth(healthId int64, name string, adminHealthEnum AdminHealthEnum) *AdminHealth {
 	return &AdminHealth{
 		HealthId:        healthId,
 		Name:            name,
-		AdminHealthType: adminHealthType,
+		AdminHealthEnum: adminHealthEnum,
 	}
 }

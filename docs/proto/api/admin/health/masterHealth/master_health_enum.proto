@@ -1,0 +1,9 @@
+// ヘルスチェックタイプ
+syntax = "proto3";
+
+package api.admin;
+
+enum MasterHealthEnum {
+  MasterNone = 0;
+  MasterSuccess = 1;
+}

@@ -12,7 +12,7 @@ using scg = global::System.Collections.Generic;
 namespace Api.Game {
 
   /// <summary>Holder for reflection information generated from health/commonHealth/common_health_type_enum.proto</summary>
-  public static partial class CommonHealthTypeEnumReflection {
+  public static partial class CommonHealthEnumEnumReflection {
 
     #region Descriptor
     /// <summary>File descriptor for health/commonHealth/common_health_type_enum.proto</summary>
@@ -21,7 +21,7 @@ namespace Api.Game {
     }
     private static pbr::FileDescriptor descriptor;
 
-    static CommonHealthTypeEnumReflection() {
+    static CommonHealthEnumEnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CjFoZWFsdGgvY29tbW9uSGVhbHRoL2NvbW1vbl9oZWFsdGhfdHlwZV9lbnVt",
@@ -33,13 +33,13 @@ namespace Api.Game {
             "4gIUQXBpXEdhbWVcR1BCTWV0YWRhdGHqAglBcGk6OkdhbWViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.CommonHealthType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.CommonHealthEnum), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum CommonHealthType {
+  public enum CommonHealthEnum {
     [pbr::OriginalName("CommonNone")] CommonNone = 0,
     [pbr::OriginalName("CommonSuccess")] CommonSuccess = 1,
   }

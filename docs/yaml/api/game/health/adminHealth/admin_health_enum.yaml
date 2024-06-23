@@ -1,0 +1,13 @@
+name: AdminHealthEnum
+package: adminHealth
+comment: "ヘルスチェックタイプ"
+
+structure:
+  AdminNone:
+    name: AdminNone
+    number: 0
+    comment: "無"
+  AdminSuccess:
+    name: AdminSuccess
+    number: 1
+    comment: "正常"

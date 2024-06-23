@@ -46,7 +46,7 @@ func (s *masterHealthDao) Find(ctx context.Context, healthId int64) (*masterHeal
 		return nil, errors.NewError("record does not exist")
 	}
 
-	m := masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType)
+	m := masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum)
 	s.Cache.Set(cashes.CreateCacheKey("master_health", "Find", fmt.Sprintf("%d_", healthId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -68,7 +68,7 @@ func (s *masterHealthDao) FindOrNil(ctx context.Context, healthId int64) (*maste
 		return nil, nil
 	}
 
-	m := masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType)
+	m := masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum)
 	s.Cache.Set(cashes.CreateCacheKey("master_health", "FindOrNil", fmt.Sprintf("%d_", healthId)), m, cache.DefaultExpiration)
 	return m, nil
 }
@@ -89,7 +89,7 @@ func (s *masterHealthDao) FindList(ctx context.Context) (masterHealth.MasterHeal
 
 	ms := masterHealth.NewMasterHealths()
 	for _, t := range ts {
-		ms = append(ms, masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType))
+		ms = append(ms, masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum))
 	}
 
 	s.Cache.Set(cashes.CreateCacheKey("master_health", "FindList", ""), ms, cache.DefaultExpiration)
@@ -107,14 +107,14 @@ func (s *masterHealthDao) Create(ctx context.Context, tx *gorm.DB, m *masterHeal
 	t := &MasterHealth{
 		HealthId:         m.HealthId,
 		Name:             m.Name,
-		MasterHealthType: m.MasterHealthType,
+		MasterHealthEnum: m.MasterHealthEnum,
 	}
 	res := conn.Model(NewMasterHealth()).WithContext(ctx).Create(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType), nil
+	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum), nil
 }
 
 func (s *masterHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
@@ -134,7 +134,7 @@ func (s *masterHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms master
 		t := &MasterHealth{
 			HealthId:         m.HealthId,
 			Name:             m.Name,
-			MasterHealthType: m.MasterHealthType,
+			MasterHealthEnum: m.MasterHealthEnum,
 		}
 		ts = append(ts, t)
 	}
@@ -158,14 +158,14 @@ func (s *masterHealthDao) Update(ctx context.Context, tx *gorm.DB, m *masterHeal
 	t := &MasterHealth{
 		HealthId:         m.HealthId,
 		Name:             m.Name,
-		MasterHealthType: m.MasterHealthType,
+		MasterHealthEnum: m.MasterHealthEnum,
 	}
-	res := conn.Model(NewMasterHealth()).WithContext(ctx).Select("health_id", "name", "master_health_type").Where("health_id = ?", m.HealthId).Updates(t)
+	res := conn.Model(NewMasterHealth()).WithContext(ctx).Select("health_id", "name", "master_health_enum").Where("health_id = ?", m.HealthId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthType), nil
+	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum), nil
 }
 
 func (s *masterHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
@@ -185,14 +185,14 @@ func (s *masterHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms master
 		t := &MasterHealth{
 			HealthId:         m.HealthId,
 			Name:             m.Name,
-			MasterHealthType: m.MasterHealthType,
+			MasterHealthEnum: m.MasterHealthEnum,
 		}
 		ts = append(ts, t)
 	}
 
 	res := conn.Model(NewMasterHealth()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "health_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "master_health_type"}),
+		DoUpdates: clause.AssignmentColumns([]string{"name", "master_health_enum"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

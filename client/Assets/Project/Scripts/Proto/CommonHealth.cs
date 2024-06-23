@@ -25,19 +25,19 @@ namespace Api.Game {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CidoZWFsdGgvY29tbW9uSGVhbHRoL2NvbW1vbl9oZWFsdGgucHJvdG8SCGFw",
-            "aS5nYW1lGjFoZWFsdGgvY29tbW9uSGVhbHRoL2NvbW1vbl9oZWFsdGhfdHlw",
-            "ZV9lbnVtLnByb3RvIokBCgxDb21tb25IZWFsdGgSGwoJaGVhbHRoX2lkGAEg",
-            "ASgDUghoZWFsdGhJZBISCgRuYW1lGAIgASgJUgRuYW1lEkgKEmNvbW1vbl9o",
-            "ZWFsdGhfdHlwZRgDIAEoDjIaLmFwaS5nYW1lLkNvbW1vbkhlYWx0aFR5cGVS",
-            "EGNvbW1vbkhlYWx0aFR5cGVCsgEKDGNvbS5hcGkuZ2FtZUIRQ29tbW9uSGVh",
-            "bHRoUHJvdG9QAVpOZ2l0aHViLmNvbS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2Fw",
-            "aS9nYW1lL3ByZXNlbnRhdGlvbi9wcm90by9oZWFsdGgvY29tbW9uSGVhbHRo",
-            "ogIDQUdYqgIIQXBpLkdhbWXKAghBcGlcR2FtZeICFEFwaVxHYW1lXEdQQk1l",
-            "dGFkYXRh6gIJQXBpOjpHYW1lYgZwcm90bzM="));
+            "aS5nYW1lGixoZWFsdGgvY29tbW9uSGVhbHRoL2NvbW1vbl9oZWFsdGhfZW51",
+            "bS5wcm90byKJAQoMQ29tbW9uSGVhbHRoEhsKCWhlYWx0aF9pZBgBIAEoA1II",
+            "aGVhbHRoSWQSEgoEbmFtZRgCIAEoCVIEbmFtZRJIChJjb21tb25faGVhbHRo",
+            "X2VudW0YAyABKA4yGi5hcGkuZ2FtZS5Db21tb25IZWFsdGhFbnVtUhBjb21t",
+            "b25IZWFsdGhFbnVtQrIBCgxjb20uYXBpLmdhbWVCEUNvbW1vbkhlYWx0aFBy",
+            "b3RvUAFaTmdpdGh1Yi5jb20vZ2FtZS1jb3JlL2djLXNlcnZlci9hcGkvZ2Ft",
+            "ZS9wcmVzZW50YXRpb24vcHJvdG8vaGVhbHRoL2NvbW1vbkhlYWx0aKICA0FH",
+            "WKoCCEFwaS5HYW1lygIIQXBpXEdhbWXiAhRBcGlcR2FtZVxHUEJNZXRhZGF0",
+            "YeoCCUFwaTo6R2FtZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Api.Game.CommonHealthTypeEnumReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Api.Game.CommonHealthEnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.CommonHealth), global::Api.Game.CommonHealth.Parser, new[]{ "HealthId", "Name", "CommonHealthType" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.CommonHealth), global::Api.Game.CommonHealth.Parser, new[]{ "HealthId", "Name", "CommonHealthEnum" }, null, null, null, null)
           }));
     }
     #endregion
@@ -81,7 +81,7 @@ namespace Api.Game {
     public CommonHealth(CommonHealth other) : this() {
       healthId_ = other.healthId_;
       name_ = other.name_;
-      commonHealthType_ = other.commonHealthType_;
+      commonHealthEnum_ = other.commonHealthEnum_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -115,15 +115,15 @@ namespace Api.Game {
       }
     }
 
-    /// <summary>Field number for the "common_health_type" field.</summary>
-    public const int CommonHealthTypeFieldNumber = 3;
-    private global::Api.Game.CommonHealthType commonHealthType_ = global::Api.Game.CommonHealthType.CommonNone;
+    /// <summary>Field number for the "common_health_enum" field.</summary>
+    public const int CommonHealthEnumFieldNumber = 3;
+    private global::Api.Game.CommonHealthEnum commonHealthEnum_ = global::Api.Game.CommonHealthEnum.CommonNone;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Api.Game.CommonHealthType CommonHealthType {
-      get { return commonHealthType_; }
+    public global::Api.Game.CommonHealthEnum CommonHealthEnum {
+      get { return commonHealthEnum_; }
       set {
-        commonHealthType_ = value;
+        commonHealthEnum_ = value;
       }
     }
 
@@ -144,7 +144,7 @@ namespace Api.Game {
       }
       if (HealthId != other.HealthId) return false;
       if (Name != other.Name) return false;
-      if (CommonHealthType != other.CommonHealthType) return false;
+      if (CommonHealthEnum != other.CommonHealthEnum) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -154,7 +154,7 @@ namespace Api.Game {
       int hash = 1;
       if (HealthId != 0L) hash ^= HealthId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
-      if (CommonHealthType != global::Api.Game.CommonHealthType.CommonNone) hash ^= CommonHealthType.GetHashCode();
+      if (CommonHealthEnum != global::Api.Game.CommonHealthEnum.CommonNone) hash ^= CommonHealthEnum.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -181,9 +181,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (CommonHealthType != global::Api.Game.CommonHealthType.CommonNone) {
+      if (CommonHealthEnum != global::Api.Game.CommonHealthEnum.CommonNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) CommonHealthType);
+        output.WriteEnum((int) CommonHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -203,9 +203,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (CommonHealthType != global::Api.Game.CommonHealthType.CommonNone) {
+      if (CommonHealthEnum != global::Api.Game.CommonHealthEnum.CommonNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) CommonHealthType);
+        output.WriteEnum((int) CommonHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -223,8 +223,8 @@ namespace Api.Game {
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
-      if (CommonHealthType != global::Api.Game.CommonHealthType.CommonNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CommonHealthType);
+      if (CommonHealthEnum != global::Api.Game.CommonHealthEnum.CommonNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CommonHealthEnum);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -244,8 +244,8 @@ namespace Api.Game {
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
-      if (other.CommonHealthType != global::Api.Game.CommonHealthType.CommonNone) {
-        CommonHealthType = other.CommonHealthType;
+      if (other.CommonHealthEnum != global::Api.Game.CommonHealthEnum.CommonNone) {
+        CommonHealthEnum = other.CommonHealthEnum;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -271,7 +271,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            CommonHealthType = (global::Api.Game.CommonHealthType) input.ReadEnum();
+            CommonHealthEnum = (global::Api.Game.CommonHealthEnum) input.ReadEnum();
             break;
           }
         }
@@ -298,7 +298,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            CommonHealthType = (global::Api.Game.CommonHealthType) input.ReadEnum();
+            CommonHealthEnum = (global::Api.Game.CommonHealthEnum) input.ReadEnum();
             break;
           }
         }

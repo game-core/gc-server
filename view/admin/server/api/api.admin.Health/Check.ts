@@ -1,10 +1,16 @@
-import {ApiClient} from "~/pkg/infrastructure/ApiClient"
-import type {HealthCheckResponse} from "~/pkg/domain/model/health/HealthCheckResponse";
+import { ApiClient } from "~/pkg/infrastructure/ApiClient";
+import type { HealthCheckResponse } from "~/pkg/domain/model/health/HealthCheckResponse";
 
-export default defineEventHandler(async (event): Promise<HealthCheckResponse> => {
+export default defineEventHandler(
+  async (event): Promise<HealthCheckResponse> => {
     const apiClient = new ApiClient();
     const config = useRuntimeConfig();
-    const body = await readBody(event)
+    const body = await readBody(event);
 
-    return await apiClient.post(config.public.GcServerUrl + "/api.admin.Health/Check", body, "")
-})
+    return await apiClient.post(
+      config.public.GcServerUrl + "/api.admin.Health/Check",
+      body,
+      ""
+    );
+  }
+);

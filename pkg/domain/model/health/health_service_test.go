@@ -83,7 +83,7 @@ func TestHealthService_Check(t *testing.T) {
 							&adminHealth.AdminHealth{
 								HealthId:        1,
 								Name:            "test",
-								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+								AdminHealthEnum: adminHealth.AdminHealthEnum_AdminSuccess,
 							},
 							nil,
 						)
@@ -100,7 +100,7 @@ func TestHealthService_Check(t *testing.T) {
 							&commonHealth.CommonHealth{
 								HealthId:         1,
 								Name:             "test",
-								CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
+								CommonHealthEnum: commonHealth.CommonHealthEnum_CommonSuccess,
 							},
 							nil,
 						)
@@ -117,7 +117,7 @@ func TestHealthService_Check(t *testing.T) {
 							&masterHealth.MasterHealth{
 								HealthId:         1,
 								Name:             "test",
-								MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+								MasterHealthEnum: masterHealth.MasterHealthEnum_MasterSuccess,
 							},
 							nil,
 						)
@@ -135,17 +135,17 @@ func TestHealthService_Check(t *testing.T) {
 				AdminHealth: &adminHealth.AdminHealth{
 					HealthId:        1,
 					Name:            "test",
-					AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+					AdminHealthEnum: adminHealth.AdminHealthEnum_AdminSuccess,
 				},
 				CommonHealth: &commonHealth.CommonHealth{
 					HealthId:         1,
 					Name:             "test",
-					CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
+					CommonHealthEnum: commonHealth.CommonHealthEnum_CommonSuccess,
 				},
 				MasterHealth: &masterHealth.MasterHealth{
 					HealthId:         1,
 					Name:             "test",
-					MasterHealthType: masterHealth.MasterHealthType_MasterSuccess,
+					MasterHealthEnum: masterHealth.MasterHealthEnum_MasterSuccess,
 				},
 			},
 			wantErr: nil,
@@ -199,7 +199,7 @@ func TestHealthService_Check(t *testing.T) {
 							&adminHealth.AdminHealth{
 								HealthId:        1,
 								Name:            "test",
-								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+								AdminHealthEnum: adminHealth.AdminHealthEnum_AdminSuccess,
 							},
 							nil,
 						)
@@ -247,7 +247,7 @@ func TestHealthService_Check(t *testing.T) {
 							&adminHealth.AdminHealth{
 								HealthId:        1,
 								Name:            "test",
-								AdminHealthType: adminHealth.AdminHealthType_AdminSuccess,
+								AdminHealthEnum: adminHealth.AdminHealthEnum_AdminSuccess,
 							},
 							nil,
 						)
@@ -264,7 +264,7 @@ func TestHealthService_Check(t *testing.T) {
 							&commonHealth.CommonHealth{
 								HealthId:         1,
 								Name:             "test",
-								CommonHealthType: commonHealth.CommonHealthType_CommonSuccess,
+								CommonHealthEnum: commonHealth.CommonHealthEnum_CommonSuccess,
 							},
 							nil,
 						)

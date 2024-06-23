@@ -11,10 +11,10 @@ func NewCommonHealths() CommonHealths {
 	return CommonHealths{}
 }
 
-func SetCommonHealth(healthId int64, name string, commonHealthType CommonHealthType) *CommonHealth {
+func SetCommonHealth(healthId int64, name string, commonHealthEnum CommonHealthEnum) *CommonHealth {
 	return &CommonHealth{
 		HealthId:         healthId,
 		Name:             name,
-		CommonHealthType: commonHealthType,
+		CommonHealthEnum: commonHealthEnum,
 	}
 }

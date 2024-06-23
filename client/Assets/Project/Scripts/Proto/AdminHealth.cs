@@ -25,19 +25,19 @@ namespace Api.Game {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiVoZWFsdGgvYWRtaW5IZWFsdGgvYWRtaW5faGVhbHRoLnByb3RvEghhcGku",
-            "Z2FtZRovaGVhbHRoL2FkbWluSGVhbHRoL2FkbWluX2hlYWx0aF90eXBlX2Vu",
-            "dW0ucHJvdG8ihQEKC0FkbWluSGVhbHRoEhsKCWhlYWx0aF9pZBgBIAEoA1II",
-            "aGVhbHRoSWQSEgoEbmFtZRgCIAEoCVIEbmFtZRJFChFhZG1pbl9oZWFsdGhf",
-            "dHlwZRgDIAEoDjIZLmFwaS5nYW1lLkFkbWluSGVhbHRoVHlwZVIPYWRtaW5I",
-            "ZWFsdGhUeXBlQrABCgxjb20uYXBpLmdhbWVCEEFkbWluSGVhbHRoUHJvdG9Q",
-            "AVpNZ2l0aHViLmNvbS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2FwaS9nYW1lL3By",
-            "ZXNlbnRhdGlvbi9wcm90by9oZWFsdGgvYWRtaW5IZWFsdGiiAgNBR1iqAghB",
-            "cGkuR2FtZcoCCEFwaVxHYW1l4gIUQXBpXEdhbWVcR1BCTWV0YWRhdGHqAglB",
-            "cGk6OkdhbWViBnByb3RvMw=="));
+            "Z2FtZRoqaGVhbHRoL2FkbWluSGVhbHRoL2FkbWluX2hlYWx0aF9lbnVtLnBy",
+            "b3RvIoUBCgtBZG1pbkhlYWx0aBIbCgloZWFsdGhfaWQYASABKANSCGhlYWx0",
+            "aElkEhIKBG5hbWUYAiABKAlSBG5hbWUSRQoRYWRtaW5faGVhbHRoX2VudW0Y",
+            "AyABKA4yGS5hcGkuZ2FtZS5BZG1pbkhlYWx0aEVudW1SD2FkbWluSGVhbHRo",
+            "RW51bUKwAQoMY29tLmFwaS5nYW1lQhBBZG1pbkhlYWx0aFByb3RvUAFaTWdp",
+            "dGh1Yi5jb20vZ2FtZS1jb3JlL2djLXNlcnZlci9hcGkvZ2FtZS9wcmVzZW50",
+            "YXRpb24vcHJvdG8vaGVhbHRoL2FkbWluSGVhbHRoogIDQUdYqgIIQXBpLkdh",
+            "bWXKAghBcGlcR2FtZeICFEFwaVxHYW1lXEdQQk1ldGFkYXRh6gIJQXBpOjpH",
+            "YW1lYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Api.Game.AdminHealthTypeEnumReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Api.Game.AdminHealthEnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.AdminHealth), global::Api.Game.AdminHealth.Parser, new[]{ "HealthId", "Name", "AdminHealthType" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.AdminHealth), global::Api.Game.AdminHealth.Parser, new[]{ "HealthId", "Name", "AdminHealthEnum" }, null, null, null, null)
           }));
     }
     #endregion
@@ -81,7 +81,7 @@ namespace Api.Game {
     public AdminHealth(AdminHealth other) : this() {
       healthId_ = other.healthId_;
       name_ = other.name_;
-      adminHealthType_ = other.adminHealthType_;
+      adminHealthEnum_ = other.adminHealthEnum_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -115,15 +115,15 @@ namespace Api.Game {
       }
     }
 
-    /// <summary>Field number for the "admin_health_type" field.</summary>
-    public const int AdminHealthTypeFieldNumber = 3;
-    private global::Api.Game.AdminHealthType adminHealthType_ = global::Api.Game.AdminHealthType.AdminNone;
+    /// <summary>Field number for the "admin_health_enum" field.</summary>
+    public const int AdminHealthEnumFieldNumber = 3;
+    private global::Api.Game.AdminHealthEnum adminHealthEnum_ = global::Api.Game.AdminHealthEnum.AdminNone;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Api.Game.AdminHealthType AdminHealthType {
-      get { return adminHealthType_; }
+    public global::Api.Game.AdminHealthEnum AdminHealthEnum {
+      get { return adminHealthEnum_; }
       set {
-        adminHealthType_ = value;
+        adminHealthEnum_ = value;
       }
     }
 
@@ -144,7 +144,7 @@ namespace Api.Game {
       }
       if (HealthId != other.HealthId) return false;
       if (Name != other.Name) return false;
-      if (AdminHealthType != other.AdminHealthType) return false;
+      if (AdminHealthEnum != other.AdminHealthEnum) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -154,7 +154,7 @@ namespace Api.Game {
       int hash = 1;
       if (HealthId != 0L) hash ^= HealthId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
-      if (AdminHealthType != global::Api.Game.AdminHealthType.AdminNone) hash ^= AdminHealthType.GetHashCode();
+      if (AdminHealthEnum != global::Api.Game.AdminHealthEnum.AdminNone) hash ^= AdminHealthEnum.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -181,9 +181,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (AdminHealthType != global::Api.Game.AdminHealthType.AdminNone) {
+      if (AdminHealthEnum != global::Api.Game.AdminHealthEnum.AdminNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) AdminHealthType);
+        output.WriteEnum((int) AdminHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -203,9 +203,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (AdminHealthType != global::Api.Game.AdminHealthType.AdminNone) {
+      if (AdminHealthEnum != global::Api.Game.AdminHealthEnum.AdminNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) AdminHealthType);
+        output.WriteEnum((int) AdminHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -223,8 +223,8 @@ namespace Api.Game {
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
-      if (AdminHealthType != global::Api.Game.AdminHealthType.AdminNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AdminHealthType);
+      if (AdminHealthEnum != global::Api.Game.AdminHealthEnum.AdminNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) AdminHealthEnum);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -244,8 +244,8 @@ namespace Api.Game {
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
-      if (other.AdminHealthType != global::Api.Game.AdminHealthType.AdminNone) {
-        AdminHealthType = other.AdminHealthType;
+      if (other.AdminHealthEnum != global::Api.Game.AdminHealthEnum.AdminNone) {
+        AdminHealthEnum = other.AdminHealthEnum;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -271,7 +271,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            AdminHealthType = (global::Api.Game.AdminHealthType) input.ReadEnum();
+            AdminHealthEnum = (global::Api.Game.AdminHealthEnum) input.ReadEnum();
             break;
           }
         }
@@ -298,7 +298,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            AdminHealthType = (global::Api.Game.AdminHealthType) input.ReadEnum();
+            AdminHealthEnum = (global::Api.Game.AdminHealthEnum) input.ReadEnum();
             break;
           }
         }

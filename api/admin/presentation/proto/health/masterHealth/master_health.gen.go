@@ -11,10 +11,10 @@ func NewMasterHealths() MasterHealths {
 	return MasterHealths{}
 }
 
-func SetMasterHealth(healthId int64, name string, masterHealthType MasterHealthType) *MasterHealth {
+func SetMasterHealth(healthId int64, name string, masterHealthEnum MasterHealthEnum) *MasterHealth {
 	return &MasterHealth{
 		HealthId:         healthId,
 		Name:             name,
-		MasterHealthType: masterHealthType,
+		MasterHealthEnum: masterHealthEnum,
 	}
 }

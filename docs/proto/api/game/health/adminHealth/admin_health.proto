@@ -3,10 +3,10 @@ syntax = "proto3";
 
 package api.game;
 
-import "health/adminHealth/admin_health_type_enum.proto";
+import "health/adminHealth/admin_health_enum.proto";
 
 message AdminHealth {
   int64 health_id = 1;
   string name = 2;
-  AdminHealthType admin_health_type = 3;
+  AdminHealthEnum admin_health_enum = 3;
 }

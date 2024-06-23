@@ -12,7 +12,7 @@ using scg = global::System.Collections.Generic;
 namespace Api.Game {
 
   /// <summary>Holder for reflection information generated from health/adminHealth/admin_health_type_enum.proto</summary>
-  public static partial class AdminHealthTypeEnumReflection {
+  public static partial class AdminHealthEnumEnumReflection {
 
     #region Descriptor
     /// <summary>File descriptor for health/adminHealth/admin_health_type_enum.proto</summary>
@@ -21,7 +21,7 @@ namespace Api.Game {
     }
     private static pbr::FileDescriptor descriptor;
 
-    static AdminHealthTypeEnumReflection() {
+    static AdminHealthEnumEnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ci9oZWFsdGgvYWRtaW5IZWFsdGgvYWRtaW5faGVhbHRoX3R5cGVfZW51bS5w",
@@ -33,13 +33,13 @@ namespace Api.Game {
             "R2FtZVxHUEJNZXRhZGF0YeoCCUFwaTo6R2FtZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.AdminHealthType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Api.Game.AdminHealthEnum), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum AdminHealthType {
+  public enum AdminHealthEnum {
     [pbr::OriginalName("AdminNone")] AdminNone = 0,
     [pbr::OriginalName("AdminSuccess")] AdminSuccess = 1,
   }

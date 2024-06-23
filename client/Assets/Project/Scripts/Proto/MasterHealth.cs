@@ -25,19 +25,19 @@ namespace Api.Game {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CidoZWFsdGgvbWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGgucHJvdG8SCGFw",
-            "aS5nYW1lGjFoZWFsdGgvbWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGhfdHlw",
-            "ZV9lbnVtLnByb3RvIokBCgxNYXN0ZXJIZWFsdGgSGwoJaGVhbHRoX2lkGAEg",
-            "ASgDUghoZWFsdGhJZBISCgRuYW1lGAIgASgJUgRuYW1lEkgKEm1hc3Rlcl9o",
-            "ZWFsdGhfdHlwZRgDIAEoDjIaLmFwaS5nYW1lLk1hc3RlckhlYWx0aFR5cGVS",
-            "EG1hc3RlckhlYWx0aFR5cGVCsgEKDGNvbS5hcGkuZ2FtZUIRTWFzdGVySGVh",
-            "bHRoUHJvdG9QAVpOZ2l0aHViLmNvbS9nYW1lLWNvcmUvZ2Mtc2VydmVyL2Fw",
-            "aS9nYW1lL3ByZXNlbnRhdGlvbi9wcm90by9oZWFsdGgvbWFzdGVySGVhbHRo",
-            "ogIDQUdYqgIIQXBpLkdhbWXKAghBcGlcR2FtZeICFEFwaVxHYW1lXEdQQk1l",
-            "dGFkYXRh6gIJQXBpOjpHYW1lYgZwcm90bzM="));
+            "aS5nYW1lGixoZWFsdGgvbWFzdGVySGVhbHRoL21hc3Rlcl9oZWFsdGhfZW51",
+            "bS5wcm90byKJAQoMTWFzdGVySGVhbHRoEhsKCWhlYWx0aF9pZBgBIAEoA1II",
+            "aGVhbHRoSWQSEgoEbmFtZRgCIAEoCVIEbmFtZRJIChJtYXN0ZXJfaGVhbHRo",
+            "X2VudW0YAyABKA4yGi5hcGkuZ2FtZS5NYXN0ZXJIZWFsdGhFbnVtUhBtYXN0",
+            "ZXJIZWFsdGhFbnVtQrIBCgxjb20uYXBpLmdhbWVCEU1hc3RlckhlYWx0aFBy",
+            "b3RvUAFaTmdpdGh1Yi5jb20vZ2FtZS1jb3JlL2djLXNlcnZlci9hcGkvZ2Ft",
+            "ZS9wcmVzZW50YXRpb24vcHJvdG8vaGVhbHRoL21hc3RlckhlYWx0aKICA0FH",
+            "WKoCCEFwaS5HYW1lygIIQXBpXEdhbWXiAhRBcGlcR2FtZVxHUEJNZXRhZGF0",
+            "YeoCCUFwaTo6R2FtZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Api.Game.MasterHealthTypeEnumReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Api.Game.MasterHealthEnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.MasterHealth), global::Api.Game.MasterHealth.Parser, new[]{ "HealthId", "Name", "MasterHealthType" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Api.Game.MasterHealth), global::Api.Game.MasterHealth.Parser, new[]{ "HealthId", "Name", "MasterHealthEnum" }, null, null, null, null)
           }));
     }
     #endregion
@@ -81,7 +81,7 @@ namespace Api.Game {
     public MasterHealth(MasterHealth other) : this() {
       healthId_ = other.healthId_;
       name_ = other.name_;
-      masterHealthType_ = other.masterHealthType_;
+      masterHealthEnum_ = other.masterHealthEnum_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -115,15 +115,15 @@ namespace Api.Game {
       }
     }
 
-    /// <summary>Field number for the "master_health_type" field.</summary>
-    public const int MasterHealthTypeFieldNumber = 3;
-    private global::Api.Game.MasterHealthType masterHealthType_ = global::Api.Game.MasterHealthType.MasterNone;
+    /// <summary>Field number for the "master_health_enum" field.</summary>
+    public const int MasterHealthEnumFieldNumber = 3;
+    private global::Api.Game.MasterHealthEnum masterHealthEnum_ = global::Api.Game.MasterHealthEnum.MasterNone;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Api.Game.MasterHealthType MasterHealthType {
-      get { return masterHealthType_; }
+    public global::Api.Game.MasterHealthEnum MasterHealthEnum {
+      get { return masterHealthEnum_; }
       set {
-        masterHealthType_ = value;
+        masterHealthEnum_ = value;
       }
     }
 
@@ -144,7 +144,7 @@ namespace Api.Game {
       }
       if (HealthId != other.HealthId) return false;
       if (Name != other.Name) return false;
-      if (MasterHealthType != other.MasterHealthType) return false;
+      if (MasterHealthEnum != other.MasterHealthEnum) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -154,7 +154,7 @@ namespace Api.Game {
       int hash = 1;
       if (HealthId != 0L) hash ^= HealthId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
-      if (MasterHealthType != global::Api.Game.MasterHealthType.MasterNone) hash ^= MasterHealthType.GetHashCode();
+      if (MasterHealthEnum != global::Api.Game.MasterHealthEnum.MasterNone) hash ^= MasterHealthEnum.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -181,9 +181,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (MasterHealthType != global::Api.Game.MasterHealthType.MasterNone) {
+      if (MasterHealthEnum != global::Api.Game.MasterHealthEnum.MasterNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) MasterHealthType);
+        output.WriteEnum((int) MasterHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -203,9 +203,9 @@ namespace Api.Game {
         output.WriteRawTag(18);
         output.WriteString(Name);
       }
-      if (MasterHealthType != global::Api.Game.MasterHealthType.MasterNone) {
+      if (MasterHealthEnum != global::Api.Game.MasterHealthEnum.MasterNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) MasterHealthType);
+        output.WriteEnum((int) MasterHealthEnum);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -223,8 +223,8 @@ namespace Api.Game {
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
       }
-      if (MasterHealthType != global::Api.Game.MasterHealthType.MasterNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) MasterHealthType);
+      if (MasterHealthEnum != global::Api.Game.MasterHealthEnum.MasterNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) MasterHealthEnum);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -244,8 +244,8 @@ namespace Api.Game {
       if (other.Name.Length != 0) {
         Name = other.Name;
       }
-      if (other.MasterHealthType != global::Api.Game.MasterHealthType.MasterNone) {
-        MasterHealthType = other.MasterHealthType;
+      if (other.MasterHealthEnum != global::Api.Game.MasterHealthEnum.MasterNone) {
+        MasterHealthEnum = other.MasterHealthEnum;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -271,7 +271,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            MasterHealthType = (global::Api.Game.MasterHealthType) input.ReadEnum();
+            MasterHealthEnum = (global::Api.Game.MasterHealthEnum) input.ReadEnum();
             break;
           }
         }
@@ -298,7 +298,7 @@ namespace Api.Game {
             break;
           }
           case 24: {
-            MasterHealthType = (global::Api.Game.MasterHealthType) input.ReadEnum();
+            MasterHealthEnum = (global::Api.Game.MasterHealthEnum) input.ReadEnum();
             break;
           }
         }

@@ -1,9 +1,0 @@
-// ヘルスチェックタイプ
-syntax = "proto3";
-
-package api.admin;
-
-enum AdminHealthType {
-  AdminNone = 0;
-  AdminSuccess = 1;
-}

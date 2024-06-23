@@ -34,7 +34,7 @@ func (s *commonHealthDao) Find(ctx context.Context, healthId int64) (*commonHeal
 		return nil, errors.NewError("record does not exist")
 	}
 
-	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthType), nil
+	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthEnum), nil
 }
 
 func (s *commonHealthDao) FindOrNil(ctx context.Context, healthId int64) (*commonHealth.CommonHealth, error) {
@@ -47,7 +47,7 @@ func (s *commonHealthDao) FindOrNil(ctx context.Context, healthId int64) (*commo
 		return nil, nil
 	}
 
-	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthType), nil
+	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthEnum), nil
 }
 
 func (s *commonHealthDao) FindList(ctx context.Context) (commonHealth.CommonHealths, error) {
@@ -59,7 +59,7 @@ func (s *commonHealthDao) FindList(ctx context.Context) (commonHealth.CommonHeal
 
 	ms := commonHealth.NewCommonHealths()
 	for _, t := range ts {
-		ms = append(ms, commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthType))
+		ms = append(ms, commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthEnum))
 	}
 
 	return ms, nil
@@ -76,14 +76,14 @@ func (s *commonHealthDao) Create(ctx context.Context, tx *gorm.DB, m *commonHeal
 	t := &CommonHealth{
 		HealthId:         m.HealthId,
 		Name:             m.Name,
-		CommonHealthType: m.CommonHealthType,
+		CommonHealthEnum: m.CommonHealthEnum,
 	}
 	res := conn.Model(NewCommonHealth()).WithContext(ctx).Create(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthType), nil
+	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthEnum), nil
 }
 
 func (s *commonHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms commonHealth.CommonHealths) (commonHealth.CommonHealths, error) {
@@ -103,7 +103,7 @@ func (s *commonHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms common
 		t := &CommonHealth{
 			HealthId:         m.HealthId,
 			Name:             m.Name,
-			CommonHealthType: m.CommonHealthType,
+			CommonHealthEnum: m.CommonHealthEnum,
 		}
 		ts = append(ts, t)
 	}
@@ -127,14 +127,14 @@ func (s *commonHealthDao) Update(ctx context.Context, tx *gorm.DB, m *commonHeal
 	t := &CommonHealth{
 		HealthId:         m.HealthId,
 		Name:             m.Name,
-		CommonHealthType: m.CommonHealthType,
+		CommonHealthEnum: m.CommonHealthEnum,
 	}
-	res := conn.Model(NewCommonHealth()).WithContext(ctx).Select("health_id", "name", "common_health_type").Where("health_id = ?", m.HealthId).Updates(t)
+	res := conn.Model(NewCommonHealth()).WithContext(ctx).Select("health_id", "name", "common_health_enum").Where("health_id = ?", m.HealthId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthType), nil
+	return commonHealth.SetCommonHealth(t.HealthId, t.Name, t.CommonHealthEnum), nil
 }
 
 func (s *commonHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms commonHealth.CommonHealths) (commonHealth.CommonHealths, error) {
@@ -154,14 +154,14 @@ func (s *commonHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms common
 		t := &CommonHealth{
 			HealthId:         m.HealthId,
 			Name:             m.Name,
-			CommonHealthType: m.CommonHealthType,
+			CommonHealthEnum: m.CommonHealthEnum,
 		}
 		ts = append(ts, t)
 	}
 
 	res := conn.Model(NewCommonHealth()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "health_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "common_health_type"}),
+		DoUpdates: clause.AssignmentColumns([]string{"name", "common_health_enum"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

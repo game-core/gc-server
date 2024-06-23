@@ -15,8 +15,8 @@ structure:
     nullable: false
     number: 2
     comment: "アクション名"
-  AdminHealthType:
-    name: admin_health_type
+  AdminHealthEnum:
+    name: admin_health_enum
     type: enum
     package: health/adminHealth
     nullable: false

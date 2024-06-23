@@ -10,7 +10,7 @@ type AdminHealths []*AdminHealth
 type AdminHealth struct {
 	HealthId        int64
 	Name            string
-	AdminHealthType adminHealth.AdminHealthType
+	AdminHealthEnum adminHealth.AdminHealthEnum
 }
 
 func NewAdminHealth() *AdminHealth {
@@ -21,11 +21,11 @@ func NewAdminHealths() AdminHealths {
 	return AdminHealths{}
 }
 
-func SetAdminHealth(healthId int64, name string, adminHealthType adminHealth.AdminHealthType) *AdminHealth {
+func SetAdminHealth(healthId int64, name string, adminHealthEnum adminHealth.AdminHealthEnum) *AdminHealth {
 	return &AdminHealth{
 		HealthId:        healthId,
 		Name:            name,
-		AdminHealthType: adminHealthType,
+		AdminHealthEnum: adminHealthEnum,
 	}
 }
 

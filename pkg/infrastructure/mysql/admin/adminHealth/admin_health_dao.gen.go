@@ -34,7 +34,7 @@ func (s *adminHealthDao) Find(ctx context.Context, healthId int64) (*adminHealth
 		return nil, errors.NewError("record does not exist")
 	}
 
-	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthType), nil
+	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
 func (s *adminHealthDao) FindOrNil(ctx context.Context, healthId int64) (*adminHealth.AdminHealth, error) {
@@ -47,7 +47,7 @@ func (s *adminHealthDao) FindOrNil(ctx context.Context, healthId int64) (*adminH
 		return nil, nil
 	}
 
-	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthType), nil
+	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
 func (s *adminHealthDao) FindList(ctx context.Context) (adminHealth.AdminHealths, error) {
@@ -59,7 +59,7 @@ func (s *adminHealthDao) FindList(ctx context.Context) (adminHealth.AdminHealths
 
 	ms := adminHealth.NewAdminHealths()
 	for _, t := range ts {
-		ms = append(ms, adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthType))
+		ms = append(ms, adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum))
 	}
 
 	return ms, nil
@@ -76,14 +76,14 @@ func (s *adminHealthDao) Create(ctx context.Context, tx *gorm.DB, m *adminHealth
 	t := &AdminHealth{
 		HealthId:        m.HealthId,
 		Name:            m.Name,
-		AdminHealthType: m.AdminHealthType,
+		AdminHealthEnum: m.AdminHealthEnum,
 	}
 	res := conn.Model(NewAdminHealth()).WithContext(ctx).Create(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthType), nil
+	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
 func (s *adminHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
@@ -103,7 +103,7 @@ func (s *adminHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms adminHe
 		t := &AdminHealth{
 			HealthId:        m.HealthId,
 			Name:            m.Name,
-			AdminHealthType: m.AdminHealthType,
+			AdminHealthEnum: m.AdminHealthEnum,
 		}
 		ts = append(ts, t)
 	}
@@ -127,14 +127,14 @@ func (s *adminHealthDao) Update(ctx context.Context, tx *gorm.DB, m *adminHealth
 	t := &AdminHealth{
 		HealthId:        m.HealthId,
 		Name:            m.Name,
-		AdminHealthType: m.AdminHealthType,
+		AdminHealthEnum: m.AdminHealthEnum,
 	}
-	res := conn.Model(NewAdminHealth()).WithContext(ctx).Select("health_id", "name", "admin_health_type").Where("health_id = ?", m.HealthId).Updates(t)
+	res := conn.Model(NewAdminHealth()).WithContext(ctx).Select("health_id", "name", "admin_health_enum").Where("health_id = ?", m.HealthId).Updates(t)
 	if err := res.Error; err != nil {
 		return nil, err
 	}
 
-	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthType), nil
+	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
 func (s *adminHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
@@ -154,14 +154,14 @@ func (s *adminHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms adminHe
 		t := &AdminHealth{
 			HealthId:        m.HealthId,
 			Name:            m.Name,
-			AdminHealthType: m.AdminHealthType,
+			AdminHealthEnum: m.AdminHealthEnum,
 		}
 		ts = append(ts, t)
 	}
 
 	res := conn.Model(NewAdminHealth()).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "health_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "admin_health_type"}),
+		DoUpdates: clause.AssignmentColumns([]string{"name", "admin_health_enum"}),
 	}).WithContext(ctx).Create(ts)
 	if err := res.Error; err != nil {
 		return nil, err

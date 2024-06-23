@@ -1,9 +1,0 @@
-// ヘルスチェックタイプ
-syntax = "proto3";
-
-package api.game;
-
-enum MasterHealthType {
-  MasterNone = 0;
-  MasterSuccess = 1;
-}

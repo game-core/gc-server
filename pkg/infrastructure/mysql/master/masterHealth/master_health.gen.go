@@ -10,7 +10,7 @@ type MasterHealths []*MasterHealth
 type MasterHealth struct {
 	HealthId         int64
 	Name             string
-	MasterHealthType masterHealth.MasterHealthType
+	MasterHealthEnum masterHealth.MasterHealthEnum
 }
 
 func NewMasterHealth() *MasterHealth {
@@ -21,11 +21,11 @@ func NewMasterHealths() MasterHealths {
 	return MasterHealths{}
 }
 
-func SetMasterHealth(healthId int64, name string, masterHealthType masterHealth.MasterHealthType) *MasterHealth {
+func SetMasterHealth(healthId int64, name string, masterHealthEnum masterHealth.MasterHealthEnum) *MasterHealth {
 	return &MasterHealth{
 		HealthId:         healthId,
 		Name:             name,
-		MasterHealthType: masterHealthType,
+		MasterHealthEnum: masterHealthEnum,
 	}
 }
 

@@ -64,6 +64,16 @@ func main() {
 			if err := NewHandler().generate(path, "../../../../api/admin/presentation/handler"); err != nil {
 				log.Printf("failed to NewHandler().generate: %s", err)
 			}
+
+			// client
+			if err := NewClient().generate(path, "../../../../view/admin/pkg/domain/model"); err != nil {
+				log.Printf("failed to NewClient().generate: %s", err)
+			}
+
+			// client enum
+			if err := NewClientEnum().generate(path, "../../../../view/admin/pkg/domain/model"); err != nil {
+				log.Printf("failed to NewClientEnum().generate: %s", err)
+			}
 		}
 
 		return nil
