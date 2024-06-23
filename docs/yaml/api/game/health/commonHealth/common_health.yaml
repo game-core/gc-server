@@ -1,5 +1,5 @@
 name: CommonHealth
-package: CommonHealth
+package: commonHealth
 comment: "ヘルスチェック"
 
 structure:

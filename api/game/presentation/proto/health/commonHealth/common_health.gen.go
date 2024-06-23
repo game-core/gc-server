@@ -1,9 +1,5 @@
-// Package CommonHealth ヘルスチェック
-package CommonHealth
-
-import (
-	"github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
-)
+// Package commonHealth ヘルスチェック
+package commonHealth
 
 type CommonHealths []*CommonHealth
 
@@ -15,7 +11,7 @@ func NewCommonHealths() CommonHealths {
 	return CommonHealths{}
 }
 
-func SetCommonHealth(healthId int64, name string, commonHealthType commonHealth.CommonHealthType) *CommonHealth {
+func SetCommonHealth(healthId int64, name string, commonHealthType CommonHealthType) *CommonHealth {
 	return &CommonHealth{
 		HealthId:         healthId,
 		Name:             name,
