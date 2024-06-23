@@ -1,0 +1,8 @@
+CREATE TABLE common_health
+(
+    health_id BIGINT NOT NULL COMMENT "ヘルスID",
+	name VARCHAR(255) NOT NULL COMMENT "アクション名",
+	common_health_enum INT NOT NULL COMMENT "ヘルスチェックタイプ",
+	PRIMARY KEY(health_id),
+	UNIQUE KEY(health_id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

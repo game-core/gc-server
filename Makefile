@@ -31,6 +31,7 @@ gen_api:
 	cd docs/proto/api/admin && buf generate && cd ../../../
 	$(DOCKER_COMPOSE) exec gen goimports -w .
 	make gen_di
+	make view_fmt
 
 # diを生成
 gen_di:

@@ -128,7 +128,6 @@ func TestHealthService_Check(t *testing.T) {
 				ctx: nil,
 				req: &HealthCheckRequest{
 					HealthId: 1,
-					Name:     "test",
 				},
 			},
 			want: &HealthCheckResponse{
@@ -179,7 +178,6 @@ func TestHealthService_Check(t *testing.T) {
 				ctx: nil,
 				req: &HealthCheckRequest{
 					HealthId: 1,
-					Name:     "test",
 				},
 			},
 			want:    nil,
@@ -227,7 +225,6 @@ func TestHealthService_Check(t *testing.T) {
 				ctx: nil,
 				req: &HealthCheckRequest{
 					HealthId: 1,
-					Name:     "test",
 				},
 			},
 			want:    nil,
@@ -288,7 +285,6 @@ func TestHealthService_Check(t *testing.T) {
 				ctx: nil,
 				req: &HealthCheckRequest{
 					HealthId: 1,
-					Name:     "test",
 				},
 			},
 			want:    nil,
