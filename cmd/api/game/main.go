@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 
 	"github.com/game-core/gc-server/api/game/presentation/router"
-	apiConfig "github.com/game-core/gc-server/config/api"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
 )
@@ -24,8 +22,7 @@ func main() {
 		log.Fatalf("failed to logger.InitCloudWatch: %v", err)
 	}
 
-	apiConfig := apiConfig.GetAppConfig()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", apiConfig.Port.GrpcPort))
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("failed to net.Listen: %v", err)
 	}
