@@ -31,11 +31,12 @@ func NewAccountUsecase(
 	}
 }
 
-// GetGoogleLoginUrl アカウントをログインする
+// GetGoogleLoginUrl URLを取得する
 func (s *accountUsecase) GetGoogleLoginUrl(ctx context.Context, req *accountProto.AccountGetGoogleLoginUrlRequest) (*accountProto.AccountGetGoogleLoginUrlResponse, error) {
 	return accountProto.SetAccountGetGoogleLoginUrlResponse(""), nil
 }
 
+// GetGoogleLoginToken トークンを取得する
 func (s *accountUsecase) GetGoogleLoginToken(ctx context.Context, req *accountProto.AccountGetGoogleLoginTokenRequest) (*accountProto.AccountGetGoogleLoginTokenResponse, error) {
 	return accountProto.SetAccountGetGoogleLoginTokenResponse(
 		adminAccountGoogleTokenProto.SetAdminAccountGoogleToken(
