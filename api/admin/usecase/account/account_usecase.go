@@ -20,6 +20,7 @@ import (
 type AccountUsecase interface {
 	GetGoogleLoginUrl(ctx context.Context, req *accountProto.AccountGetGoogleLoginUrlRequest) (*accountProto.AccountGetGoogleLoginUrlResponse, error)
 	GetGoogleLoginToken(ctx context.Context, req *accountProto.AccountGetGoogleLoginTokenRequest) (*accountProto.AccountGetGoogleLoginTokenResponse, error)
+	VerifyGoogleAccessToken(ctx context.Context, accessToken string) (*v2.Tokeninfo, error)
 }
 
 type accountUsecase struct {
@@ -77,6 +78,11 @@ func (s *accountUsecase) GetGoogleLoginToken(ctx context.Context, req *accountPr
 	), nil
 }
 
+func (s *accountUsecase) VerifyGoogleAccessToken(ctx context.Context, accessToken string) (*v2.Tokeninfo, error) {
+	google := s.newGoogle()
+	return google.VerifyAccessToken(ctx, accessToken)
+}
+
 func (s *accountUsecase) newGoogle() *Google {
 	google := &Google{
 		Config: &oauth2.Config{
@@ -115,4 +121,18 @@ func (g *Google) GetUserID(ctx context.Context, code string) (googleUserID strin
 	}
 
 	return userInfo.UserId, nil
+}
+
+func (g *Google) VerifyAccessToken(ctx context.Context, accessToken string) (*v2.Tokeninfo, error) {
+	service, err := v2.New(g.Config.Client(ctx, &oauth2.Token{AccessToken: accessToken}))
+	if err != nil {
+		return nil, errors.New("接続エラー")
+	}
+
+	tokenInfo, err := service.Tokeninfo().AccessToken(accessToken).Context(ctx).Do()
+	if err != nil {
+		return nil, errors.New("トークン検証エラー")
+	}
+
+	return tokenInfo, nil
 }
