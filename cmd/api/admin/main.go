@@ -3,23 +3,25 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
+	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 	"net/http"
 	"sync"
 
-	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
-
 	"github.com/game-core/gc-server/api/admin/presentation/router"
-	apiConfig "github.com/game-core/gc-server/config/api"
+	"github.com/game-core/gc-server/config/auth"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
 )
 
 func main() {
+	if _, err := auth.InitAuth(); err != nil {
+		log.Fatalf("failed to auth.InitAuth: %v", err)
+	}
+
 	if _, err := database.InitMysql(); err != nil {
 		log.Fatalf("failed to database.InitMysql: %v", err)
 	}
@@ -32,8 +34,7 @@ func main() {
 		log.Fatalf("failed to logger.InitCloudWatch: %v", err)
 	}
 
-	apiConfig := apiConfig.GetAppConfig()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", apiConfig.Port.GrpcPort))
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("failed to net.Listen: %v", err)
 	}
@@ -43,9 +44,12 @@ func main() {
 		}
 	}(lis)
 
+	runGroup(lis)
+}
+
+func runGroup(lis net.Listener) {
 	var wg sync.WaitGroup
 	wg.Add(2)
-
 	go func() {
 		defer wg.Done()
 		router.Router(lis)
@@ -54,7 +58,6 @@ func main() {
 		defer wg.Done()
 		gateway()
 	}()
-
 	wg.Wait()
 }
 
