@@ -38,7 +38,7 @@ func (s *ClientEnum) generate(file string, base string) error {
 	fileName := s.getOutputFileName(outputDir, filepath.Base(file[:len(file)-len(filepath.Ext(file))]))
 
 	switch {
-	case strings.Contains(fileName, "Enum.gen"):
+	case strings.Contains(fileName, "_enum.gen"):
 		if err := s.createOutputFile(yamlStruct, fileName); err != nil {
 			return err
 		}
@@ -79,7 +79,7 @@ func (s *ClientEnum) createOutputFile(yamlStruct *YamlStruct, outputFileName str
 
 // getOutputFileName ファイル名を取得する
 func (s *ClientEnum) getOutputFileName(dir, name string) string {
-	return filepath.Join(dir, fmt.Sprintf("%s.gen.ts", changes.SnakeToUpperCamel(name)))
+	return filepath.Join(dir, fmt.Sprintf("%s.gen.ts", name))
 }
 
 // createTemplate テンプレートを作成する

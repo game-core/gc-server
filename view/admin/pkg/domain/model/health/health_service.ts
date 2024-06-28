@@ -1,6 +1,6 @@
-import { ApiClient } from "~/pkg/infrastructure/ApiClient";
-import type { HealthCheckRequest } from "~/pkg/domain/model/health/HealthCheckRequest.gen";
-import type { HealthCheckResponse } from "~/pkg/domain/model/health/HealthCheckResponse.gen";
+import { ApiClient } from "~/pkg/infrastructure/api_client";
+import type { HealthCheckRequest } from "~/pkg/domain/model/health/health_check_request.gen";
+import type { HealthCheckResponse } from "~/pkg/domain/model/health/health_check_response.gen";
 
 export class HealthService {
   private apiClient: ApiClient;
@@ -14,7 +14,7 @@ export class HealthService {
     const config = useRuntimeConfig();
 
     return await apiClient.post(
-      config.public.GcViewUrl + "/api/api.admin.Health/Check",
+      config.public.GcViewUrl + "/api/admin/health/check",
       req,
       ""
     );

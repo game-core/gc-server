@@ -6,7 +6,7 @@ managed:
       value: github.com/game-core/gc-server/api/admin/presentation/proto
 
 plugins:
-  # for Go gRPC Server
+  # Go Server
   - remote: buf.build/protocolbuffers/go
     out: ./../../../../api/admin/presentation/proto
     opt: paths=source_relative
@@ -20,11 +20,10 @@ plugins:
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
-
-  # for TypeScript gRPC Client
-  # - remote: buf.build/connectrpc/es:v1.4.0
-  # out: ./../../../../view/admin/proto
-  # opt: target=ts
-  # - remote: buf.build/bufbuild/es
-  # out: ./../../../../view/admin/proto
-  # opt: target=ts
+  # TypeScript Client
+  - remote: buf.build/bufbuild/es
+    out: ./../../../../view/admin/server/proto
+    opt: target=ts
+  - remote: buf.build/bufbuild/connect-es
+    out: ./../../../../view/admin/server/proto
+    opt: target=ts

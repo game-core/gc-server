@@ -323,12 +323,29 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
+"@bufbuild/protobuf@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-1.10.0.tgz#1a67ac889c2d464a3492b3e54c38f80517963b16"
+  integrity sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag==
+
 "@cloudflare/kv-asset-handler@^0.3.1":
   version "0.3.3"
   resolved "https://registry.npmjs.org/@cloudflare/kv-asset-handler/-/kv-asset-handler-0.3.3.tgz"
   integrity sha512-wpE+WiWW2kUNwNE0xyl4CtTAs+STjGtouHGiZPGRaisGB7eXXdbvfZdOrQJQVKgTxZiNAgVgmc7fj0sUmd8zyA==
   dependencies:
     mime "^3.0.0"
+
+"@connectrpc/connect-node@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@connectrpc/connect-node/-/connect-node-1.4.0.tgz#9edd22fd7bc812b4692f228d2ff6bbd549cbb032"
+  integrity sha512-0ANnrr6SvsjevsWEgdzHy7BaHkluZyS6s4xNoVt7RBHFR5V/kT9lPokoIbYUOU9JHzdRgTaS3x5595mwUsu15g==
+  dependencies:
+    undici "^5.28.3"
+
+"@connectrpc/connect@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@connectrpc/connect/-/connect-1.4.0.tgz#4a987d6c9fc78ea61bce7d19e27b2de4d14c658f"
+  integrity sha512-vZeOkKaAjyV4+RH3+rJZIfDFJAfr+7fyYr6sLDKbYX3uuTVszhFe9/YKf5DNqrDb5cKdKVlYkGn6DTDqMitAnA==
 
 "@esbuild/aix-ppc64@0.20.2":
   version "0.20.2"
@@ -5548,7 +5565,7 @@ undici-types@~5.26.4:
   resolved "https://registry.npmjs.org/undici-types/-/undici-types-5.26.5.tgz"
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
-undici@^5.28.4:
+undici@^5.28.3, undici@^5.28.4:
   version "5.28.4"
   resolved "https://registry.npmjs.org/undici/-/undici-5.28.4.tgz"
   integrity sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==

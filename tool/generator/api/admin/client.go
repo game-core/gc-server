@@ -41,9 +41,9 @@ func (s *Client) generate(file string, base string) error {
 	fileName := s.getOutputFileName(outputDir, filepath.Base(file[:len(file)-len(filepath.Ext(file))]))
 
 	switch {
-	case strings.Contains(fileName, "Enum.gen"):
+	case strings.Contains(fileName, "_enum.gen"):
 		return nil
-	case strings.Contains(fileName, "Handler.gen"):
+	case strings.Contains(fileName, "_handler.gen"):
 		return nil
 	default:
 		if err := s.createOutputFile(yamlStruct, fileName); err != nil {
@@ -70,7 +70,7 @@ func (s *Client) getYamlStruct(file string) (*YamlStruct, error) {
 
 // getOutputFileName ファイル名を取得する
 func (s *Client) getOutputFileName(dir, name string) string {
-	return filepath.Join(dir, fmt.Sprintf("%s.gen.ts", changes.SnakeToUpperCamel(name)))
+	return filepath.Join(dir, fmt.Sprintf("%s.gen.ts", name))
 }
 
 // createOutputFile ファイルを作成する
@@ -174,7 +174,7 @@ func (s *Client) getType(yamlStruct *YamlStruct, field *Structure) string {
 	case "structures":
 		result = s.getTypeStructures(field.Name, field.Package)
 	case "enum":
-		result = s.getTypeEnum(field.Name, field.Package, yamlStruct.Package)
+		result = s.getTypeEnum(field.Name, field.Package)
 	default:
 		result = field.Type
 	}
@@ -190,18 +190,18 @@ func (s *Client) getTypeTime() string {
 
 // getTypeStructure structureの型を取得する
 func (s *Client) getTypeStructure(fieldName, fieldPackage string) string {
-	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, changes.SnakeToUpperCamel(fieldName)))
+	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, fieldName))
 	return changes.SnakeToUpperCamel(fieldName)
 }
 
 // getTypeStructure structureの型を取得する
 func (s *Client) getTypeStructures(fieldName, fieldPackage string) string {
-	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, changes.SnakeToUpperCamel(fieldName)))
+	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, fieldName))
 	return fmt.Sprintf("%s[]", changes.SnakeToUpperCamel(fieldName))
 }
 
 // getTypeEnum enumの型を取得する
-func (s *Client) getTypeEnum(fieldName, fieldPackage, structPackage string) string {
-	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, changes.SnakeToUpperCamel(fieldName)))
+func (s *Client) getTypeEnum(fieldName, fieldPackage string) string {
+	importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("import type {%s} from \"~/pkg/domain/model/%s/%s.gen\"", changes.SnakeToUpperCamel(fieldName), fieldPackage, fieldName))
 	return changes.SnakeToUpperCamel(fieldName)
 }

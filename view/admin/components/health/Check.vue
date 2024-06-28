@@ -12,10 +12,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ApiClient } from "~/pkg/infrastructure/ApiClient";
-import { HealthService } from "~/pkg/domain/model/health/HealthService";
-import type { HealthCheckRequest } from "~/pkg/domain/model/health/HealthCheckRequest.gen";
-import type { HealthCheckResponse } from "~/pkg/domain/model/health/HealthCheckResponse.gen";
+import { ApiClient } from "~/pkg/infrastructure/api_client";
+import { HealthService } from "~/pkg/domain/model/health/health_service";
+import type { HealthCheckRequest } from "~/pkg/domain/model/health/health_check_request.gen";
+import type { HealthCheckResponse } from "~/pkg/domain/model/health/health_check_response.gen";
 
 const response = ref<HealthCheckResponse | null>(null);
 

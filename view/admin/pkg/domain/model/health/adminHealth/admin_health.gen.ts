@@ -1,4 +1,4 @@
-import type { AdminHealthEnum } from "~/pkg/domain/model/health/adminHealth/AdminHealthEnum.gen";
+import type { AdminHealthEnum } from "~/pkg/domain/model/health/adminHealth/admin_health_enum.gen";
 
 export type AdminHealth = {
   healthId: number;

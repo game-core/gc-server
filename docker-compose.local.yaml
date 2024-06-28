@@ -61,7 +61,7 @@ services:
     volumes:
       - ./:/go/src/app
     ports:
-      - "8001:8001"
+      - "50051:50051"
     tty: true
     depends_on:
       - mysql
