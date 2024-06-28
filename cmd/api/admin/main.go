@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"net"
+
 	"github.com/game-core/gc-server/api/admin/presentation/router"
 	"github.com/game-core/gc-server/config/auth"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
-	"log"
-	"net"
 )
 
 func main() {
