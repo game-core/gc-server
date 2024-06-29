@@ -42,7 +42,7 @@ func (s *AuthHandler) auth() error {
 			ClientSecret: os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET"),
 			Endpoint:     googleOAuth.Endpoint,
 			Scopes:       []string{"openid", "email", "profile"},
-			RedirectURL:  os.Getenv("GC_VIEW_URL"),
+			RedirectURL:  os.Getenv("GC_VIEW_REDIRECT_URL"),
 		},
 	}
 	if google.Config == nil {

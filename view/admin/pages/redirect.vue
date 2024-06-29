@@ -1,9 +1,9 @@
 <template>
-  <NuxtLayout>
+  <NuxtLayout name="redirect">
     <v-container>
       <v-row>
         <v-col cols="12">
-          <Check/>
+          <Redirect/>
         </v-col>
       </v-row>
     </v-container>
@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import Check from "~/components/health/Check.vue";
+import Redirect from "~/components/redirect/Redirect.vue";
 
 export default {
   components: {
-    Check,
+    Redirect,
   },
 };
 </script>
