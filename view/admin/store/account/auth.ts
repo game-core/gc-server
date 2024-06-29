@@ -4,9 +4,21 @@ interface AuthState {
   isLogin: boolean;
 }
 
-// isLogin ログインしているか
+export const useAuthStore = defineStore("auth", {
+    state: (): AuthState => ({
+        isLogin: isLogin(),
+    }),
+    actions: {
+        setIsLogin(status: boolean): void {
+            this.isLogin = status;
+        },
+    },
+});
+
 const isLogin = () => {
-  const accessToken = useCookie("accessToken", {
+  const accessToken = useCookie(
+      "accessToken",
+      {
     secure: true,
     sameSite: true,
   });
@@ -17,14 +29,3 @@ const isLogin = () => {
     accessToken.value !== undefined
   );
 };
-
-export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({
-    isLogin: isLogin(),
-  }),
-  actions: {
-    setIsLogin(status: boolean): void {
-      this.isLogin = status;
-    },
-  },
-});
