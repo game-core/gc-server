@@ -31,6 +31,7 @@ import (
 	"github.com/game-core/gc-server/config/logger"
 	"github.com/game-core/gc-server/internal/keys"
 	"github.com/game-core/gc-server/internal/errors"
+	"github.com/game-core/gc-server/internal/pointers"
 )
 
 type {{.CamelName}}CloudWatchDao struct {
@@ -202,10 +203,10 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 	methods = append(methods, s.createCreateList(yamlStruct))
 
 	// createToCloudWatch
-	methods = append(methods, s.createCreateToCloudWatch())
+	methods = append(methods, s.createCreateToCloudWatch(yamlStruct))
 
 	// createToFile
-	methods = append(methods, s.createCreateToFile())
+	methods = append(methods, s.createCreateToFile(yamlStruct))
 
 	return methods
 }
@@ -219,7 +220,7 @@ func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 			message := string(logger.SetLogMessage(now, level, t).ToJson())
 		
 			if os.Getenv("APP_ENV") == "prod" {
-				if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+				if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 					errors.NewMethodErrorLog("appendToFile", err)
 				}
 			} else if os.Getenv("APP_ENV") == "dev" {
@@ -249,7 +250,7 @@ func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 			message := string(logger.SetLogMessage(now, level, ts).ToJson())
 		
 			if os.Getenv("APP_ENV") == "prod" {
-				if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+				if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 					errors.NewMethodErrorLog("appendToFile", err)
 				}
 			} else if os.Getenv("APP_ENV") == "dev" {
@@ -267,47 +268,53 @@ func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 	)
 }
 
-// createCreateToCloudWatch createToCloudWatch
-func (s *Dao) createCreateToCloudWatch() string {
-	return `func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
-		if _, err := s.WriteCloudWatchConn.PutLogEvents(
-			ctx,
-			&cloudwatchlogs.PutLogEventsInput{
-				LogEvents: []types.InputLogEvent{
-					{
-						Timestamp: &timestamp,
-						Message:   &message,
+// createCreateToCloudWatch createToCloudWatchを作成する
+func (s *Dao) createCreateToCloudWatch(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`func (s *%sCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, message string) error {
+			if _, err := s.WriteCloudWatchConn.PutLogEvents(
+				ctx,
+				&cloudwatchlogs.PutLogEventsInput{
+					LogEvents: []types.InputLogEvent{
+						{
+							Timestamp: &timestamp,
+							Message:   &message,
+						},
 					},
+					LogGroupName:  pointers.StringToPointer(os.Getenv("USER_LOG_GROUP_NAME")),
+					LogStreamName: pointers.StringToPointer(os.Getenv("USER_LOG_STREAM_NAME")),
 				},
-				LogGroupName:  &logGroupName,
-				LogStreamName: &logStreamName,
-			},
-		); err != nil {
-			errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
-		}
-	
-		return nil
-	}`
+			); err != nil {
+				errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
+			}
+		
+			return nil
+		}`,
+		changes.UpperCamelToCamel(yamlStruct.Name),
+	)
 }
 
 // createCreateToFile createToFileを作成する
-func (s *Dao) createCreateToFile() string {
-	return `func (s *userItemBoxCloudWatchDao) creteToFile(fileName, message string) error {
-		f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return err
-		}
-		defer func(f *os.File) {
-			if err := f.Close(); err != nil {
-				errors.NewMethodErrorLog("f.Close", err)
+func (s *Dao) createCreateToFile(yamlStruct *YamlStruct) string {
+	return fmt.Sprintf(
+		`func (s *%sCloudWatchDao) creteToFile(fileName, message string) error {
+			f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				return err
 			}
-		}(f)
-		if _, err := f.WriteString(message); err != nil {
-			return err
-		}
-	
-		return nil
-	}`
+			defer func(f *os.File) {
+				if err := f.Close(); err != nil {
+					errors.NewMethodErrorLog("f.Close", err)
+				}
+			}(f)
+			if _, err := f.WriteString(message); err != nil {
+				return err
+			}
+		
+			return nil
+		}`,
+		changes.UpperCamelToCamel(yamlStruct.Name),
+	)
 }
 
 // checkKeys キーを確認する

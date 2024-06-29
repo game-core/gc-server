@@ -12,6 +12,7 @@ import (
 
 	"github.com/game-core/gc-server/config/logger"
 	"github.com/game-core/gc-server/internal/errors"
+	"github.com/game-core/gc-server/internal/pointers"
 	"github.com/game-core/gc-server/pkg/domain/model/item/userItemBox"
 )
 
@@ -37,7 +38,7 @@ func (s *userItemBoxCloudWatchDao) Create(ctx context.Context, now time.Time, le
 	message := string(logger.SetLogMessage(now, level, t).ToJson())
 
 	if os.Getenv("APP_ENV") == "prod" {
-		if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+		if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
 	} else if os.Getenv("APP_ENV") == "dev" {
@@ -61,7 +62,7 @@ func (s *userItemBoxCloudWatchDao) CreateList(ctx context.Context, now time.Time
 	message := string(logger.SetLogMessage(now, level, ts).ToJson())
 
 	if os.Getenv("APP_ENV") == "prod" {
-		if err := s.creteToCloudWatch(ctx, timestamp, os.Getenv("USER_LOG_GROUP_NAME"), os.Getenv("USER_LOG_STREAM_NAME"), message); err != nil {
+		if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
 	} else if os.Getenv("APP_ENV") == "dev" {
@@ -71,7 +72,7 @@ func (s *userItemBoxCloudWatchDao) CreateList(ctx context.Context, now time.Time
 	}
 }
 
-func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
+func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, message string) error {
 	if _, err := s.WriteCloudWatchConn.PutLogEvents(
 		ctx,
 		&cloudwatchlogs.PutLogEventsInput{
@@ -81,8 +82,8 @@ func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timest
 					Message:   &message,
 				},
 			},
-			LogGroupName:  &logGroupName,
-			LogStreamName: &logStreamName,
+			LogGroupName:  pointers.StringToPointer(os.Getenv("USER_LOG_GROUP_NAME")),
+			LogStreamName: pointers.StringToPointer(os.Getenv("USER_LOG_STREAM_NAME")),
 		},
 	); err != nil {
 		errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
