@@ -11,9 +11,9 @@ package account
 import (
 	context "context"
 
-	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
+	grpc "adminGoogle.golang.org/grpc"
+	codes "adminGoogle.golang.org/grpc/codes"
+	status "adminGoogle.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -30,8 +30,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountClient interface {
-	GetGoogleLoginUrl(ctx context.Context, in *AccountGetGoogleLoginUrlRequest, opts ...grpc.CallOption) (*AccountGetGoogleLoginUrlResponse, error)
-	GetGoogleLoginToken(ctx context.Context, in *AccountGetGoogleLoginTokenRequest, opts ...grpc.CallOption) (*AccountGetGoogleLoginTokenResponse, error)
+	GetGoogleLoginUrl(ctx context.Context, in *AccountGetGoogleUrlRequest, opts ...grpc.CallOption) (*AccountGetGoogleUrlResponse, error)
+	GetGoogleLoginToken(ctx context.Context, in *AccountGetGoogleTokenRequest, opts ...grpc.CallOption) (*AccountGetGoogleTokenResponse, error)
 }
 
 type accountClient struct {
@@ -42,9 +42,9 @@ func NewAccountClient(cc grpc.ClientConnInterface) AccountClient {
 	return &accountClient{cc}
 }
 
-func (c *accountClient) GetGoogleLoginUrl(ctx context.Context, in *AccountGetGoogleLoginUrlRequest, opts ...grpc.CallOption) (*AccountGetGoogleLoginUrlResponse, error) {
+func (c *accountClient) GetGoogleLoginUrl(ctx context.Context, in *AccountGetGoogleUrlRequest, opts ...grpc.CallOption) (*AccountGetGoogleUrlResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AccountGetGoogleLoginUrlResponse)
+	out := new(AccountGetGoogleUrlResponse)
 	err := c.cc.Invoke(ctx, Account_GetGoogleLoginUrl_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -52,9 +52,9 @@ func (c *accountClient) GetGoogleLoginUrl(ctx context.Context, in *AccountGetGoo
 	return out, nil
 }
 
-func (c *accountClient) GetGoogleLoginToken(ctx context.Context, in *AccountGetGoogleLoginTokenRequest, opts ...grpc.CallOption) (*AccountGetGoogleLoginTokenResponse, error) {
+func (c *accountClient) GetGoogleLoginToken(ctx context.Context, in *AccountGetGoogleTokenRequest, opts ...grpc.CallOption) (*AccountGetGoogleTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AccountGetGoogleLoginTokenResponse)
+	out := new(AccountGetGoogleTokenResponse)
 	err := c.cc.Invoke(ctx, Account_GetGoogleLoginToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -66,18 +66,18 @@ func (c *accountClient) GetGoogleLoginToken(ctx context.Context, in *AccountGetG
 // All implementations should embed UnimplementedAccountServer
 // for forward compatibility
 type AccountServer interface {
-	GetGoogleLoginUrl(context.Context, *AccountGetGoogleLoginUrlRequest) (*AccountGetGoogleLoginUrlResponse, error)
-	GetGoogleLoginToken(context.Context, *AccountGetGoogleLoginTokenRequest) (*AccountGetGoogleLoginTokenResponse, error)
+	GetGoogleLoginUrl(context.Context, *AccountGetGoogleUrlRequest) (*AccountGetGoogleUrlResponse, error)
+	GetGoogleLoginToken(context.Context, *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error)
 }
 
 // UnimplementedAccountServer should be embedded to have forward compatible implementations.
 type UnimplementedAccountServer struct {
 }
 
-func (UnimplementedAccountServer) GetGoogleLoginUrl(context.Context, *AccountGetGoogleLoginUrlRequest) (*AccountGetGoogleLoginUrlResponse, error) {
+func (UnimplementedAccountServer) GetGoogleLoginUrl(context.Context, *AccountGetGoogleUrlRequest) (*AccountGetGoogleUrlResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleLoginUrl not implemented")
 }
-func (UnimplementedAccountServer) GetGoogleLoginToken(context.Context, *AccountGetGoogleLoginTokenRequest) (*AccountGetGoogleLoginTokenResponse, error) {
+func (UnimplementedAccountServer) GetGoogleLoginToken(context.Context, *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleLoginToken not implemented")
 }
 
@@ -93,7 +93,7 @@ func RegisterAccountServer(s grpc.ServiceRegistrar, srv AccountServer) {
 }
 
 func _Account_GetGoogleLoginUrl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountGetGoogleLoginUrlRequest)
+	in := new(AccountGetGoogleUrlRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -105,13 +105,13 @@ func _Account_GetGoogleLoginUrl_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: Account_GetGoogleLoginUrl_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).GetGoogleLoginUrl(ctx, req.(*AccountGetGoogleLoginUrlRequest))
+		return srv.(AccountServer).GetGoogleLoginUrl(ctx, req.(*AccountGetGoogleUrlRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Account_GetGoogleLoginToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountGetGoogleLoginTokenRequest)
+	in := new(AccountGetGoogleTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func _Account_GetGoogleLoginToken_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: Account_GetGoogleLoginToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).GetGoogleLoginToken(ctx, req.(*AccountGetGoogleLoginTokenRequest))
+		return srv.(AccountServer).GetGoogleLoginToken(ctx, req.(*AccountGetGoogleTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

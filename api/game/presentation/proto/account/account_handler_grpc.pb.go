@@ -11,9 +11,9 @@ package account
 import (
 	context "context"
 
-	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
+	grpc "adminGoogle.golang.org/grpc"
+	codes "adminGoogle.golang.org/grpc/codes"
+	status "adminGoogle.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file

@@ -3,12 +3,12 @@ syntax = "proto3";
 
 package api.admin;
 
-import "account/account_get_google_login_url_request.proto";
-import "account/account_get_google_login_url_response.proto";
-import "account/account_get_google_login_token_request.proto";
-import "account/account_get_google_login_token_response.proto";
+import "account/account_get_google_url_request.proto";
+import "account/account_get_google_url_response.proto";
+import "account/account_get_google_token_request.proto";
+import "account/account_get_google_token_response.proto";
 
 service Account {
-  rpc GetGoogleLoginUrl (AccountGetGoogleLoginUrlRequest) returns (AccountGetGoogleLoginUrlResponse);
-  rpc GetGoogleLoginToken (AccountGetGoogleLoginTokenRequest) returns (AccountGetGoogleLoginTokenResponse);
+  rpc GetGoogleLoginUrl (AccountGetGoogleUrlRequest) returns (AccountGetGoogleUrlResponse);
+  rpc GetGoogleLoginToken (AccountGetGoogleTokenRequest) returns (AccountGetGoogleTokenResponse);
 }

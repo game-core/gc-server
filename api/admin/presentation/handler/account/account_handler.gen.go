@@ -25,8 +25,8 @@ func NewAccountHandler(
 	}
 }
 
-// GetGoogleLoginUrl GoogleログインURLを取得する
-func (s *accountHandler) GetGoogleLoginUrl(ctx context.Context, req *account.AccountGetGoogleLoginUrlRequest) (*account.AccountGetGoogleLoginUrlResponse, error) {
+// GetGoogleLoginUrl GoogleURLを取得する
+func (s *accountHandler) GetGoogleLoginUrl(ctx context.Context, req *account.AccountGetGoogleUrlRequest) (*account.AccountGetGoogleUrlResponse, error) {
 	res, err := s.accountUsecase.GetGoogleLoginUrl(ctx, req)
 	if err != nil {
 		return nil, errors.NewMethodError("s.accountUsecase.GetGoogleLoginUrl", err)
@@ -35,8 +35,8 @@ func (s *accountHandler) GetGoogleLoginUrl(ctx context.Context, req *account.Acc
 	return res, nil
 }
 
-// GetGoogleLoginToken GoogleログインTokenを取得する
-func (s *accountHandler) GetGoogleLoginToken(ctx context.Context, req *account.AccountGetGoogleLoginTokenRequest) (*account.AccountGetGoogleLoginTokenResponse, error) {
+// GetGoogleLoginToken GoogleTokenを取得する
+func (s *accountHandler) GetGoogleLoginToken(ctx context.Context, req *account.AccountGetGoogleTokenRequest) (*account.AccountGetGoogleTokenResponse, error) {
 	res, err := s.accountUsecase.GetGoogleLoginToken(ctx, req)
 	if err != nil {
 		return nil, errors.NewMethodError("s.accountUsecase.GetGoogleLoginToken", err)

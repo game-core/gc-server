@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AccountGetGoogleLoginUrlRequest
+	var protoReq AccountGetGoogleUrlRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -49,7 +49,7 @@ func request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AccountGetGoogleLoginUrlRequest
+	var protoReq AccountGetGoogleUrlRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -66,7 +66,7 @@ func local_request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler ru
 }
 
 func request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AccountGetGoogleLoginTokenRequest
+	var protoReq AccountGetGoogleTokenRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -83,7 +83,7 @@ func request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtim
 }
 
 func local_request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq AccountGetGoogleLoginTokenRequest
+	var protoReq AccountGetGoogleTokenRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

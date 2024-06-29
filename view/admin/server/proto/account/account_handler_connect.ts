@@ -5,11 +5,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AccountGetGoogleLoginUrlRequest } from "./account_get_google_login_url_request_pb.js";
-import { AccountGetGoogleLoginUrlResponse } from "./account_get_google_login_url_response_pb.js";
+import { AccountGetGoogleUrlRequest } from "./account_get_google_url_request_pb.js";
+import { AccountGetGoogleUrlResponse } from "./account_get_google_url_response_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
-import { AccountGetGoogleLoginTokenRequest } from "./account_get_google_login_token_request_pb.js";
-import { AccountGetGoogleLoginTokenResponse } from "./account_get_google_login_token_response_pb.js";
+import { AccountGetGoogleTokenRequest } from "./account_get_google_token_request_pb.js";
+import { AccountGetGoogleTokenResponse } from "./account_get_google_token_response_pb.js";
 
 /**
  * @generated from service api.admin.Account
@@ -22,8 +22,8 @@ export const Account = {
      */
     getGoogleLoginUrl: {
       name: "GetGoogleLoginUrl",
-      I: AccountGetGoogleLoginUrlRequest,
-      O: AccountGetGoogleLoginUrlResponse,
+      I: AccountGetGoogleUrlRequest,
+      O: AccountGetGoogleUrlResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -31,8 +31,8 @@ export const Account = {
      */
     getGoogleLoginToken: {
       name: "GetGoogleLoginToken",
-      I: AccountGetGoogleLoginTokenRequest,
-      O: AccountGetGoogleLoginTokenResponse,
+      I: AccountGetGoogleTokenRequest,
+      O: AccountGetGoogleTokenResponse,
       kind: MethodKind.Unary,
     },
   },

@@ -12,9 +12,9 @@ import (
 	reflect "reflect"
 	sync "sync"
 
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "adminGoogle.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (
@@ -138,10 +138,10 @@ func file_account_adminAccountGoogleToken_admin_account_google_token_proto_rawDe
 var file_account_adminAccountGoogleToken_admin_account_google_token_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_account_adminAccountGoogleToken_admin_account_google_token_proto_goTypes = []any{
 	(*AdminAccountGoogleToken)(nil), // 0: api.admin.AdminAccountGoogleToken
-	(*timestamppb.Timestamp)(nil),   // 1: google.protobuf.Timestamp
+	(*timestamppb.Timestamp)(nil),   // 1: adminGoogle.protobuf.Timestamp
 }
 var file_account_adminAccountGoogleToken_admin_account_google_token_proto_depIdxs = []int32{
-	1, // 0: api.admin.AdminAccountGoogleToken.expired_at:type_name -> google.protobuf.Timestamp
+	1, // 0: api.admin.AdminAccountGoogleToken.expired_at:type_name -> adminGoogle.protobuf.Timestamp
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -30,7 +30,7 @@ export class AdminAccountGoogleToken extends Message<AdminAccountGoogleToken> {
   refreshToken = "";
 
   /**
-   * @generated from field: google.protobuf.Timestamp expired_at = 3;
+   * @generated from field: adminGoogle.protobuf.Timestamp expired_at = 3;
    */
   expiredAt?: Timestamp;
 

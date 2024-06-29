@@ -3,19 +3,19 @@ package: account
 comment: "アカウント"
 
 structure:
-  GetGoogleLoginUrl:
+  GetGoogleUrl:
     name: get_google_login_url
     method: unary
     auth: false
-    request: AccountGetGoogleLoginUrlRequest
-    response: AccountGetGoogleLoginUrlResponse
+    request: AccountGetGoogleUrlRequest
+    response: AccountGetGoogleUrlResponse
     number: 1
-    comment: "GoogleログインURLを取得する"
-  GetGoogleLoginToken:
+    comment: "GoogleURLを取得する"
+  GetGoogleToken:
     name: get_google_login_token
     method: unary
     auth: false
-    request: AccountGetGoogleLoginTokenRequest
-    response: AccountGetGoogleLoginTokenResponse
+    request: AccountGetGoogleTokenRequest
+    response: AccountGetGoogleTokenResponse
     number: 1
-    comment: "GoogleログインTokenを取得する"
+    comment: "GoogleTokenを取得する"

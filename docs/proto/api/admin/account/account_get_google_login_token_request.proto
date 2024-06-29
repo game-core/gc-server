@@ -1,8 +1,0 @@
-// アカウントGoogleログインToken取得リクエスト
-syntax = "proto3";
-
-package api.admin;
-
-message AccountGetGoogleLoginTokenRequest {
-  string code = 1;
-}

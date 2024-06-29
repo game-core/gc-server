@@ -12,9 +12,9 @@ import (
 	reflect "reflect"
 	sync "sync"
 
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "adminGoogle.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (
@@ -153,11 +153,11 @@ func file_account_userAccount_user_account_proto_rawDescGZIP() []byte {
 var file_account_userAccount_user_account_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_account_userAccount_user_account_proto_goTypes = []any{
 	(*UserAccount)(nil),           // 0: api.game.UserAccount
-	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
+	(*timestamppb.Timestamp)(nil), // 1: adminGoogle.protobuf.Timestamp
 }
 var file_account_userAccount_user_account_proto_depIdxs = []int32{
-	1, // 0: api.game.UserAccount.login_at:type_name -> google.protobuf.Timestamp
-	1, // 1: api.game.UserAccount.logout_at:type_name -> google.protobuf.Timestamp
+	1, // 0: api.game.UserAccount.login_at:type_name -> adminGoogle.protobuf.Timestamp
+	1, // 1: api.game.UserAccount.logout_at:type_name -> adminGoogle.protobuf.Timestamp
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

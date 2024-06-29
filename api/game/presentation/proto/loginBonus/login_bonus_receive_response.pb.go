@@ -13,8 +13,8 @@ import (
 	sync "sync"
 
 	userLoginBonus "github.com/game-core/gc-server/api/game/presentation/proto/loginBonus/userLoginBonus"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

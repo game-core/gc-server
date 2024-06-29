@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
 	"google.golang.org/grpc"
 )

@@ -12,8 +12,8 @@ import (
 	reflect "reflect"
 	sync "sync"
 
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

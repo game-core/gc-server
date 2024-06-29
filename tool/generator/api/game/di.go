@@ -27,7 +27,7 @@ const diTemplate = `//go:build wireinject
 package di
 
 import (
-	"github.com/google/wire"
+	"github.com/adminGoogle/wire"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"

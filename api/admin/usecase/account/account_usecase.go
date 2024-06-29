@@ -12,8 +12,8 @@ import (
 )
 
 type AccountUsecase interface {
-	GetGoogleLoginUrl(ctx context.Context, req *accountProto.AccountGetGoogleLoginUrlRequest) (*accountProto.AccountGetGoogleLoginUrlResponse, error)
-	GetGoogleLoginToken(ctx context.Context, req *accountProto.AccountGetGoogleLoginTokenRequest) (*accountProto.AccountGetGoogleLoginTokenResponse, error)
+	GetGoogleUrl(ctx context.Context, req *accountProto.AccountGetGoogleUrlRequest) (*accountProto.AccountGetGoogleUrlResponse, error)
+	GetGoogleToken(ctx context.Context, req *accountProto.AccountGetGoogleTokenRequest) (*accountProto.AccountGetGoogleTokenResponse, error)
 }
 
 type accountUsecase struct {
@@ -31,14 +31,14 @@ func NewAccountUsecase(
 	}
 }
 
-// GetGoogleLoginUrl URLを取得する
-func (s *accountUsecase) GetGoogleLoginUrl(ctx context.Context, req *accountProto.AccountGetGoogleLoginUrlRequest) (*accountProto.AccountGetGoogleLoginUrlResponse, error) {
-	return accountProto.SetAccountGetGoogleLoginUrlResponse(""), nil
+// GetGoogleUrl URLを取得する
+func (s *accountUsecase) GetGoogleUrl(ctx context.Context, req *accountProto.AccountGetGoogleUrlRequest) (*accountProto.AccountGetGoogleUrlResponse, error) {
+	return accountProto.SetAccountGetGoogleUrlResponse(""), nil
 }
 
-// GetGoogleLoginToken トークンを取得する
-func (s *accountUsecase) GetGoogleLoginToken(ctx context.Context, req *accountProto.AccountGetGoogleLoginTokenRequest) (*accountProto.AccountGetGoogleLoginTokenResponse, error) {
-	return accountProto.SetAccountGetGoogleLoginTokenResponse(
+// GetGoogleToken トークンを取得する
+func (s *accountUsecase) GetGoogleToken(ctx context.Context, req *accountProto.AccountGetGoogleTokenRequest) (*accountProto.AccountGetGoogleTokenResponse, error) {
+	return accountProto.SetAccountGetGoogleTokenResponse(
 		adminAccountGoogleTokenProto.SetAdminAccountGoogleToken(
 			"",
 			"",

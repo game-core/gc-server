@@ -11,8 +11,8 @@ package exchange
 import (
 	reflect "reflect"
 
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
