@@ -7,10 +7,7 @@ export default defineNuxtConfig({
       GcViewUrl: process.env.GC_VIEW_URL,
     },
   },
-  modules: [
-    "@pinia/nuxt",
-    "@pinia-plugin-persistedstate/nuxt",
-  ],
+  modules: ["@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
   components: [
     {
       path: "~/components/",

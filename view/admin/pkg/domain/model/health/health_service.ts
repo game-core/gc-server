@@ -22,9 +22,9 @@ export class HealthService {
     const config = useRuntimeConfig();
 
     return await apiClient.post(
-        config.public.GcViewUrl + "/api/admin/health/check",
-        req,
-        ""
+      config.public.GcViewUrl + "/api/admin/health/check",
+      req,
+      ""
     );
   }
 }

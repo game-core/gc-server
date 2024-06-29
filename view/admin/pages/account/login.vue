@@ -1,9 +1,9 @@
 <template>
-  <NuxtLayout>
+  <NuxtLayout name="index">
     <v-container>
       <v-row>
         <v-col cols="12">
-          <Check />
+          <Login />
         </v-col>
       </v-row>
     </v-container>
@@ -11,5 +11,5 @@
 </template>
 
 <script lang="ts" setup>
-import Check from "~/components/health/Check.vue";
+import Login from "~/components/account/Login.vue";
 </script>
