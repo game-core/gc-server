@@ -80,8 +80,8 @@ func InitializeHealthHandler() health.HealthHandler {
 }
 
 func InitializeAccountUsecase() account2.AccountUsecase {
-	accountService := InitializeAccountService()
-	accountUsecase := account2.NewAccountUsecase(accountService)
+	googleService := InitializeGoogleService()
+	accountUsecase := account2.NewAccountUsecase(googleService)
 	return accountUsecase
 }
 
@@ -93,13 +93,12 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 
 func InitializeAccountService() account3.AccountService {
 	shardService := InitializeShardService()
-	googleService := InitializeGoogleService()
 	mysqlHandler := database.NewMysql()
 	userAccountMysqlRepository := userAccount.NewUserAccountMysqlDao(mysqlHandler)
 	redisHandler := database.NewRedis()
 	userAccountRedisRepository := userAccount2.NewUserAccountRedisDao(redisHandler)
 	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenRedisDao(redisHandler)
-	accountService := account3.NewAccountService(shardService, googleService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
+	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 

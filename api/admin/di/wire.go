@@ -86,7 +86,7 @@ func InitializeHealthHandler() healthHandler.HealthHandler {
 func InitializeAccountUsecase() accountUsecase.AccountUsecase {
 	wire.Build(
 		accountUsecase.NewAccountUsecase,
-		InitializeAccountService,
+		InitializeGoogleService,
 	)
 	return nil
 }
@@ -105,7 +105,6 @@ func InitializeAccountService() accountService.AccountService {
 		database.NewRedis,
 		accountService.NewAccountService,
 		InitializeShardService,
-		InitializeGoogleService,
 		userAccountMysqlDao.NewUserAccountMysqlDao,
 		userAccountRedisDao.NewUserAccountRedisDao,
 		userAccountTokenRedisDao.NewUserAccountTokenRedisDao,

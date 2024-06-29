@@ -163,7 +163,6 @@ func InitializeAccountService() accountService.AccountService {
 		database.NewRedis,
 		accountService.NewAccountService,
 		InitializeShardService,
-		InitializeGoogleService,
 		userAccountMysqlDao.NewUserAccountMysqlDao,
 		userAccountRedisDao.NewUserAccountRedisDao,
 		userAccountTokenRedisDao.NewUserAccountTokenRedisDao,
