@@ -1,13 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: true,
-  target: "server",
   runtimeConfig: {
     public: {
       GcServerUrl: process.env.GC_SERVER_URL,
       GcViewUrl: process.env.GC_VIEW_URL,
     },
   },
+  modules: [
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+  ],
   components: [
     {
       path: "~/components/",

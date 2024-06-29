@@ -17,6 +17,8 @@
     "@jamescoyle/vue-icon": "^0.1.2",
     "@mdi/js": "^7.4.47",
     "@pictogrammers/memory": "^1.5.0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
+    "@pinia/nuxt": "^0.5.1",
     "@vue/runtime-core": "^3.4.30",
     "es6-promise": "^4.2.8",
     "mdi": "^2.2.43",
