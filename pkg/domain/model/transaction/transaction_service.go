@@ -158,8 +158,8 @@ func (s *transactionService) UserRedisBegin() redis.Pipeliner {
 // UserRedisEnd トランザクションを終了する
 func (s *transactionService) UserRedisEnd(ctx context.Context, tx redis.Pipeliner, err error) {
 	if err != nil {
-		s.userTransactionRedisRepository.Rollback(tx)
-		errors.NewMethodErrorLog("s.userTransactionRedisRepository.Rollback", err)
+		s.userTransactionRedisRepository.Discard(tx)
+		errors.NewMethodErrorLog("s.userTransactionRedisRepository.Discard", err)
 	} else {
 		if err := s.userTransactionRedisRepository.Commit(ctx, tx); err != nil {
 			errors.NewMethodErrorLog("s.userTransactionRedisRepository.Commit", err)

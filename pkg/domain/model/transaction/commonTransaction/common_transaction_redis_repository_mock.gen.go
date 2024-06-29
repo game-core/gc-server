@@ -63,14 +63,14 @@ func (mr *MockCommonTransactionRedisRepositoryMockRecorder) Commit(ctx, tx inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Commit", reflect.TypeOf((*MockCommonTransactionRedisRepository)(nil).Commit), ctx, tx)
 }
 
-// Rollback mocks base method.
-func (m *MockCommonTransactionRedisRepository) Rollback(tx redis.Pipeliner) {
+// Discard mocks base method.
+func (m *MockCommonTransactionRedisRepository) Discard(tx redis.Pipeliner) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Rollback", tx)
+	m.ctrl.Call(m, "Discard", tx)
 }
 
-// Rollback indicates an expected call of Rollback.
-func (mr *MockCommonTransactionRedisRepositoryMockRecorder) Rollback(tx interface{}) *gomock.Call {
+// Discard indicates an expected call of Discard.
+func (mr *MockCommonTransactionRedisRepositoryMockRecorder) Discard(tx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rollback", reflect.TypeOf((*MockCommonTransactionRedisRepository)(nil).Rollback), tx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Discard", reflect.TypeOf((*MockCommonTransactionRedisRepository)(nil).Discard), tx)
 }

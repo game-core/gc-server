@@ -10,5 +10,5 @@ import (
 type UserTransactionRedisRepository interface {
 	Begin() redis.Pipeliner
 	Commit(ctx context.Context, tx redis.Pipeliner) error
-	Rollback(tx redis.Pipeliner)
+	Discard(tx redis.Pipeliner)
 }

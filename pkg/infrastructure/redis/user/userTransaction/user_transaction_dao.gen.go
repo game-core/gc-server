@@ -33,6 +33,6 @@ func (d *userTransactionRedisDao) Commit(ctx context.Context, tx redis.Pipeliner
 	return nil
 }
 
-func (d *userTransactionRedisDao) Rollback(tx redis.Pipeliner) {
+func (d *userTransactionRedisDao) Discard(tx redis.Pipeliner) {
 	tx.Discard()
 }
