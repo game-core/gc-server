@@ -14,6 +14,7 @@ import (
 type AccountUsecase interface {
 	GetGoogleUrl(ctx context.Context, req *accountProto.AccountGetGoogleUrlRequest) (*accountProto.AccountGetGoogleUrlResponse, error)
 	GetGoogleToken(ctx context.Context, req *accountProto.AccountGetGoogleTokenRequest) (*accountProto.AccountGetGoogleTokenResponse, error)
+	RefreshGoogleToken(ctx context.Context, req *accountProto.AccountRefreshGoogleTokenRequest) (*accountProto.AccountRefreshGoogleTokenResponse, error)
 }
 
 type accountUsecase struct {
@@ -56,4 +57,9 @@ func (s *accountUsecase) GetGoogleToken(ctx context.Context, req *accountProto.A
 			times.TimeToPb(&res.ExpiredAt),
 		),
 	), nil
+}
+
+// RefreshGoogleToken トークンをリフレッシュする
+func (s *accountUsecase) RefreshGoogleToken(ctx context.Context, req *accountProto.AccountRefreshGoogleTokenRequest) (*accountProto.AccountRefreshGoogleTokenResponse, error) {
+	return nil, nil
 }

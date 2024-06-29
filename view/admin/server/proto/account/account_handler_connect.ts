@@ -10,6 +10,8 @@ import { AccountGetGoogleUrlResponse } from "./account_get_google_url_response_p
 import { MethodKind } from "@bufbuild/protobuf";
 import { AccountGetGoogleTokenRequest } from "./account_get_google_token_request_pb.js";
 import { AccountGetGoogleTokenResponse } from "./account_get_google_token_response_pb.js";
+import { AccountRefreshGoogleTokenRequest } from "./account_refresh_google_token_request_pb.js";
+import { AccountRefreshGoogleTokenResponse } from "./account_refresh_google_token_response_pb.js";
 
 /**
  * @generated from service api.admin.Account
@@ -33,6 +35,15 @@ export const Account = {
       name: "GetGoogleToken",
       I: AccountGetGoogleTokenRequest,
       O: AccountGetGoogleTokenResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc api.admin.Account.RefreshGoogleToken
+     */
+    refreshGoogleToken: {
+      name: "RefreshGoogleToken",
+      I: AccountRefreshGoogleTokenRequest,
+      O: AccountRefreshGoogleTokenResponse,
       kind: MethodKind.Unary,
     },
   },

@@ -1,0 +1,10 @@
+// アカウントGoogleTokenリフレッシュレスポンス
+syntax = "proto3";
+
+package api.admin;
+
+import "account/adminAccountGoogleToken/admin_account_google_token.proto";
+
+message AccountRefreshGoogleTokenResponse {
+  optional AdminAccountGoogleToken admin_account_google_token = 1;
+}

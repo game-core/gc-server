@@ -44,3 +44,13 @@ func (s *accountHandler) GetGoogleToken(ctx context.Context, req *account.Accoun
 
 	return res, nil
 }
+
+// RefreshGoogleToken GoogleTokenをリフレッシュする
+func (s *accountHandler) RefreshGoogleToken(ctx context.Context, req *account.AccountRefreshGoogleTokenRequest) (*account.AccountRefreshGoogleTokenResponse, error) {
+	res, err := s.accountUsecase.RefreshGoogleToken(ctx, req)
+	if err != nil {
+		return nil, errors.NewMethodError("s.accountUsecase.RefreshGoogleToken", err)
+	}
+
+	return res, nil
+}

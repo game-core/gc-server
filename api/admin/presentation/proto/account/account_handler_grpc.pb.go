@@ -22,8 +22,9 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	Account_GetGoogleUrl_FullMethodName   = "/api.admin.Account/GetGoogleUrl"
-	Account_GetGoogleToken_FullMethodName = "/api.admin.Account/GetGoogleToken"
+	Account_GetGoogleUrl_FullMethodName       = "/api.admin.Account/GetGoogleUrl"
+	Account_GetGoogleToken_FullMethodName     = "/api.admin.Account/GetGoogleToken"
+	Account_RefreshGoogleToken_FullMethodName = "/api.admin.Account/RefreshGoogleToken"
 )
 
 // AccountClient is the client API for Account service.
@@ -32,6 +33,7 @@ const (
 type AccountClient interface {
 	GetGoogleUrl(ctx context.Context, in *AccountGetGoogleUrlRequest, opts ...grpc.CallOption) (*AccountGetGoogleUrlResponse, error)
 	GetGoogleToken(ctx context.Context, in *AccountGetGoogleTokenRequest, opts ...grpc.CallOption) (*AccountGetGoogleTokenResponse, error)
+	RefreshGoogleToken(ctx context.Context, in *AccountRefreshGoogleTokenRequest, opts ...grpc.CallOption) (*AccountRefreshGoogleTokenResponse, error)
 }
 
 type accountClient struct {
@@ -62,12 +64,23 @@ func (c *accountClient) GetGoogleToken(ctx context.Context, in *AccountGetGoogle
 	return out, nil
 }
 
+func (c *accountClient) RefreshGoogleToken(ctx context.Context, in *AccountRefreshGoogleTokenRequest, opts ...grpc.CallOption) (*AccountRefreshGoogleTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AccountRefreshGoogleTokenResponse)
+	err := c.cc.Invoke(ctx, Account_RefreshGoogleToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 // All implementations should embed UnimplementedAccountServer
 // for forward compatibility
 type AccountServer interface {
 	GetGoogleUrl(context.Context, *AccountGetGoogleUrlRequest) (*AccountGetGoogleUrlResponse, error)
 	GetGoogleToken(context.Context, *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error)
+	RefreshGoogleToken(context.Context, *AccountRefreshGoogleTokenRequest) (*AccountRefreshGoogleTokenResponse, error)
 }
 
 // UnimplementedAccountServer should be embedded to have forward compatible implementations.
@@ -79,6 +92,9 @@ func (UnimplementedAccountServer) GetGoogleUrl(context.Context, *AccountGetGoogl
 }
 func (UnimplementedAccountServer) GetGoogleToken(context.Context, *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleToken not implemented")
+}
+func (UnimplementedAccountServer) RefreshGoogleToken(context.Context, *AccountRefreshGoogleTokenRequest) (*AccountRefreshGoogleTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshGoogleToken not implemented")
 }
 
 // UnsafeAccountServer may be embedded to opt out of forward compatibility for this service.
@@ -128,6 +144,24 @@ func _Account_GetGoogleToken_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_RefreshGoogleToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRefreshGoogleTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).RefreshGoogleToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_RefreshGoogleToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).RefreshGoogleToken(ctx, req.(*AccountRefreshGoogleTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Account_ServiceDesc is the grpc.ServiceDesc for Account service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -142,6 +176,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGoogleToken",
 			Handler:    _Account_GetGoogleToken_Handler,
+		},
+		{
+			MethodName: "RefreshGoogleToken",
+			Handler:    _Account_RefreshGoogleToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
