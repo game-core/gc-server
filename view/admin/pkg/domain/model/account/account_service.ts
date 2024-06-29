@@ -9,12 +9,17 @@ export class AccountService {
         this.apiClient = apiClient;
     }
 
-    async getGoogleLoginToken(req: AccountGetGoogleTokenRequest): Promise<AccountGetGoogleTokenResponse> {
+    /**
+     * getGoogleToken Googleトークンを取得する
+     * @param {AccountGetGoogleTokenRequest} req Googleトークン取得リクエスト
+     * @returns {Promise<AccountGetGoogleTokenResponse>} - Googleトークン取得レスポンス
+     */
+    async getGoogleToken(req: AccountGetGoogleTokenRequest): Promise<AccountGetGoogleTokenResponse> {
         const apiClient = new ApiClient();
         const config = useRuntimeConfig();
 
         return await apiClient.post(
-            config.public.GcViewUrl + "/api/admin/account/get_google_login_token",
+            config.public.GcViewUrl + "/api/admin/account/get_google_token",
             req,
             ""
         );

@@ -32,7 +32,7 @@ const sendRequest = async (): Promise<void> => {
   try {
     const code: string = queryParams.code as string;
     const req: AccountGetGoogleTokenRequest = {code: code,};
-    res.value = await accountService.getGoogleLoginToken(req);
+    res.value = await accountService.getGoogleToken(req);
 
     accessToken.value = res.value.adminAccountGoogleToken.accessToken;
     refreshToken.value = res.value.adminAccountGoogleToken.refreshToken;
