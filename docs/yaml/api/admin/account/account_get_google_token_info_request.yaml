@@ -3,9 +3,3 @@ package: account
 comment: "アカウントGoogleToken情報取得リクエスト"
 
 structure:
-  AccessToken:
-    name: access_token
-    type: string
-    nullable: false
-    number: 1
-    comment: "アクセストークン"

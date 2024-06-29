@@ -12,6 +12,16 @@ import (
 	"github.com/game-core/gc-server/internal/errors"
 )
 
+// GetRefreshToken リフレッシュトークンを取得する
+func GetRefreshToken(ctx context.Context) (string, error) {
+	refreshToken, ok := ctx.Value("refreshToken").(string)
+	if !ok {
+		return "", errors.NewError("failed to get jwtClaims from context")
+	}
+
+	return refreshToken, nil
+}
+
 // GenerateAuthTokenByUserId userIdからAuthトークンを発行する
 func GenerateAuthTokenByUserId(userId, name string) (string, error) {
 	baseToken := jwt.New(jwt.SigningMethodHS256)

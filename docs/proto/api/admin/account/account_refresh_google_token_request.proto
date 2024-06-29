@@ -4,5 +4,5 @@ syntax = "proto3";
 package api.admin;
 
 message AccountRefreshGoogleTokenRequest {
-  string refresh_token = 2;
+
 }

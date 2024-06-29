@@ -2,7 +2,6 @@ package adminGoogle
 
 import (
 	"context"
-
 	"golang.org/x/oauth2"
 	v2 "google.golang.org/api/oauth2/v2"
 
@@ -65,5 +64,19 @@ func (s *adminGoogleAuthDao) GetAdminGoogleTokenInfo(ctx context.Context, access
 		tokenInfo.ExpiresIn,
 		tokenInfo.IssuedTo,
 		tokenInfo.Scope,
+	), nil
+}
+
+// RefreshAdminGoogleToken トークンをリフレッシュする
+func (s *adminGoogleAuthDao) RefreshAdminGoogleToken(ctx context.Context, refreshToken string) (*adminGoogle.AdminGoogleToken, error) {
+	token, err := s.GoogleConn.TokenSource(ctx, &oauth2.Token{RefreshToken: refreshToken}).Token()
+	if err != nil {
+		return nil, errors.NewMethodError("token", err)
+	}
+
+	return adminGoogle.SetAdminGoogleToken(
+		token.AccessToken,
+		token.RefreshToken,
+		token.Expiry,
 	), nil
 }

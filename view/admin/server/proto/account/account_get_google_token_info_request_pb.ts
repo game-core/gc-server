@@ -19,11 +19,6 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  * @generated from message api.admin.AccountGetGoogleTokenInfoRequest
  */
 export class AccountGetGoogleTokenInfoRequest extends Message<AccountGetGoogleTokenInfoRequest> {
-  /**
-   * @generated from field: string access_token = 1;
-   */
-  accessToken = "";
-
   constructor(data?: PartialMessage<AccountGetGoogleTokenInfoRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -31,14 +26,7 @@ export class AccountGetGoogleTokenInfoRequest extends Message<AccountGetGoogleTo
 
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "api.admin.AccountGetGoogleTokenInfoRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    {
-      no: 1,
-      name: "access_token",
-      kind: "scalar",
-      T: 9 /* ScalarType.STRING */,
-    },
-  ]);
+  static readonly fields: FieldList = proto3.util.newFieldList(() => []);
 
   static fromBinary(
     bytes: Uint8Array,

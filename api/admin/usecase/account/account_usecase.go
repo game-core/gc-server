@@ -3,6 +3,8 @@ package account
 import (
 	"context"
 
+	"github.com/game-core/gc-server/internal/tokens"
+
 	accountProto "github.com/game-core/gc-server/api/admin/presentation/proto/account"
 	adminAccountGoogleTokenProto "github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleToken"
 	adminAccountGoogleUrlProto "github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleUrl"
@@ -61,5 +63,21 @@ func (s *accountUsecase) GetGoogleToken(ctx context.Context, req *accountProto.A
 
 // RefreshGoogleToken トークンをリフレッシュする
 func (s *accountUsecase) RefreshGoogleToken(ctx context.Context, req *accountProto.AccountRefreshGoogleTokenRequest) (*accountProto.AccountRefreshGoogleTokenResponse, error) {
-	return nil, nil
+	refreshToken, err := tokens.GetRefreshToken(ctx)
+	if err != nil {
+		return nil, errors.NewError("tokens.GetRefreshToken")
+	}
+
+	res, err := s.googleService.RefreshAdminGoogleToken(ctx, refreshToken)
+	if err != nil {
+		return nil, errors.NewMethodError("s.googleService.RefreshAdminGoogleToken", err)
+	}
+
+	return accountProto.SetAccountRefreshGoogleTokenResponse(
+		adminAccountGoogleTokenProto.SetAdminAccountGoogleToken(
+			res.AccessToken,
+			res.RefreshToken,
+			times.TimeToPb(&res.ExpiredAt),
+		),
+	), nil
 }

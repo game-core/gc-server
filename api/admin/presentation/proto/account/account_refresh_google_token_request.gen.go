@@ -11,8 +11,6 @@ func NewAccountRefreshGoogleTokenRequests() AccountRefreshGoogleTokenRequests {
 	return AccountRefreshGoogleTokenRequests{}
 }
 
-func SetAccountRefreshGoogleTokenRequest(refreshToken string) *AccountRefreshGoogleTokenRequest {
-	return &AccountRefreshGoogleTokenRequest{
-		RefreshToken: refreshToken,
-	}
+func SetAccountRefreshGoogleTokenRequest() *AccountRefreshGoogleTokenRequest {
+	return &AccountRefreshGoogleTokenRequest{}
 }

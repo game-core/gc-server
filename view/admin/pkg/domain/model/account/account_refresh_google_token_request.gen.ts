@@ -1,3 +1,1 @@
-export type AccountRefreshGoogleTokenRequest = {
-  refreshToken: string;
-};
+export type AccountRefreshGoogleTokenRequest = {};

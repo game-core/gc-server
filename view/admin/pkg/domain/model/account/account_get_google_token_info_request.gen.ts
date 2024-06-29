@@ -1,3 +1,1 @@
-export type AccountGetGoogleTokenInfoRequest = {
-  accessToken: string;
-};
+export type AccountGetGoogleTokenInfoRequest = {};

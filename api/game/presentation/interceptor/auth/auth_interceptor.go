@@ -41,7 +41,7 @@ func (i *authInterceptor) JwtAuth(ctx context.Context, req interface{}, info *gr
 		return nil, fmt.Errorf("metadata is not provided")
 	}
 
-	claims, err := i.check(ctx, strings.ReplaceAll(strings.Join(md.Get("authorization"), " "), "Bearer ", ""))
+	claims, err := i.check(ctx, strings.ReplaceAll(strings.Join(md.Get("Authorization"), " "), "Bearer ", ""))
 	if err != nil {
 		return nil, fmt.Errorf("authentication failed: %s", err)
 	}

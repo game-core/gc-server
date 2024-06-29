@@ -9,4 +9,5 @@ type AdminGoogleAuthRepository interface {
 	GetAdminGoogleUrl() (*AdminGoogleURL, error)
 	GetAdminGoogleToken(ctx context.Context, code string) (*AdminGoogleToken, error)
 	GetAdminGoogleTokenInfo(ctx context.Context, accessToken string) (*AdminGoogleTokenInfo, error)
+	RefreshAdminGoogleToken(ctx context.Context, refreshToken string) (*AdminGoogleToken, error)
 }
