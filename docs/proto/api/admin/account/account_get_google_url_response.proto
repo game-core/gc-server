@@ -3,6 +3,8 @@ syntax = "proto3";
 
 package api.admin;
 
+import "account/adminAccountGoogleUrl/admin_account_google_url.proto";
+
 message AccountGetGoogleUrlResponse {
-  string url = 1;
+  optional AdminAccountGoogleUrl admin_account_google_url = 1;
 }

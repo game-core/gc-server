@@ -11,8 +11,12 @@ import (
 	"github.com/game-core/gc-server/internal/keys"
 	"github.com/game-core/gc-server/internal/times"
 	"github.com/game-core/gc-server/internal/tokens"
+	"github.com/game-core/gc-server/pkg/domain/model/account/adminAccountGoogleToken"
+	"github.com/game-core/gc-server/pkg/domain/model/account/adminAccountGoogleTokenInfo"
+	"github.com/game-core/gc-server/pkg/domain/model/account/adminAccountGoogleUrl"
 	"github.com/game-core/gc-server/pkg/domain/model/account/userAccount"
 	"github.com/game-core/gc-server/pkg/domain/model/account/userAccountToken"
+	"github.com/game-core/gc-server/pkg/domain/model/google"
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 )
 
@@ -22,10 +26,14 @@ type AccountService interface {
 	Create(ctx context.Context, tx *gorm.DB, req *AccountCreateRequest) (*AccountCreateResponse, error)
 	CreateUserId(ctx context.Context) (string, error)
 	Login(ctx context.Context, mtx *gorm.DB, rtx redis.Pipeliner, req *AccountLoginRequest) (*AccountLoginResponse, error)
+	GetGoogleUrl() (*AccountGetGoogleUrlResponse, error)
+	GetGoogleToken(ctx context.Context, req *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error)
+	GetGoogleTokenInfo(ctx context.Context, req *AccountGetGoogleTokenInfoRequest) (*AccountGetGoogleTokenInfoResponse, error)
 }
 
 type accountService struct {
 	shardService                    shard.ShardService
+	googleService                   google.GoogleService
 	userAccountMysqlRepository      userAccount.UserAccountMysqlRepository
 	userAccountRedisRepository      userAccount.UserAccountRedisRepository
 	userAccountTokenRedisRepository userAccountToken.UserAccountTokenRedisRepository
@@ -33,12 +41,14 @@ type accountService struct {
 
 func NewAccountService(
 	shardService shard.ShardService,
+	googleService google.GoogleService,
 	userAccountMysqlRepository userAccount.UserAccountMysqlRepository,
 	userAccountRedisRepository userAccount.UserAccountRedisRepository,
 	userAccountTokenRedisRepository userAccountToken.UserAccountTokenRedisRepository,
 ) AccountService {
 	return &accountService{
 		shardService:                    shardService,
+		googleService:                   googleService,
 		userAccountMysqlRepository:      userAccountMysqlRepository,
 		userAccountRedisRepository:      userAccountRedisRepository,
 		userAccountTokenRedisRepository: userAccountTokenRedisRepository,
@@ -126,4 +136,53 @@ func (s *accountService) Login(ctx context.Context, mtx *gorm.DB, rtx redis.Pipe
 	}
 
 	return SetAccountLoginResponse(token, result), nil
+}
+
+// GetGoogleUrl 認証URLを取得する
+func (s *accountService) GetGoogleUrl() (*AccountGetGoogleUrlResponse, error) {
+	adminGoogleModel, err := s.googleService.GetAdminGoogleUrl()
+	if err != nil {
+		return nil, errors.NewMethodError("s.googleService.GetAdminGoogleUrl", err)
+	}
+
+	return SetAccountGetGoogleUrlResponse(
+		adminAccountGoogleUrl.SetAdminAccountGoogleUrl(
+			adminGoogleModel.URL,
+		),
+	), nil
+}
+
+// GetGoogleToken トークンを取得する
+func (s *accountService) GetGoogleToken(ctx context.Context, req *AccountGetGoogleTokenRequest) (*AccountGetGoogleTokenResponse, error) {
+	adminGoogleModel, err := s.googleService.GetAdminGoogleToken(ctx, req.Code)
+	if err != nil {
+		return nil, errors.NewMethodError("s.googleService.GetAdminGoogleToken", err)
+	}
+
+	return SetAccountGetGoogleTokenResponse(
+		adminAccountGoogleToken.SetAdminAccountGoogleToken(
+			adminGoogleModel.AccessToken,
+			adminGoogleModel.RefreshToken,
+			adminGoogleModel.ExpiredAt,
+		),
+	), nil
+}
+
+// GetGoogleTokenInfo トークン情報を取得する
+func (s *accountService) GetGoogleTokenInfo(ctx context.Context, req *AccountGetGoogleTokenInfoRequest) (*AccountGetGoogleTokenInfoResponse, error) {
+	adminGoogleModel, err := s.googleService.GetAdminGoogleTokenInfo(ctx, req.AccessToken)
+	if err != nil {
+		return nil, errors.NewMethodError("s.googleService.GetAdminGoogleTokenInfo", err)
+	}
+
+	return SetAccountGetGoogleTokenInfoResponse(
+		adminAccountGoogleTokenInfo.SetAdminAccountGoogleTokenInfo(
+			adminGoogleModel.UserId,
+			adminGoogleModel.Email,
+			adminGoogleModel.VerifiedEmail,
+			adminGoogleModel.ExpiresIn,
+			adminGoogleModel.IssuedTo,
+			adminGoogleModel.Scope,
+		),
+	), nil
 }

@@ -1,0 +1,5 @@
+name: AccountGetGoogleUrlRequest
+package: account
+comment: "アカウントGoogleURL取得リクエスト"
+
+structure:

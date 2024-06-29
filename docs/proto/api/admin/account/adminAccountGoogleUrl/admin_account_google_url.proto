@@ -1,0 +1,8 @@
+// Google認証URL
+syntax = "proto3";
+
+package api.admin;
+
+message AdminAccountGoogleUrl {
+  string url = 1;
+}

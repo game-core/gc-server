@@ -1,0 +1,41 @@
+name: AdminAccountGoogleTokenInfo
+package: adminAccountGoogleTokenInfo
+comment: "管理者アカウントのGoogleToken情報"
+
+structure:
+  UserId:
+    name: user_id
+    type: string
+    nullable: false
+    number: 1
+    comment: "ユーザーId"
+  Email:
+    name: email
+    type: string
+    nullable: false
+    number: 2
+    comment: "メールアドレス"
+  VerifiedEmail:
+    name: verified_email
+    type: bool
+    nullable: false
+    number: 3
+    comment: "メールアドレスが確認済みかどうか"
+  ExpiresIn:
+    name: expires_in
+    type: int64
+    nullable: false
+    number: 4
+    comment: "有効期限"
+  IssuedTo:
+    name: issued_to
+    type: string
+    nullable: false
+    number: 5
+    comment: "発行先"
+  Scope:
+    name: scope
+    type: string
+    nullable: false
+    number: 6
+    comment: "スコープ"

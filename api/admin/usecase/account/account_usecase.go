@@ -2,13 +2,13 @@ package account
 
 import (
 	"context"
-	"time"
 
 	accountProto "github.com/game-core/gc-server/api/admin/presentation/proto/account"
 	adminAccountGoogleTokenProto "github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleToken"
+	adminAccountGoogleUrlProto "github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleUrl"
+	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/times"
 	accountService "github.com/game-core/gc-server/pkg/domain/model/account"
-	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
 )
 
 type AccountUsecase interface {
@@ -17,32 +17,43 @@ type AccountUsecase interface {
 }
 
 type accountUsecase struct {
-	accountService     accountService.AccountService
-	transactionService transactionService.TransactionService
+	accountService accountService.AccountService
 }
 
 func NewAccountUsecase(
 	accountService accountService.AccountService,
-	transactionService transactionService.TransactionService,
 ) AccountUsecase {
 	return &accountUsecase{
-		accountService:     accountService,
-		transactionService: transactionService,
+		accountService: accountService,
 	}
 }
 
 // GetGoogleUrl URLを取得する
 func (s *accountUsecase) GetGoogleUrl(ctx context.Context, req *accountProto.AccountGetGoogleUrlRequest) (*accountProto.AccountGetGoogleUrlResponse, error) {
-	return accountProto.SetAccountGetGoogleUrlResponse(""), nil
+	res, err := s.accountService.GetGoogleUrl()
+	if err != nil {
+		return nil, errors.NewMethodError("s.accountService.GetGoogleUrl", err)
+	}
+
+	return accountProto.SetAccountGetGoogleUrlResponse(
+		adminAccountGoogleUrlProto.SetAdminAccountGoogleUrl(
+			res.AdminAccountGoogleUrl.Url,
+		),
+	), nil
 }
 
 // GetGoogleToken トークンを取得する
 func (s *accountUsecase) GetGoogleToken(ctx context.Context, req *accountProto.AccountGetGoogleTokenRequest) (*accountProto.AccountGetGoogleTokenResponse, error) {
+	res, err := s.accountService.GetGoogleToken(ctx, accountService.SetAccountGetGoogleTokenRequest(req.Code))
+	if err != nil {
+		return nil, errors.NewMethodError("s.accountService.GetGoogleUrl", err)
+	}
+
 	return accountProto.SetAccountGetGoogleTokenResponse(
 		adminAccountGoogleTokenProto.SetAdminAccountGoogleToken(
-			"",
-			"",
-			times.TimeToPb(&time.Time{}),
+			res.AdminAccountGoogleToken.AccessToken,
+			res.AdminAccountGoogleToken.RefreshToken,
+			times.TimeToPb(&res.AdminAccountGoogleToken.ExpiredAt),
 		),
 	), nil
 }

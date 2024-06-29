@@ -139,12 +139,13 @@ func InitializeProfileUsecase() profile2.ProfileUsecase {
 
 func InitializeAccountService() account3.AccountService {
 	shardService := InitializeShardService()
+	googleService := InitializeGoogleService()
 	mysqlHandler := database.NewMysql()
 	userAccountMysqlRepository := userAccount.NewUserAccountMysqlDao(mysqlHandler)
 	redisHandler := database.NewRedis()
 	userAccountRedisRepository := userAccount2.NewUserAccountRedisDao(redisHandler)
 	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenRedisDao(redisHandler)
-	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
+	accountService := account3.NewAccountService(shardService, googleService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 

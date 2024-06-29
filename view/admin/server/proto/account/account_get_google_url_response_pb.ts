@@ -14,15 +14,16 @@ import type {
   PlainMessage,
 } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
+import { AdminAccountGoogleUrl } from "./adminAccountGoogleUrl/admin_account_google_url_pb.js";
 
 /**
  * @generated from message api.admin.AccountGetGoogleUrlResponse
  */
 export class AccountGetGoogleUrlResponse extends Message<AccountGetGoogleUrlResponse> {
   /**
-   * @generated from field: string url = 1;
+   * @generated from field: optional api.admin.AdminAccountGoogleUrl admin_account_google_url = 1;
    */
-  url = "";
+  adminAccountGoogleUrl?: AdminAccountGoogleUrl;
 
   constructor(data?: PartialMessage<AccountGetGoogleUrlResponse>) {
     super();
@@ -32,7 +33,13 @@ export class AccountGetGoogleUrlResponse extends Message<AccountGetGoogleUrlResp
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "api.admin.AccountGetGoogleUrlResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: "admin_account_google_url",
+      kind: "message",
+      T: AdminAccountGoogleUrl,
+      opt: true,
+    },
   ]);
 
   static fromBinary(

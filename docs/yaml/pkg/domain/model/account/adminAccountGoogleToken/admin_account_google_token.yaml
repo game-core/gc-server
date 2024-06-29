@@ -1,0 +1,23 @@
+name: AdminAccountGoogleToken
+package: adminAccountGoogleToken
+comment: "管理者アカウントのGoogleToken"
+
+structure:
+  AccessToken:
+    name: access_token
+    type: string
+    nullable: false
+    number: 1
+    comment: "アクセストークン"
+  RefreshToken:
+    name: refresh_token
+    type: string
+    nullable: false
+    number: 2
+    comment: "リフレッシュトークン"
+  ExpiredAt:
+    name: expired_at
+    type: time
+    nullable: false
+    number: 3
+    comment: "有効期限"

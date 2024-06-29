@@ -1,0 +1,13 @@
+// 管理者アカウントのGoogleToken情報
+syntax = "proto3";
+
+package api.admin;
+
+message AdminAccountGoogleTokenInfo {
+  string user_id = 1;
+  string email = 2;
+  bool verified_email = 3;
+  int64 expires_in = 4;
+  string issued_to = 5;
+  string scope = 6;
+}

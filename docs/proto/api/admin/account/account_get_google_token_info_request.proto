@@ -1,0 +1,8 @@
+// アカウントGoogleToken情報取得リクエスト
+syntax = "proto3";
+
+package api.admin;
+
+message AccountGetGoogleTokenInfoRequest {
+  string access_token = 1;
+}

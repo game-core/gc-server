@@ -1,0 +1,10 @@
+// アカウントGoogleToken情報取得レスポンス
+syntax = "proto3";
+
+package api.admin;
+
+import "account/adminAccountGoogleTokenInfo/admin_account_google_token_info.proto";
+
+message AccountGetGoogleTokenInfoResponse {
+  optional AdminAccountGoogleTokenInfo admin_account_google_token_info = 1;
+}

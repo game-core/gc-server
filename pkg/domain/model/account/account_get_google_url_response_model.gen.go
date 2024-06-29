@@ -2,10 +2,14 @@
 package account
 
 import (
-	"github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleUrl"
+	"github.com/game-core/gc-server/pkg/domain/model/account/adminAccountGoogleUrl"
 )
 
 type AccountGetGoogleUrlResponses []*AccountGetGoogleUrlResponse
+
+type AccountGetGoogleUrlResponse struct {
+	AdminAccountGoogleUrl *adminAccountGoogleUrl.AdminAccountGoogleUrl
+}
 
 func NewAccountGetGoogleUrlResponse() *AccountGetGoogleUrlResponse {
 	return &AccountGetGoogleUrlResponse{}
