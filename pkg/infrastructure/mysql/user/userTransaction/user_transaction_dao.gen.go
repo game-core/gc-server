@@ -9,17 +9,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/userTransaction"
 )
 
-type userTransactionDao struct {
+type userTransactionMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserTransactionDao(conn *database.MysqlHandler) userTransaction.UserTransactionMysqlRepository {
-	return &userTransactionDao{
+func NewUserTransactionMysqlDao(conn *database.MysqlHandler) userTransaction.UserTransactionMysqlRepository {
+	return &userTransactionMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (d *userTransactionDao) Begin(ctx context.Context, shardKey string) (*gorm.DB, error) {
+func (d *userTransactionMysqlDao) Begin(ctx context.Context, shardKey string) (*gorm.DB, error) {
 	tx := d.ShardMysqlConn.Shards[shardKey].WriteMysqlConn.WithContext(ctx).Begin()
 	if err := tx.Error; err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (d *userTransactionDao) Begin(ctx context.Context, shardKey string) (*gorm.
 	return tx, nil
 }
 
-func (d *userTransactionDao) Commit(ctx context.Context, tx *gorm.DB) error {
+func (d *userTransactionMysqlDao) Commit(ctx context.Context, tx *gorm.DB) error {
 	tx.WithContext(ctx).Commit()
 	if err := tx.Error; err != nil {
 		return err
@@ -37,7 +37,7 @@ func (d *userTransactionDao) Commit(ctx context.Context, tx *gorm.DB) error {
 	return nil
 }
 
-func (d *userTransactionDao) Rollback(ctx context.Context, tx *gorm.DB) error {
+func (d *userTransactionMysqlDao) Rollback(ctx context.Context, tx *gorm.DB) error {
 	tx.WithContext(ctx).Rollback()
 	if err := tx.Error; err != nil {
 		return err

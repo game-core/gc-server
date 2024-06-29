@@ -32,12 +32,12 @@ import (
 	"github.com/game-core/gc-server/internal/errors"
 )
 
-type {{.CamelName}}Dao struct {
+type {{.CamelName}}MysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func New{{.Name}}Dao(conn *database.MysqlHandler) {{.Package}}.{{.Name}}MysqlRepository {
-	return &{{.CamelName}}Dao{
+func New{{.Name}}MysqlDao(conn *database.MysqlHandler) {{.Package}}.{{.Name}}MysqlRepository {
+	return &{{.CamelName}}MysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
@@ -257,7 +257,7 @@ func (s *Dao) createFind(yamlStruct *YamlStruct, primaryFields []string) string 
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Find(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) Find(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).%s.Find(t)
 			if err := res.Error; err != nil {
@@ -288,7 +288,7 @@ func (s *Dao) createFindOrNil(yamlStruct *YamlStruct, primaryFields []string) st
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) FindOrNil(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) FindOrNil(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).%s.Find(t)
 			if err := res.Error; err != nil {
@@ -319,7 +319,7 @@ func (s *Dao) createFindByIndex(yamlStruct *YamlStruct, indexFields []string) st
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) FindBy%s(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) FindBy%s(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).%s.Find(t)
 			if err := res.Error; err != nil {
@@ -351,7 +351,7 @@ func (s *Dao) createFindOrNilByIndex(yamlStruct *YamlStruct, indexFields []strin
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) FindOrNilBy%s(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) FindOrNilBy%s(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).%s.Find(t)
 			if err := res.Error; err != nil {
@@ -378,7 +378,7 @@ func (s *Dao) createFindOrNilByIndex(yamlStruct *YamlStruct, indexFields []strin
 // createFindList FindListを作成する
 func (s *Dao) createFindList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		`func (s *%sDao) FindList(ctx context.Context, userId string) (%s.%s, error) {
+		`func (s *%sMysqlDao) FindList(ctx context.Context, userId string) (%s.%s, error) {
 			ts := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 			if err := res.Error; err != nil {
@@ -406,7 +406,7 @@ func (s *Dao) createFindListByIndex(yamlStruct *YamlStruct, indexFields []string
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) FindListBy%s(ctx context.Context, %s) (%s.%s, error) {
+		`func (s *%sMysqlDao) FindListBy%s(ctx context.Context, %s) (%s.%s, error) {
 			ts := New%s()
 			res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).%s.Find(&ts)
 			if err := res.Error; err != nil {
@@ -432,7 +432,7 @@ func (s *Dao) createFindListByIndex(yamlStruct *YamlStruct, indexFields []string
 // createCreate Createを作成する
 func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		`func (s *%sDao) Create(ctx context.Context, tx *gorm.DB, m *%s.%s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *%s.%s) (*%s.%s, error) {
 			var conn *gorm.DB
 			if tx != nil {
 				conn = tx
@@ -462,7 +462,7 @@ func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 // createCreateList CreateListを作成する
 func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		`func (s *%sDao) CreateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
+		`func (s *%sMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
 			if len(ms) <= 0 {
 				return ms, nil
 			}
@@ -513,7 +513,7 @@ func (s *Dao) createUpdate(yamlStruct *YamlStruct, primaryFields []string) strin
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Update(ctx context.Context, tx *gorm.DB, m *%s.%s) (*%s.%s, error) {
+		`func (s *%sMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *%s.%s) (*%s.%s, error) {
 			var conn *gorm.DB
 			if tx != nil {
 				conn = tx
@@ -557,7 +557,7 @@ func (s *Dao) createUpdateList(yamlStruct *YamlStruct, primaryFields []string) s
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) UpdateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
+		`func (s *%sMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms %s.%s) (%s.%s, error) {
 			if len(ms) <= 0 {
 				return ms, nil
 			}
@@ -613,7 +613,7 @@ func (s *Dao) createDelete(yamlStruct *YamlStruct, primaryFields []string) strin
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Delete(ctx context.Context, tx *gorm.DB, m *%s.%s) error {
+		`func (s *%sMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *%s.%s) error {
 			var conn *gorm.DB
 			if tx != nil {
 				conn = tx
@@ -645,7 +645,7 @@ func (s *Dao) createDeleteList(yamlStruct *YamlStruct, primaryFields []string) s
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) DeleteList(ctx context.Context, tx *gorm.DB, ms %s.%s) error {
+		`func (s *%sMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms %s.%s) error {
 			if len(ms) <= 0 {
 				return nil
 			}

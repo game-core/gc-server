@@ -12,18 +12,21 @@ import (
 	"github.com/game-core/gc-server/api/admin/presentation/interceptor/auth"
 	account2 "github.com/game-core/gc-server/api/admin/usecase/account"
 	health2 "github.com/game-core/gc-server/api/admin/usecase/health"
+	auth2 "github.com/game-core/gc-server/config/auth"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
 	account3 "github.com/game-core/gc-server/pkg/domain/model/account"
 	"github.com/game-core/gc-server/pkg/domain/model/action"
 	"github.com/game-core/gc-server/pkg/domain/model/event"
 	"github.com/game-core/gc-server/pkg/domain/model/exchange"
+	"github.com/game-core/gc-server/pkg/domain/model/google"
 	health3 "github.com/game-core/gc-server/pkg/domain/model/health"
 	"github.com/game-core/gc-server/pkg/domain/model/item"
 	"github.com/game-core/gc-server/pkg/domain/model/loginBonus"
 	"github.com/game-core/gc-server/pkg/domain/model/profile"
 	"github.com/game-core/gc-server/pkg/domain/model/shard"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction"
+	"github.com/game-core/gc-server/pkg/infrastructure/auth/admin/adminGoogle"
 	userItemBox2 "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
@@ -92,28 +95,28 @@ func InitializeHealthUsecase() health2.HealthUsecase {
 func InitializeAccountService() account3.AccountService {
 	shardService := InitializeShardService()
 	mysqlHandler := database.NewMysql()
-	userAccountMysqlRepository := userAccount.NewUserAccountDao(mysqlHandler)
+	userAccountMysqlRepository := userAccount.NewUserAccountMysqlDao(mysqlHandler)
 	redisHandler := database.NewRedis()
-	userAccountRedisRepository := userAccount2.NewUserAccountDao(redisHandler)
-	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenDao(redisHandler)
+	userAccountRedisRepository := userAccount2.NewUserAccountRedisDao(redisHandler)
+	userAccountTokenRedisRepository := userAccountToken.NewUserAccountTokenRedisDao(redisHandler)
 	accountService := account3.NewAccountService(shardService, userAccountMysqlRepository, userAccountRedisRepository, userAccountTokenRedisRepository)
 	return accountService
 }
 
 func InitializeActionService() action.ActionService {
 	mysqlHandler := database.NewMysql()
-	masterActionMysqlRepository := masterAction.NewMasterActionDao(mysqlHandler)
-	masterActionRunMysqlRepository := masterActionRun.NewMasterActionRunDao(mysqlHandler)
-	masterActionStepMysqlRepository := masterActionStep.NewMasterActionStepDao(mysqlHandler)
-	masterActionTriggerMysqlRepository := masterActionTrigger.NewMasterActionTriggerDao(mysqlHandler)
-	userActionMysqlRepository := userAction.NewUserActionDao(mysqlHandler)
+	masterActionMysqlRepository := masterAction.NewMasterActionMysqlDao(mysqlHandler)
+	masterActionRunMysqlRepository := masterActionRun.NewMasterActionRunMysqlDao(mysqlHandler)
+	masterActionStepMysqlRepository := masterActionStep.NewMasterActionStepMysqlDao(mysqlHandler)
+	masterActionTriggerMysqlRepository := masterActionTrigger.NewMasterActionTriggerMysqlDao(mysqlHandler)
+	userActionMysqlRepository := userAction.NewUserActionMysqlDao(mysqlHandler)
 	actionService := action.NewActionService(masterActionMysqlRepository, masterActionRunMysqlRepository, masterActionStepMysqlRepository, masterActionTriggerMysqlRepository, userActionMysqlRepository)
 	return actionService
 }
 
 func InitializeEventService() event.EventService {
 	mysqlHandler := database.NewMysql()
-	masterEventMysqlRepository := masterEvent.NewMasterEventDao(mysqlHandler)
+	masterEventMysqlRepository := masterEvent.NewMasterEventMysqlDao(mysqlHandler)
 	eventService := event.NewEventService(masterEventMysqlRepository)
 	return eventService
 }
@@ -122,30 +125,37 @@ func InitializeExchangeService() exchange.ExchangeService {
 	itemService := InitializeItemService()
 	eventService := InitializeEventService()
 	mysqlHandler := database.NewMysql()
-	masterExchangeMysqlRepository := masterExchange.NewMasterExchangeDao(mysqlHandler)
-	masterExchangeCostMysqlRepository := masterExchangeCost.NewMasterExchangeCostDao(mysqlHandler)
-	masterExchangeItemMysqlRepository := masterExchangeItem.NewMasterExchangeItemDao(mysqlHandler)
-	userExchangeMysqlRepository := userExchange.NewUserExchangeDao(mysqlHandler)
-	userExchangeItemMysqlRepository := userExchangeItem.NewUserExchangeItemDao(mysqlHandler)
+	masterExchangeMysqlRepository := masterExchange.NewMasterExchangeMysqlDao(mysqlHandler)
+	masterExchangeCostMysqlRepository := masterExchangeCost.NewMasterExchangeCostMysqlDao(mysqlHandler)
+	masterExchangeItemMysqlRepository := masterExchangeItem.NewMasterExchangeItemMysqlDao(mysqlHandler)
+	userExchangeMysqlRepository := userExchange.NewUserExchangeMysqlDao(mysqlHandler)
+	userExchangeItemMysqlRepository := userExchangeItem.NewUserExchangeItemMysqlDao(mysqlHandler)
 	exchangeService := exchange.NewExchangeService(itemService, eventService, masterExchangeMysqlRepository, masterExchangeCostMysqlRepository, masterExchangeItemMysqlRepository, userExchangeMysqlRepository, userExchangeItemMysqlRepository)
 	return exchangeService
 }
 
+func InitializeGoogleService() google.GoogleService {
+	authHandler := auth2.NewAuth()
+	adminGoogleAuthRepository := adminGoogle.NewAdminGoogleAuthDao(authHandler)
+	googleService := google.NewGoogleService(adminGoogleAuthRepository)
+	return googleService
+}
+
 func InitializeHealthService() health3.HealthService {
 	mysqlHandler := database.NewMysql()
-	adminHealthMysqlRepository := adminHealth.NewAdminHealthDao(mysqlHandler)
-	commonHealthMysqlRepository := commonHealth.NewCommonHealthDao(mysqlHandler)
-	masterHealthMysqlRepository := masterHealth.NewMasterHealthDao(mysqlHandler)
+	adminHealthMysqlRepository := adminHealth.NewAdminHealthMysqlDao(mysqlHandler)
+	commonHealthMysqlRepository := commonHealth.NewCommonHealthMysqlDao(mysqlHandler)
+	masterHealthMysqlRepository := masterHealth.NewMasterHealthMysqlDao(mysqlHandler)
 	healthService := health3.NewHealthService(adminHealthMysqlRepository, commonHealthMysqlRepository, masterHealthMysqlRepository)
 	return healthService
 }
 
 func InitializeItemService() item.ItemService {
 	mysqlHandler := database.NewMysql()
-	userItemBoxMysqlRepository := userItemBox.NewUserItemBoxDao(mysqlHandler)
+	userItemBoxMysqlRepository := userItemBox.NewUserItemBoxMysqlDao(mysqlHandler)
 	cloudWatchHandler := logger.NewCloudWatch()
-	userItemBoxCloudWatchRepository := userItemBox2.NewUserItemBoxDao(cloudWatchHandler)
-	masterItemMysqlRepository := masterItem.NewMasterItemDao(mysqlHandler)
+	userItemBoxCloudWatchRepository := userItemBox2.NewUserItemBoxCloudWatchDao(cloudWatchHandler)
+	masterItemMysqlRepository := masterItem.NewMasterItemMysqlDao(mysqlHandler)
 	itemService := item.NewItemService(userItemBoxMysqlRepository, userItemBoxCloudWatchRepository, masterItemMysqlRepository)
 	return itemService
 }
@@ -154,35 +164,35 @@ func InitializeLoginBonusService() loginBonus.LoginBonusService {
 	itemService := InitializeItemService()
 	eventService := InitializeEventService()
 	mysqlHandler := database.NewMysql()
-	userLoginBonusMysqlRepository := userLoginBonus.NewUserLoginBonusDao(mysqlHandler)
-	masterLoginBonusMysqlRepository := masterLoginBonus.NewMasterLoginBonusDao(mysqlHandler)
-	masterLoginBonusItemMysqlRepository := masterLoginBonusItem.NewMasterLoginBonusItemDao(mysqlHandler)
-	masterLoginBonusScheduleMysqlRepository := masterLoginBonusSchedule.NewMasterLoginBonusScheduleDao(mysqlHandler)
+	userLoginBonusMysqlRepository := userLoginBonus.NewUserLoginBonusMysqlDao(mysqlHandler)
+	masterLoginBonusMysqlRepository := masterLoginBonus.NewMasterLoginBonusMysqlDao(mysqlHandler)
+	masterLoginBonusItemMysqlRepository := masterLoginBonusItem.NewMasterLoginBonusItemMysqlDao(mysqlHandler)
+	masterLoginBonusScheduleMysqlRepository := masterLoginBonusSchedule.NewMasterLoginBonusScheduleMysqlDao(mysqlHandler)
 	loginBonusService := loginBonus.NewLoginBonusService(itemService, eventService, userLoginBonusMysqlRepository, masterLoginBonusMysqlRepository, masterLoginBonusItemMysqlRepository, masterLoginBonusScheduleMysqlRepository)
 	return loginBonusService
 }
 
 func InitializeProfileService() profile.ProfileService {
 	mysqlHandler := database.NewMysql()
-	userProfileMysqlRepository := userProfile.NewUserProfileDao(mysqlHandler)
+	userProfileMysqlRepository := userProfile.NewUserProfileMysqlDao(mysqlHandler)
 	profileService := profile.NewProfileService(userProfileMysqlRepository)
 	return profileService
 }
 
 func InitializeShardService() shard.ShardService {
 	mysqlHandler := database.NewMysql()
-	masterShardMysqlRepository := masterShard.NewMasterShardDao(mysqlHandler)
+	masterShardMysqlRepository := masterShard.NewMasterShardMysqlDao(mysqlHandler)
 	shardService := shard.NewShardService(masterShardMysqlRepository)
 	return shardService
 }
 
 func InitializeTransactionService() transaction.TransactionService {
 	mysqlHandler := database.NewMysql()
-	commonTransactionMysqlRepository := commonTransaction.NewCommonTransactionDao(mysqlHandler)
-	masterTransactionMysqlRepository := masterTransaction.NewMasterTransactionDao(mysqlHandler)
-	userTransactionMysqlRepository := userTransaction.NewUserTransactionDao(mysqlHandler)
+	commonTransactionMysqlRepository := commonTransaction.NewCommonTransactionMysqlDao(mysqlHandler)
+	masterTransactionMysqlRepository := masterTransaction.NewMasterTransactionMysqlDao(mysqlHandler)
+	userTransactionMysqlRepository := userTransaction.NewUserTransactionMysqlDao(mysqlHandler)
 	redisHandler := database.NewRedis()
-	userTransactionRedisRepository := masterTransaction2.NewUserTransactionDao(redisHandler)
+	userTransactionRedisRepository := masterTransaction2.NewUserTransactionRedisDao(redisHandler)
 	transactionService := transaction.NewTransactionService(commonTransactionMysqlRepository, masterTransactionMysqlRepository, userTransactionMysqlRepository, userTransactionRedisRepository)
 	return transactionService
 }

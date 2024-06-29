@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/shard/masterShard"
 )
 
-type masterShardDao struct {
+type masterShardMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterShardDao(conn *database.MysqlHandler) masterShard.MasterShardMysqlRepository {
-	return &masterShardDao{
+func NewMasterShardMysqlDao(conn *database.MysqlHandler) masterShard.MasterShardMysqlRepository {
+	return &masterShardMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterShardDao) Find(ctx context.Context, masterShardId int64) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) Find(ctx context.Context, masterShardId int64) (*masterShard.MasterShard, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "Find", fmt.Sprintf("%d_", masterShardId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterShard.MasterShard); ok {
@@ -51,7 +51,7 @@ func (s *masterShardDao) Find(ctx context.Context, masterShardId int64) (*master
 	return m, nil
 }
 
-func (s *masterShardDao) FindOrNil(ctx context.Context, masterShardId int64) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) FindOrNil(ctx context.Context, masterShardId int64) (*masterShard.MasterShard, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "FindOrNil", fmt.Sprintf("%d_", masterShardId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterShard.MasterShard); ok {
@@ -73,7 +73,7 @@ func (s *masterShardDao) FindOrNil(ctx context.Context, masterShardId int64) (*m
 	return m, nil
 }
 
-func (s *masterShardDao) FindByShardKey(ctx context.Context, shardKey string) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) FindByShardKey(ctx context.Context, shardKey string) (*masterShard.MasterShard, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "FindByShardKey", fmt.Sprintf("%s_", shardKey)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterShard.MasterShard); ok {
@@ -95,7 +95,7 @@ func (s *masterShardDao) FindByShardKey(ctx context.Context, shardKey string) (*
 	return m, nil
 }
 
-func (s *masterShardDao) FindOrNilByShardKey(ctx context.Context, shardKey string) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) FindOrNilByShardKey(ctx context.Context, shardKey string) (*masterShard.MasterShard, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "FindOrNilByShardKey", fmt.Sprintf("%s_", shardKey)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterShard.MasterShard); ok {
@@ -117,7 +117,7 @@ func (s *masterShardDao) FindOrNilByShardKey(ctx context.Context, shardKey strin
 	return m, nil
 }
 
-func (s *masterShardDao) FindList(ctx context.Context) (masterShard.MasterShards, error) {
+func (s *masterShardMysqlDao) FindList(ctx context.Context) (masterShard.MasterShards, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterShard.MasterShards); ok {
@@ -140,7 +140,7 @@ func (s *masterShardDao) FindList(ctx context.Context) (masterShard.MasterShards
 	return ms, nil
 }
 
-func (s *masterShardDao) FindListByShardKey(ctx context.Context, shardKey string) (masterShard.MasterShards, error) {
+func (s *masterShardMysqlDao) FindListByShardKey(ctx context.Context, shardKey string) (masterShard.MasterShards, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_shard", "FindListByShardKey", fmt.Sprintf("%s_", shardKey)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterShard.MasterShards); ok {
@@ -163,7 +163,7 @@ func (s *masterShardDao) FindListByShardKey(ctx context.Context, shardKey string
 	return ms, nil
 }
 
-func (s *masterShardDao) Create(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) (*masterShard.MasterShard, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -185,7 +185,7 @@ func (s *masterShardDao) Create(ctx context.Context, tx *gorm.DB, m *masterShard
 	return masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count), nil
 }
 
-func (s *masterShardDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
+func (s *masterShardMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -216,7 +216,7 @@ func (s *masterShardDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterS
 	return ms, nil
 }
 
-func (s *masterShardDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) (*masterShard.MasterShard, error) {
+func (s *masterShardMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) (*masterShard.MasterShard, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -238,7 +238,7 @@ func (s *masterShardDao) Update(ctx context.Context, tx *gorm.DB, m *masterShard
 	return masterShard.SetMasterShard(t.MasterShardId, t.Name, t.ShardKey, t.Count), nil
 }
 
-func (s *masterShardDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
+func (s *masterShardMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) (masterShard.MasterShards, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -272,7 +272,7 @@ func (s *masterShardDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterS
 	return ms, nil
 }
 
-func (s *masterShardDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) error {
+func (s *masterShardMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard.MasterShard) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -288,7 +288,7 @@ func (s *masterShardDao) Delete(ctx context.Context, tx *gorm.DB, m *masterShard
 	return nil
 }
 
-func (s *masterShardDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) error {
+func (s *masterShardMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterShard.MasterShards) error {
 	if len(ms) <= 0 {
 		return nil
 	}

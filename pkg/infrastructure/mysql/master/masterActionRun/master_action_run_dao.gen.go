@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/action/masterActionRun"
 )
 
-type masterActionRunDao struct {
+type masterActionRunMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterActionRunDao(conn *database.MysqlHandler) masterActionRun.MasterActionRunMysqlRepository {
-	return &masterActionRunDao{
+func NewMasterActionRunMysqlDao(conn *database.MysqlHandler) masterActionRun.MasterActionRunMysqlRepository {
+	return &masterActionRunMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterActionRunDao) Find(ctx context.Context, masterActionRunId int64) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) Find(ctx context.Context, masterActionRunId int64) (*masterActionRun.MasterActionRun, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "Find", fmt.Sprintf("%d_", masterActionRunId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionRun.MasterActionRun); ok {
@@ -51,7 +51,7 @@ func (s *masterActionRunDao) Find(ctx context.Context, masterActionRunId int64) 
 	return m, nil
 }
 
-func (s *masterActionRunDao) FindOrNil(ctx context.Context, masterActionRunId int64) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) FindOrNil(ctx context.Context, masterActionRunId int64) (*masterActionRun.MasterActionRun, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "FindOrNil", fmt.Sprintf("%d_", masterActionRunId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionRun.MasterActionRun); ok {
@@ -73,7 +73,7 @@ func (s *masterActionRunDao) FindOrNil(ctx context.Context, masterActionRunId in
 	return m, nil
 }
 
-func (s *masterActionRunDao) FindByMasterActionId(ctx context.Context, masterActionId int64) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) FindByMasterActionId(ctx context.Context, masterActionId int64) (*masterActionRun.MasterActionRun, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "FindByMasterActionId", fmt.Sprintf("%d_", masterActionId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionRun.MasterActionRun); ok {
@@ -95,7 +95,7 @@ func (s *masterActionRunDao) FindByMasterActionId(ctx context.Context, masterAct
 	return m, nil
 }
 
-func (s *masterActionRunDao) FindOrNilByMasterActionId(ctx context.Context, masterActionId int64) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) FindOrNilByMasterActionId(ctx context.Context, masterActionId int64) (*masterActionRun.MasterActionRun, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "FindOrNilByMasterActionId", fmt.Sprintf("%d_", masterActionId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionRun.MasterActionRun); ok {
@@ -117,7 +117,7 @@ func (s *masterActionRunDao) FindOrNilByMasterActionId(ctx context.Context, mast
 	return m, nil
 }
 
-func (s *masterActionRunDao) FindList(ctx context.Context) (masterActionRun.MasterActionRuns, error) {
+func (s *masterActionRunMysqlDao) FindList(ctx context.Context) (masterActionRun.MasterActionRuns, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionRun.MasterActionRuns); ok {
@@ -140,7 +140,7 @@ func (s *masterActionRunDao) FindList(ctx context.Context) (masterActionRun.Mast
 	return ms, nil
 }
 
-func (s *masterActionRunDao) FindListByMasterActionId(ctx context.Context, masterActionId int64) (masterActionRun.MasterActionRuns, error) {
+func (s *masterActionRunMysqlDao) FindListByMasterActionId(ctx context.Context, masterActionId int64) (masterActionRun.MasterActionRuns, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_run", "FindListByMasterActionId", fmt.Sprintf("%d_", masterActionId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionRun.MasterActionRuns); ok {
@@ -163,7 +163,7 @@ func (s *masterActionRunDao) FindListByMasterActionId(ctx context.Context, maste
 	return ms, nil
 }
 
-func (s *masterActionRunDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) (*masterActionRun.MasterActionRun, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterActionRunDao) Create(ctx context.Context, tx *gorm.DB, m *masterA
 	return masterActionRun.SetMasterActionRun(t.MasterActionRunId, t.Name, t.MasterActionId), nil
 }
 
-func (s *masterActionRunDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
+func (s *masterActionRunMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterActionRunDao) CreateList(ctx context.Context, tx *gorm.DB, ms mas
 	return ms, nil
 }
 
-func (s *masterActionRunDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) (*masterActionRun.MasterActionRun, error) {
+func (s *masterActionRunMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) (*masterActionRun.MasterActionRun, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterActionRunDao) Update(ctx context.Context, tx *gorm.DB, m *masterA
 	return masterActionRun.SetMasterActionRun(t.MasterActionRunId, t.Name, t.MasterActionId), nil
 }
 
-func (s *masterActionRunDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
+func (s *masterActionRunMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) (masterActionRun.MasterActionRuns, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterActionRunDao) UpdateList(ctx context.Context, tx *gorm.DB, ms mas
 	return ms, nil
 }
 
-func (s *masterActionRunDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) error {
+func (s *masterActionRunMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionRun.MasterActionRun) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterActionRunDao) Delete(ctx context.Context, tx *gorm.DB, m *masterA
 	return nil
 }
 
-func (s *masterActionRunDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) error {
+func (s *masterActionRunMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionRun.MasterActionRuns) error {
 	if len(ms) <= 0 {
 		return nil
 	}

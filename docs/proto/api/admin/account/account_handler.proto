@@ -9,6 +9,6 @@ import "account/account_get_google_token_request.proto";
 import "account/account_get_google_token_response.proto";
 
 service Account {
-  rpc GetGoogleLoginUrl (AccountGetGoogleUrlRequest) returns (AccountGetGoogleUrlResponse);
-  rpc GetGoogleLoginToken (AccountGetGoogleTokenRequest) returns (AccountGetGoogleTokenResponse);
+  rpc GetGoogleUrl (AccountGetGoogleUrlRequest) returns (AccountGetGoogleUrlResponse);
+  rpc GetGoogleToken (AccountGetGoogleTokenRequest) returns (AccountGetGoogleTokenResponse);
 }

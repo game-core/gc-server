@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/event/masterEvent"
 )
 
-type masterEventDao struct {
+type masterEventMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterEventDao(conn *database.MysqlHandler) masterEvent.MasterEventMysqlRepository {
-	return &masterEventDao{
+func NewMasterEventMysqlDao(conn *database.MysqlHandler) masterEvent.MasterEventMysqlRepository {
+	return &masterEventMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterEventDao) Find(ctx context.Context, masterEventId int64) (*masterEvent.MasterEvent, error) {
+func (s *masterEventMysqlDao) Find(ctx context.Context, masterEventId int64) (*masterEvent.MasterEvent, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_event", "Find", fmt.Sprintf("%d_", masterEventId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterEvent.MasterEvent); ok {
@@ -51,7 +51,7 @@ func (s *masterEventDao) Find(ctx context.Context, masterEventId int64) (*master
 	return m, nil
 }
 
-func (s *masterEventDao) FindOrNil(ctx context.Context, masterEventId int64) (*masterEvent.MasterEvent, error) {
+func (s *masterEventMysqlDao) FindOrNil(ctx context.Context, masterEventId int64) (*masterEvent.MasterEvent, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_event", "FindOrNil", fmt.Sprintf("%d_", masterEventId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterEvent.MasterEvent); ok {
@@ -73,7 +73,7 @@ func (s *masterEventDao) FindOrNil(ctx context.Context, masterEventId int64) (*m
 	return m, nil
 }
 
-func (s *masterEventDao) FindList(ctx context.Context) (masterEvent.MasterEvents, error) {
+func (s *masterEventMysqlDao) FindList(ctx context.Context) (masterEvent.MasterEvents, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_event", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterEvent.MasterEvents); ok {
@@ -96,7 +96,7 @@ func (s *masterEventDao) FindList(ctx context.Context) (masterEvent.MasterEvents
 	return ms, nil
 }
 
-func (s *masterEventDao) Create(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) (*masterEvent.MasterEvent, error) {
+func (s *masterEventMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) (*masterEvent.MasterEvent, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -121,7 +121,7 @@ func (s *masterEventDao) Create(ctx context.Context, tx *gorm.DB, m *masterEvent
 	return masterEvent.SetMasterEvent(t.MasterEventId, t.Name, t.ResetHour, t.IntervalHour, t.RepeatSetting, t.StartAt, t.EndAt), nil
 }
 
-func (s *masterEventDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
+func (s *masterEventMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -155,7 +155,7 @@ func (s *masterEventDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterE
 	return ms, nil
 }
 
-func (s *masterEventDao) Update(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) (*masterEvent.MasterEvent, error) {
+func (s *masterEventMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) (*masterEvent.MasterEvent, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -180,7 +180,7 @@ func (s *masterEventDao) Update(ctx context.Context, tx *gorm.DB, m *masterEvent
 	return masterEvent.SetMasterEvent(t.MasterEventId, t.Name, t.ResetHour, t.IntervalHour, t.RepeatSetting, t.StartAt, t.EndAt), nil
 }
 
-func (s *masterEventDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
+func (s *masterEventMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) (masterEvent.MasterEvents, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -217,7 +217,7 @@ func (s *masterEventDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterE
 	return ms, nil
 }
 
-func (s *masterEventDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) error {
+func (s *masterEventMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEvent.MasterEvent) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -233,7 +233,7 @@ func (s *masterEventDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEvent
 	return nil
 }
 
-func (s *masterEventDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) error {
+func (s *masterEventMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterEvent.MasterEvents) error {
 	if len(ms) <= 0 {
 		return nil
 	}

@@ -12,18 +12,18 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/google/adminGoogle"
 )
 
-type adminGoogleDao struct {
+type adminGoogleAuthDao struct {
 	GoogleConn *oauth2.Config
 }
 
-func NewAdminGoogleDao(conn *auth.AuthHandler) adminGoogle.AdminGoogleAuthRepository {
-	return &adminGoogleDao{
+func NewAdminGoogleAuthDao(conn *auth.AuthHandler) adminGoogle.AdminGoogleAuthRepository {
+	return &adminGoogleAuthDao{
 		GoogleConn: conn.Google.Config,
 	}
 }
 
 // GetAdminGoogleUrl URLを取得する
-func (s *adminGoogleDao) GetAdminGoogleUrl() (*adminGoogle.AdminGoogleURL, error) {
+func (s *adminGoogleAuthDao) GetAdminGoogleUrl() (*adminGoogle.AdminGoogleURL, error) {
 	state, err := keys.CreateStateOauthCookie()
 	if err != nil {
 		return nil, errors.NewMethodError("keys.CreateStateOauthCookie", err)
@@ -33,7 +33,7 @@ func (s *adminGoogleDao) GetAdminGoogleUrl() (*adminGoogle.AdminGoogleURL, error
 }
 
 // GetAdminGoogleToken トークンを取得する
-func (s *adminGoogleDao) GetAdminGoogleToken(ctx context.Context, code string) (*adminGoogle.AdminGoogleToken, error) {
+func (s *adminGoogleAuthDao) GetAdminGoogleToken(ctx context.Context, code string) (*adminGoogle.AdminGoogleToken, error) {
 	token, err := s.GoogleConn.Exchange(ctx, code)
 	if err != nil {
 		return nil, errors.NewMethodError("token", err)
@@ -47,7 +47,7 @@ func (s *adminGoogleDao) GetAdminGoogleToken(ctx context.Context, code string) (
 }
 
 // GetAdminGoogleTokenInfo トークン情報を確認する
-func (s *adminGoogleDao) GetAdminGoogleTokenInfo(ctx context.Context, accessToken string) (*adminGoogle.AdminGoogleTokenInfo, error) {
+func (s *adminGoogleAuthDao) GetAdminGoogleTokenInfo(ctx context.Context, accessToken string) (*adminGoogle.AdminGoogleTokenInfo, error) {
 	service, err := v2.New(s.GoogleConn.Client(ctx, &oauth2.Token{AccessToken: accessToken}))
 	if err != nil {
 		return nil, errors.NewMethodError("v2.New", err)

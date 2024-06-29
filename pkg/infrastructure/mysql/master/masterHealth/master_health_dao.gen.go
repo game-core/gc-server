@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/health/masterHealth"
 )
 
-type masterHealthDao struct {
+type masterHealthMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterHealthDao(conn *database.MysqlHandler) masterHealth.MasterHealthMysqlRepository {
-	return &masterHealthDao{
+func NewMasterHealthMysqlDao(conn *database.MysqlHandler) masterHealth.MasterHealthMysqlRepository {
+	return &masterHealthMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterHealthDao) Find(ctx context.Context, healthId int64) (*masterHealth.MasterHealth, error) {
+func (s *masterHealthMysqlDao) Find(ctx context.Context, healthId int64) (*masterHealth.MasterHealth, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_health", "Find", fmt.Sprintf("%d_", healthId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterHealth.MasterHealth); ok {
@@ -51,7 +51,7 @@ func (s *masterHealthDao) Find(ctx context.Context, healthId int64) (*masterHeal
 	return m, nil
 }
 
-func (s *masterHealthDao) FindOrNil(ctx context.Context, healthId int64) (*masterHealth.MasterHealth, error) {
+func (s *masterHealthMysqlDao) FindOrNil(ctx context.Context, healthId int64) (*masterHealth.MasterHealth, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_health", "FindOrNil", fmt.Sprintf("%d_", healthId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterHealth.MasterHealth); ok {
@@ -73,7 +73,7 @@ func (s *masterHealthDao) FindOrNil(ctx context.Context, healthId int64) (*maste
 	return m, nil
 }
 
-func (s *masterHealthDao) FindList(ctx context.Context) (masterHealth.MasterHealths, error) {
+func (s *masterHealthMysqlDao) FindList(ctx context.Context) (masterHealth.MasterHealths, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_health", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterHealth.MasterHealths); ok {
@@ -96,7 +96,7 @@ func (s *masterHealthDao) FindList(ctx context.Context) (masterHealth.MasterHeal
 	return ms, nil
 }
 
-func (s *masterHealthDao) Create(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) (*masterHealth.MasterHealth, error) {
+func (s *masterHealthMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) (*masterHealth.MasterHealth, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -117,7 +117,7 @@ func (s *masterHealthDao) Create(ctx context.Context, tx *gorm.DB, m *masterHeal
 	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum), nil
 }
 
-func (s *masterHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
+func (s *masterHealthMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -147,7 +147,7 @@ func (s *masterHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms master
 	return ms, nil
 }
 
-func (s *masterHealthDao) Update(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) (*masterHealth.MasterHealth, error) {
+func (s *masterHealthMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) (*masterHealth.MasterHealth, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -168,7 +168,7 @@ func (s *masterHealthDao) Update(ctx context.Context, tx *gorm.DB, m *masterHeal
 	return masterHealth.SetMasterHealth(t.HealthId, t.Name, t.MasterHealthEnum), nil
 }
 
-func (s *masterHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
+func (s *masterHealthMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) (masterHealth.MasterHealths, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -201,7 +201,7 @@ func (s *masterHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms master
 	return ms, nil
 }
 
-func (s *masterHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) error {
+func (s *masterHealthMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterHealth.MasterHealth) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -217,7 +217,7 @@ func (s *masterHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *masterHeal
 	return nil
 }
 
-func (s *masterHealthDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) error {
+func (s *masterHealthMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterHealth.MasterHealths) error {
 	if len(ms) <= 0 {
 		return nil
 	}

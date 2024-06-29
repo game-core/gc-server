@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/item/userItemBox"
 )
 
-type userItemBoxDao struct {
+type userItemBoxMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserItemBoxDao(conn *database.MysqlHandler) userItemBox.UserItemBoxMysqlRepository {
-	return &userItemBoxDao{
+func NewUserItemBoxMysqlDao(conn *database.MysqlHandler) userItemBox.UserItemBoxMysqlRepository {
+	return &userItemBoxMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userItemBoxDao) Find(ctx context.Context, userId string, masterItemId int64) (*userItemBox.UserItemBox, error) {
+func (s *userItemBoxMysqlDao) Find(ctx context.Context, userId string, masterItemId int64) (*userItemBox.UserItemBox, error) {
 	t := NewUserItemBox()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_item_id = ?", masterItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userItemBoxDao) Find(ctx context.Context, userId string, masterItemId i
 	return userItemBox.SetUserItemBox(t.UserId, t.MasterItemId, t.Count), nil
 }
 
-func (s *userItemBoxDao) FindOrNil(ctx context.Context, userId string, masterItemId int64) (*userItemBox.UserItemBox, error) {
+func (s *userItemBoxMysqlDao) FindOrNil(ctx context.Context, userId string, masterItemId int64) (*userItemBox.UserItemBox, error) {
 	t := NewUserItemBox()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_item_id = ?", masterItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userItemBoxDao) FindOrNil(ctx context.Context, userId string, masterIte
 	return userItemBox.SetUserItemBox(t.UserId, t.MasterItemId, t.Count), nil
 }
 
-func (s *userItemBoxDao) FindList(ctx context.Context, userId string) (userItemBox.UserItemBoxes, error) {
+func (s *userItemBoxMysqlDao) FindList(ctx context.Context, userId string) (userItemBox.UserItemBoxes, error) {
 	ts := NewUserItemBoxes()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userItemBoxDao) FindList(ctx context.Context, userId string) (userItemB
 	return ms, nil
 }
 
-func (s *userItemBoxDao) Create(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) (*userItemBox.UserItemBox, error) {
+func (s *userItemBoxMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) (*userItemBox.UserItemBox, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -85,7 +85,7 @@ func (s *userItemBoxDao) Create(ctx context.Context, tx *gorm.DB, m *userItemBox
 	return userItemBox.SetUserItemBox(t.UserId, t.MasterItemId, t.Count), nil
 }
 
-func (s *userItemBoxDao) CreateList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) (userItemBox.UserItemBoxes, error) {
+func (s *userItemBoxMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) (userItemBox.UserItemBoxes, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -122,7 +122,7 @@ func (s *userItemBoxDao) CreateList(ctx context.Context, tx *gorm.DB, ms userIte
 	return ms, nil
 }
 
-func (s *userItemBoxDao) Update(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) (*userItemBox.UserItemBox, error) {
+func (s *userItemBoxMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) (*userItemBox.UserItemBox, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -143,7 +143,7 @@ func (s *userItemBoxDao) Update(ctx context.Context, tx *gorm.DB, m *userItemBox
 	return userItemBox.SetUserItemBox(t.UserId, t.MasterItemId, t.Count), nil
 }
 
-func (s *userItemBoxDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) (userItemBox.UserItemBoxes, error) {
+func (s *userItemBoxMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) (userItemBox.UserItemBoxes, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -183,7 +183,7 @@ func (s *userItemBoxDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userIte
 	return ms, nil
 }
 
-func (s *userItemBoxDao) Delete(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) error {
+func (s *userItemBoxMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userItemBox.UserItemBox) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -199,7 +199,7 @@ func (s *userItemBoxDao) Delete(ctx context.Context, tx *gorm.DB, m *userItemBox
 	return nil
 }
 
-func (s *userItemBoxDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) error {
+func (s *userItemBoxMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userItemBox.UserItemBoxes) error {
 	if len(ms) <= 0 {
 		return nil
 	}

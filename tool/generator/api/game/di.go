@@ -27,7 +27,7 @@ const diTemplate = `//go:build wireinject
 package di
 
 import (
-	"github.com/adminGoogle/wire"
+	"github.com/google/wire"
 
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
@@ -302,7 +302,7 @@ func (s *Di) serviceScript(structName string, fields []*ast.Field) string {
 			if strings.Contains(fieldName, "MysqlRepository") {
 				name := strings.Replace(fieldName, "MysqlRepository", "", -1)
 				importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("%sMysqlDao \"github.com/game-core/gc-server/pkg/infrastructure/mysql/%s/%s\"", strings.Replace(name, "Original", "", -1), s.getDaoDir(name), strings.Replace(name, "Original", "", -1)))
-				scripts = append(scripts, fmt.Sprintf("%sMysqlDao.New%sDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
+				scripts = append(scripts, fmt.Sprintf("%sMysqlDao.New%sMysqlDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
 
 				if !strings.Contains(databaseCode, "database.NewMysql") {
 					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "database.NewMysql,")
@@ -312,7 +312,7 @@ func (s *Di) serviceScript(structName string, fields []*ast.Field) string {
 			if strings.Contains(fieldName, "RedisRepository") {
 				name := strings.Replace(fieldName, "RedisRepository", "", -1)
 				importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("%sRedisDao \"github.com/game-core/gc-server/pkg/infrastructure/redis/%s/%s\"", strings.Replace(name, "Original", "", -1), s.getDaoDir(name), strings.Replace(name, "Original", "", -1)))
-				scripts = append(scripts, fmt.Sprintf("%sRedisDao.New%sDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
+				scripts = append(scripts, fmt.Sprintf("%sRedisDao.New%sRedisDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
 
 				if !strings.Contains(databaseCode, "database.NewRedis") {
 					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "database.NewRedis,")
@@ -322,10 +322,20 @@ func (s *Di) serviceScript(structName string, fields []*ast.Field) string {
 			if strings.Contains(fieldName, "CloudWatchRepository") {
 				name := strings.Replace(fieldName, "CloudWatchRepository", "", -1)
 				importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("%sCloudWatchDao \"github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/%s/%s\"", strings.Replace(name, "Original", "", -1), s.getDaoDir(name), strings.Replace(name, "Original", "", -1)))
-				scripts = append(scripts, fmt.Sprintf("%sCloudWatchDao.New%sDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
+				scripts = append(scripts, fmt.Sprintf("%sCloudWatchDao.New%sCloudWatchDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
 
 				if !strings.Contains(databaseCode, "logger.NewCloudWatch") {
 					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "logger.NewCloudWatch,")
+				}
+			}
+
+			if strings.Contains(fieldName, "AuthRepository") {
+				name := strings.Replace(fieldName, "AuthRepository", "", -1)
+				importCode = fmt.Sprintf("%s\n%s", importCode, fmt.Sprintf("%sAuthDao \"github.com/game-core/gc-server/pkg/infrastructure/auth/%s/%s\"", strings.Replace(name, "Original", "", -1), s.getDaoDir(name), strings.Replace(name, "Original", "", -1)))
+				scripts = append(scripts, fmt.Sprintf("%sAuthDao.New%sAuthDao,", strings.Replace(name, "Original", "", -1), changes.CamelToUpperCamel(name)))
+
+				if !strings.Contains(databaseCode, "auth.NewAuth") {
+					databaseCode = fmt.Sprintf("%s\n%s", databaseCode, "auth.NewAuth,")
 				}
 			}
 		}
@@ -376,6 +386,10 @@ func (s *Di) getDaoDir(name string) string {
 		return "user"
 	}
 
+	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+		return "admin"
+	}
+
 	// original
 	if fileExists("../../../../pkg/infrastructure/mysql/admin", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
 		return "admin"
@@ -399,6 +413,10 @@ func (s *Di) getDaoDir(name string) string {
 
 	if fileExists("../../../../pkg/infrastructure/redis/user", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
 		return "user"
+	}
+
+	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+		return "admin"
 	}
 
 	return ""

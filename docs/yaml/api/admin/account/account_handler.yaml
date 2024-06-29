@@ -4,7 +4,7 @@ comment: "アカウント"
 
 structure:
   GetGoogleUrl:
-    name: get_google_login_url
+    name: get_google_url
     method: unary
     auth: false
     request: AccountGetGoogleUrlRequest
@@ -12,7 +12,7 @@ structure:
     number: 1
     comment: "GoogleURLを取得する"
   GetGoogleToken:
-    name: get_google_login_token
+    name: get_google_token
     method: unary
     auth: false
     request: AccountGetGoogleTokenRequest

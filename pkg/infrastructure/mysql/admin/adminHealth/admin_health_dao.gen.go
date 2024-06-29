@@ -12,19 +12,19 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/health/adminHealth"
 )
 
-type adminHealthDao struct {
+type adminHealthMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 }
 
-func NewAdminHealthDao(conn *database.MysqlHandler) adminHealth.AdminHealthMysqlRepository {
-	return &adminHealthDao{
+func NewAdminHealthMysqlDao(conn *database.MysqlHandler) adminHealth.AdminHealthMysqlRepository {
+	return &adminHealthMysqlDao{
 		ReadMysqlConn:  conn.Admin.ReadMysqlConn,
 		WriteMysqlConn: conn.Admin.WriteMysqlConn,
 	}
 }
 
-func (s *adminHealthDao) Find(ctx context.Context, healthId int64) (*adminHealth.AdminHealth, error) {
+func (s *adminHealthMysqlDao) Find(ctx context.Context, healthId int64) (*adminHealth.AdminHealth, error) {
 	t := NewAdminHealth()
 	res := s.ReadMysqlConn.WithContext(ctx).Where("health_id = ?", healthId).Find(t)
 	if err := res.Error; err != nil {
@@ -37,7 +37,7 @@ func (s *adminHealthDao) Find(ctx context.Context, healthId int64) (*adminHealth
 	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
-func (s *adminHealthDao) FindOrNil(ctx context.Context, healthId int64) (*adminHealth.AdminHealth, error) {
+func (s *adminHealthMysqlDao) FindOrNil(ctx context.Context, healthId int64) (*adminHealth.AdminHealth, error) {
 	t := NewAdminHealth()
 	res := s.ReadMysqlConn.WithContext(ctx).Where("health_id = ?", healthId).Find(t)
 	if err := res.Error; err != nil {
@@ -50,7 +50,7 @@ func (s *adminHealthDao) FindOrNil(ctx context.Context, healthId int64) (*adminH
 	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
-func (s *adminHealthDao) FindList(ctx context.Context) (adminHealth.AdminHealths, error) {
+func (s *adminHealthMysqlDao) FindList(ctx context.Context) (adminHealth.AdminHealths, error) {
 	ts := NewAdminHealths()
 	res := s.ReadMysqlConn.WithContext(ctx).Find(&ts)
 	if err := res.Error; err != nil {
@@ -65,7 +65,7 @@ func (s *adminHealthDao) FindList(ctx context.Context) (adminHealth.AdminHealths
 	return ms, nil
 }
 
-func (s *adminHealthDao) Create(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) (*adminHealth.AdminHealth, error) {
+func (s *adminHealthMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) (*adminHealth.AdminHealth, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -86,7 +86,7 @@ func (s *adminHealthDao) Create(ctx context.Context, tx *gorm.DB, m *adminHealth
 	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
-func (s *adminHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
+func (s *adminHealthMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -116,7 +116,7 @@ func (s *adminHealthDao) CreateList(ctx context.Context, tx *gorm.DB, ms adminHe
 	return ms, nil
 }
 
-func (s *adminHealthDao) Update(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) (*adminHealth.AdminHealth, error) {
+func (s *adminHealthMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) (*adminHealth.AdminHealth, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -137,7 +137,7 @@ func (s *adminHealthDao) Update(ctx context.Context, tx *gorm.DB, m *adminHealth
 	return adminHealth.SetAdminHealth(t.HealthId, t.Name, t.AdminHealthEnum), nil
 }
 
-func (s *adminHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
+func (s *adminHealthMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) (adminHealth.AdminHealths, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -170,7 +170,7 @@ func (s *adminHealthDao) UpdateList(ctx context.Context, tx *gorm.DB, ms adminHe
 	return ms, nil
 }
 
-func (s *adminHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) error {
+func (s *adminHealthMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *adminHealth.AdminHealth) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -186,7 +186,7 @@ func (s *adminHealthDao) Delete(ctx context.Context, tx *gorm.DB, m *adminHealth
 	return nil
 }
 
-func (s *adminHealthDao) DeleteList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) error {
+func (s *adminHealthMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms adminHealth.AdminHealths) error {
 	if len(ms) <= 0 {
 		return nil
 	}

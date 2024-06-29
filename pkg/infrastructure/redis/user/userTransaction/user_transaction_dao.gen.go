@@ -9,23 +9,23 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/userTransaction"
 )
 
-type userTransactionDao struct {
+type userTransactionRedisDao struct {
 	ReadRedisConn  *redis.Client
 	WriteRedisConn *redis.Client
 }
 
-func NewUserTransactionDao(conn *database.RedisHandler) userTransaction.UserTransactionRedisRepository {
-	return &userTransactionDao{
+func NewUserTransactionRedisDao(conn *database.RedisHandler) userTransaction.UserTransactionRedisRepository {
+	return &userTransactionRedisDao{
 		ReadRedisConn:  conn.User.ReadRedisConn,
 		WriteRedisConn: conn.User.WriteRedisConn,
 	}
 }
 
-func (d *userTransactionDao) Begin() redis.Pipeliner {
+func (d *userTransactionRedisDao) Begin() redis.Pipeliner {
 	return d.WriteRedisConn.TxPipeline()
 }
 
-func (d *userTransactionDao) Commit(ctx context.Context, tx redis.Pipeliner) error {
+func (d *userTransactionRedisDao) Commit(ctx context.Context, tx redis.Pipeliner) error {
 	if _, err := tx.Exec(ctx); err != nil {
 		return err
 	}
@@ -33,6 +33,6 @@ func (d *userTransactionDao) Commit(ctx context.Context, tx redis.Pipeliner) err
 	return nil
 }
 
-func (d *userTransactionDao) Rollback(tx redis.Pipeliner) {
+func (d *userTransactionRedisDao) Rollback(tx redis.Pipeliner) {
 	tx.Discard()
 }

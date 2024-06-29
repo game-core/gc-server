@@ -21,10 +21,10 @@ ENV GO111MODULE=on
 COPY . .
 RUN apk upgrade --update && apk add bash && apk --no-cache add git && apk add bash protobuf-dev
 
-RUN go install github.com/adminGoogle/wire/cmd/wire@v0.5.0
+RUN go install github.com/google/wire/cmd/wire@v0.5.0
 RUN go install github.com/golang/mock/mockgen@v1.6.0
 RUN go install golang.org/x/tools/cmd/goimports@v0.17.0
 RUN go install adminGoogle.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-RUN go install adminGoogle.golang.org/protobuf/cmd/protoc-gen-go@latest
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
 CMD [ "go", "run", "cmd/gen/main.go" ]

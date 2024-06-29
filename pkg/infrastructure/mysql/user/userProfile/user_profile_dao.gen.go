@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/profile/userProfile"
 )
 
-type userProfileDao struct {
+type userProfileMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserProfileDao(conn *database.MysqlHandler) userProfile.UserProfileMysqlRepository {
-	return &userProfileDao{
+func NewUserProfileMysqlDao(conn *database.MysqlHandler) userProfile.UserProfileMysqlRepository {
+	return &userProfileMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userProfileDao) Find(ctx context.Context, userId string) (*userProfile.UserProfile, error) {
+func (s *userProfileMysqlDao) Find(ctx context.Context, userId string) (*userProfile.UserProfile, error) {
 	t := NewUserProfile()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userProfileDao) Find(ctx context.Context, userId string) (*userProfile.
 	return userProfile.SetUserProfile(t.UserId, t.Name, t.Content), nil
 }
 
-func (s *userProfileDao) FindOrNil(ctx context.Context, userId string) (*userProfile.UserProfile, error) {
+func (s *userProfileMysqlDao) FindOrNil(ctx context.Context, userId string) (*userProfile.UserProfile, error) {
 	t := NewUserProfile()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userProfileDao) FindOrNil(ctx context.Context, userId string) (*userPro
 	return userProfile.SetUserProfile(t.UserId, t.Name, t.Content), nil
 }
 
-func (s *userProfileDao) FindList(ctx context.Context, userId string) (userProfile.UserProfiles, error) {
+func (s *userProfileMysqlDao) FindList(ctx context.Context, userId string) (userProfile.UserProfiles, error) {
 	ts := NewUserProfiles()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userProfileDao) FindList(ctx context.Context, userId string) (userProfi
 	return ms, nil
 }
 
-func (s *userProfileDao) Create(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) (*userProfile.UserProfile, error) {
+func (s *userProfileMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) (*userProfile.UserProfile, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -85,7 +85,7 @@ func (s *userProfileDao) Create(ctx context.Context, tx *gorm.DB, m *userProfile
 	return userProfile.SetUserProfile(t.UserId, t.Name, t.Content), nil
 }
 
-func (s *userProfileDao) CreateList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) (userProfile.UserProfiles, error) {
+func (s *userProfileMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) (userProfile.UserProfiles, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -122,7 +122,7 @@ func (s *userProfileDao) CreateList(ctx context.Context, tx *gorm.DB, ms userPro
 	return ms, nil
 }
 
-func (s *userProfileDao) Update(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) (*userProfile.UserProfile, error) {
+func (s *userProfileMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) (*userProfile.UserProfile, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -143,7 +143,7 @@ func (s *userProfileDao) Update(ctx context.Context, tx *gorm.DB, m *userProfile
 	return userProfile.SetUserProfile(t.UserId, t.Name, t.Content), nil
 }
 
-func (s *userProfileDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) (userProfile.UserProfiles, error) {
+func (s *userProfileMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) (userProfile.UserProfiles, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -183,7 +183,7 @@ func (s *userProfileDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userPro
 	return ms, nil
 }
 
-func (s *userProfileDao) Delete(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) error {
+func (s *userProfileMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userProfile.UserProfile) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -199,7 +199,7 @@ func (s *userProfileDao) Delete(ctx context.Context, tx *gorm.DB, m *userProfile
 	return nil
 }
 
-func (s *userProfileDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) error {
+func (s *userProfileMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userProfile.UserProfiles) error {
 	if len(ms) <= 0 {
 		return nil
 	}

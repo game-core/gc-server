@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/exchange/masterExchange"
 )
 
-type masterExchangeDao struct {
+type masterExchangeMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterExchangeDao(conn *database.MysqlHandler) masterExchange.MasterExchangeMysqlRepository {
-	return &masterExchangeDao{
+func NewMasterExchangeMysqlDao(conn *database.MysqlHandler) masterExchange.MasterExchangeMysqlRepository {
+	return &masterExchangeMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterExchangeDao) Find(ctx context.Context, masterExchangeId int64) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) Find(ctx context.Context, masterExchangeId int64) (*masterExchange.MasterExchange, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "Find", fmt.Sprintf("%d_", masterExchangeId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchange.MasterExchange); ok {
@@ -51,7 +51,7 @@ func (s *masterExchangeDao) Find(ctx context.Context, masterExchangeId int64) (*
 	return m, nil
 }
 
-func (s *masterExchangeDao) FindOrNil(ctx context.Context, masterExchangeId int64) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) FindOrNil(ctx context.Context, masterExchangeId int64) (*masterExchange.MasterExchange, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "FindOrNil", fmt.Sprintf("%d_", masterExchangeId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchange.MasterExchange); ok {
@@ -73,7 +73,7 @@ func (s *masterExchangeDao) FindOrNil(ctx context.Context, masterExchangeId int6
 	return m, nil
 }
 
-func (s *masterExchangeDao) FindByMasterEventId(ctx context.Context, masterEventId int64) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) FindByMasterEventId(ctx context.Context, masterEventId int64) (*masterExchange.MasterExchange, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "FindByMasterEventId", fmt.Sprintf("%d_", masterEventId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchange.MasterExchange); ok {
@@ -95,7 +95,7 @@ func (s *masterExchangeDao) FindByMasterEventId(ctx context.Context, masterEvent
 	return m, nil
 }
 
-func (s *masterExchangeDao) FindOrNilByMasterEventId(ctx context.Context, masterEventId int64) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) FindOrNilByMasterEventId(ctx context.Context, masterEventId int64) (*masterExchange.MasterExchange, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "FindOrNilByMasterEventId", fmt.Sprintf("%d_", masterEventId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchange.MasterExchange); ok {
@@ -117,7 +117,7 @@ func (s *masterExchangeDao) FindOrNilByMasterEventId(ctx context.Context, master
 	return m, nil
 }
 
-func (s *masterExchangeDao) FindList(ctx context.Context) (masterExchange.MasterExchanges, error) {
+func (s *masterExchangeMysqlDao) FindList(ctx context.Context) (masterExchange.MasterExchanges, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterExchange.MasterExchanges); ok {
@@ -140,7 +140,7 @@ func (s *masterExchangeDao) FindList(ctx context.Context) (masterExchange.Master
 	return ms, nil
 }
 
-func (s *masterExchangeDao) FindListByMasterEventId(ctx context.Context, masterEventId int64) (masterExchange.MasterExchanges, error) {
+func (s *masterExchangeMysqlDao) FindListByMasterEventId(ctx context.Context, masterEventId int64) (masterExchange.MasterExchanges, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange", "FindListByMasterEventId", fmt.Sprintf("%d_", masterEventId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterExchange.MasterExchanges); ok {
@@ -163,7 +163,7 @@ func (s *masterExchangeDao) FindListByMasterEventId(ctx context.Context, masterE
 	return ms, nil
 }
 
-func (s *masterExchangeDao) Create(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) (*masterExchange.MasterExchange, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterExchangeDao) Create(ctx context.Context, tx *gorm.DB, m *masterEx
 	return masterExchange.SetMasterExchange(t.MasterExchangeId, t.MasterEventId, t.Name), nil
 }
 
-func (s *masterExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) (masterExchange.MasterExchanges, error) {
+func (s *masterExchangeMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) (masterExchange.MasterExchanges, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms mast
 	return ms, nil
 }
 
-func (s *masterExchangeDao) Update(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) (*masterExchange.MasterExchange, error) {
+func (s *masterExchangeMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) (*masterExchange.MasterExchange, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterExchangeDao) Update(ctx context.Context, tx *gorm.DB, m *masterEx
 	return masterExchange.SetMasterExchange(t.MasterExchangeId, t.MasterEventId, t.Name), nil
 }
 
-func (s *masterExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) (masterExchange.MasterExchanges, error) {
+func (s *masterExchangeMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) (masterExchange.MasterExchanges, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms mast
 	return ms, nil
 }
 
-func (s *masterExchangeDao) Delete(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) error {
+func (s *masterExchangeMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterExchange.MasterExchange) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterExchangeDao) Delete(ctx context.Context, tx *gorm.DB, m *masterEx
 	return nil
 }
 
-func (s *masterExchangeDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) error {
+func (s *masterExchangeMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterExchange.MasterExchanges) error {
 	if len(ms) <= 0 {
 		return nil
 	}

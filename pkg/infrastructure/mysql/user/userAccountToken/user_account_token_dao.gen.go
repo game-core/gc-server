@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/account/userAccountToken"
 )
 
-type userAccountTokenDao struct {
+type userAccountTokenMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserAccountTokenDao(conn *database.MysqlHandler) userAccountToken.UserAccountTokenMysqlRepository {
-	return &userAccountTokenDao{
+func NewUserAccountTokenMysqlDao(conn *database.MysqlHandler) userAccountToken.UserAccountTokenMysqlRepository {
+	return &userAccountTokenMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userAccountTokenDao) Find(ctx context.Context, userId string) (*userAccountToken.UserAccountToken, error) {
+func (s *userAccountTokenMysqlDao) Find(ctx context.Context, userId string) (*userAccountToken.UserAccountToken, error) {
 	t := NewUserAccountToken()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userAccountTokenDao) Find(ctx context.Context, userId string) (*userAcc
 	return userAccountToken.SetUserAccountToken(t.UserId, t.Token), nil
 }
 
-func (s *userAccountTokenDao) FindOrNil(ctx context.Context, userId string) (*userAccountToken.UserAccountToken, error) {
+func (s *userAccountTokenMysqlDao) FindOrNil(ctx context.Context, userId string) (*userAccountToken.UserAccountToken, error) {
 	t := NewUserAccountToken()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userAccountTokenDao) FindOrNil(ctx context.Context, userId string) (*us
 	return userAccountToken.SetUserAccountToken(t.UserId, t.Token), nil
 }
 
-func (s *userAccountTokenDao) FindList(ctx context.Context, userId string) (userAccountToken.UserAccountTokens, error) {
+func (s *userAccountTokenMysqlDao) FindList(ctx context.Context, userId string) (userAccountToken.UserAccountTokens, error) {
 	ts := NewUserAccountTokens()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userAccountTokenDao) FindList(ctx context.Context, userId string) (user
 	return ms, nil
 }
 
-func (s *userAccountTokenDao) Create(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) (*userAccountToken.UserAccountToken, error) {
+func (s *userAccountTokenMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) (*userAccountToken.UserAccountToken, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -84,7 +84,7 @@ func (s *userAccountTokenDao) Create(ctx context.Context, tx *gorm.DB, m *userAc
 	return userAccountToken.SetUserAccountToken(t.UserId, t.Token), nil
 }
 
-func (s *userAccountTokenDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) (userAccountToken.UserAccountTokens, error) {
+func (s *userAccountTokenMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) (userAccountToken.UserAccountTokens, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -120,7 +120,7 @@ func (s *userAccountTokenDao) CreateList(ctx context.Context, tx *gorm.DB, ms us
 	return ms, nil
 }
 
-func (s *userAccountTokenDao) Update(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) (*userAccountToken.UserAccountToken, error) {
+func (s *userAccountTokenMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) (*userAccountToken.UserAccountToken, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -140,7 +140,7 @@ func (s *userAccountTokenDao) Update(ctx context.Context, tx *gorm.DB, m *userAc
 	return userAccountToken.SetUserAccountToken(t.UserId, t.Token), nil
 }
 
-func (s *userAccountTokenDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) (userAccountToken.UserAccountTokens, error) {
+func (s *userAccountTokenMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) (userAccountToken.UserAccountTokens, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -179,7 +179,7 @@ func (s *userAccountTokenDao) UpdateList(ctx context.Context, tx *gorm.DB, ms us
 	return ms, nil
 }
 
-func (s *userAccountTokenDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) error {
+func (s *userAccountTokenMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccountToken.UserAccountToken) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -195,7 +195,7 @@ func (s *userAccountTokenDao) Delete(ctx context.Context, tx *gorm.DB, m *userAc
 	return nil
 }
 
-func (s *userAccountTokenDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) error {
+func (s *userAccountTokenMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAccountToken.UserAccountTokens) error {
 	if len(ms) <= 0 {
 		return nil
 	}

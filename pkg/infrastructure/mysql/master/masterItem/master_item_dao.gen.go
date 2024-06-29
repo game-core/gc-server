@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/item/masterItem"
 )
 
-type masterItemDao struct {
+type masterItemMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterItemDao(conn *database.MysqlHandler) masterItem.MasterItemMysqlRepository {
-	return &masterItemDao{
+func NewMasterItemMysqlDao(conn *database.MysqlHandler) masterItem.MasterItemMysqlRepository {
+	return &masterItemMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterItemDao) Find(ctx context.Context, masterItemId int64) (*masterItem.MasterItem, error) {
+func (s *masterItemMysqlDao) Find(ctx context.Context, masterItemId int64) (*masterItem.MasterItem, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_item", "Find", fmt.Sprintf("%d_", masterItemId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterItem.MasterItem); ok {
@@ -51,7 +51,7 @@ func (s *masterItemDao) Find(ctx context.Context, masterItemId int64) (*masterIt
 	return m, nil
 }
 
-func (s *masterItemDao) FindOrNil(ctx context.Context, masterItemId int64) (*masterItem.MasterItem, error) {
+func (s *masterItemMysqlDao) FindOrNil(ctx context.Context, masterItemId int64) (*masterItem.MasterItem, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_item", "FindOrNil", fmt.Sprintf("%d_", masterItemId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterItem.MasterItem); ok {
@@ -73,7 +73,7 @@ func (s *masterItemDao) FindOrNil(ctx context.Context, masterItemId int64) (*mas
 	return m, nil
 }
 
-func (s *masterItemDao) FindList(ctx context.Context) (masterItem.MasterItems, error) {
+func (s *masterItemMysqlDao) FindList(ctx context.Context) (masterItem.MasterItems, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_item", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterItem.MasterItems); ok {
@@ -96,7 +96,7 @@ func (s *masterItemDao) FindList(ctx context.Context) (masterItem.MasterItems, e
 	return ms, nil
 }
 
-func (s *masterItemDao) Create(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) (*masterItem.MasterItem, error) {
+func (s *masterItemMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) (*masterItem.MasterItem, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -119,7 +119,7 @@ func (s *masterItemDao) Create(ctx context.Context, tx *gorm.DB, m *masterItem.M
 	return masterItem.SetMasterItem(t.MasterItemId, t.Name, t.MasterResourceEnum, t.MasterRarityEnum, t.Content), nil
 }
 
-func (s *masterItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
+func (s *masterItemMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -151,7 +151,7 @@ func (s *masterItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterIt
 	return ms, nil
 }
 
-func (s *masterItemDao) Update(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) (*masterItem.MasterItem, error) {
+func (s *masterItemMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) (*masterItem.MasterItem, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -174,7 +174,7 @@ func (s *masterItemDao) Update(ctx context.Context, tx *gorm.DB, m *masterItem.M
 	return masterItem.SetMasterItem(t.MasterItemId, t.Name, t.MasterResourceEnum, t.MasterRarityEnum, t.Content), nil
 }
 
-func (s *masterItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
+func (s *masterItemMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) (masterItem.MasterItems, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -209,7 +209,7 @@ func (s *masterItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterIt
 	return ms, nil
 }
 
-func (s *masterItemDao) Delete(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) error {
+func (s *masterItemMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterItem.MasterItem) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -225,7 +225,7 @@ func (s *masterItemDao) Delete(ctx context.Context, tx *gorm.DB, m *masterItem.M
 	return nil
 }
 
-func (s *masterItemDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) error {
+func (s *masterItemMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterItem.MasterItems) error {
 	if len(ms) <= 0 {
 		return nil
 	}

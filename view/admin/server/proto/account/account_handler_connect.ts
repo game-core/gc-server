@@ -18,19 +18,19 @@ export const Account = {
   typeName: "api.admin.Account",
   methods: {
     /**
-     * @generated from rpc api.admin.Account.GetGoogleLoginUrl
+     * @generated from rpc api.admin.Account.GetGoogleUrl
      */
-    getGoogleLoginUrl: {
-      name: "GetGoogleLoginUrl",
+    getGoogleUrl: {
+      name: "GetGoogleUrl",
       I: AccountGetGoogleUrlRequest,
       O: AccountGetGoogleUrlResponse,
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc api.admin.Account.GetGoogleLoginToken
+     * @generated from rpc api.admin.Account.GetGoogleToken
      */
-    getGoogleLoginToken: {
-      name: "GetGoogleLoginToken",
+    getGoogleToken: {
+      name: "GetGoogleToken",
       I: AccountGetGoogleTokenRequest,
       O: AccountGetGoogleTokenResponse,
       kind: MethodKind.Unary,

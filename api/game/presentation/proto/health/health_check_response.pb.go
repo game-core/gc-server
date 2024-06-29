@@ -15,8 +15,8 @@ import (
 	adminHealth "github.com/game-core/gc-server/api/game/presentation/proto/health/adminHealth"
 	commonHealth "github.com/game-core/gc-server/api/game/presentation/proto/health/commonHealth"
 	masterHealth "github.com/game-core/gc-server/api/game/presentation/proto/health/masterHealth"
-	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

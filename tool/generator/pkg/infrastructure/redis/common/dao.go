@@ -31,13 +31,13 @@ import (
 	"github.com/game-core/gc-server/internal/errors"
 )
 
-type {{.CamelName}}Dao struct {
+type {{.CamelName}}RedisDao struct {
 	ReadRedisConn  *redis.Client
 	WriteRedisConn *redis.Client
 }
 
-func New{{.Name}}Dao(conn *database.RedisHandler) {{.Package}}.{{.Name}}RedisRepository {
-	return &{{.CamelName}}Dao{
+func New{{.Name}}RedisDao(conn *database.RedisHandler) {{.Package}}.{{.Name}}RedisRepository {
+	return &{{.CamelName}}RedisDao{
 		ReadRedisConn:  conn.Common.ReadRedisConn,
 		WriteRedisConn: conn.Common.WriteRedisConn,
 	}
@@ -226,7 +226,7 @@ func (s *Dao) createFind(yamlStruct *YamlStruct, primaryFields []string) string 
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Find(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sRedisDao) Find(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			data, err := s.ReadRedisConn.HGet(ctx, t.TableName(), %s).Result()
 			if err != nil {
@@ -259,7 +259,7 @@ func (s *Dao) createFindOrNil(yamlStruct *YamlStruct, primaryFields []string) st
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) FindOrNil(ctx context.Context, %s) (*%s.%s, error) {
+		`func (s *%sRedisDao) FindOrNil(ctx context.Context, %s) (*%s.%s, error) {
 			t := New%s()
 			data, err := s.ReadRedisConn.HGet(ctx, t.TableName(), %s).Result()
 			if err != nil {
@@ -295,7 +295,7 @@ func (s *Dao) createSet(yamlStruct *YamlStruct, primaryFields []string) string {
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Set(ctx context.Context, tx redis.Pipeliner, m *%s.%s) (*%s.%s, error) {
+		`func (s *%sRedisDao) Set(ctx context.Context, tx redis.Pipeliner, m *%s.%s) (*%s.%s, error) {
 			var conn redis.Pipeliner
 			if tx != nil {
 				conn = tx
@@ -337,7 +337,7 @@ func (s *Dao) createDelete(yamlStruct *YamlStruct, primaryFields []string) strin
 	}
 
 	return fmt.Sprintf(
-		`func (s *%sDao) Delete(ctx context.Context, tx redis.Pipeliner, m *%s.%s) error {
+		`func (s *%sRedisDao) Delete(ctx context.Context, tx redis.Pipeliner, m *%s.%s) error {
 			var conn redis.Pipeliner
 			if tx != nil {
 				conn = tx

@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/action/masterActionTrigger"
 )
 
-type masterActionTriggerDao struct {
+type masterActionTriggerMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterActionTriggerDao(conn *database.MysqlHandler) masterActionTrigger.MasterActionTriggerMysqlRepository {
-	return &masterActionTriggerDao{
+func NewMasterActionTriggerMysqlDao(conn *database.MysqlHandler) masterActionTrigger.MasterActionTriggerMysqlRepository {
+	return &masterActionTriggerMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterActionTriggerDao) Find(ctx context.Context, masterActionTriggerId int64) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) Find(ctx context.Context, masterActionTriggerId int64) (*masterActionTrigger.MasterActionTrigger, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "Find", fmt.Sprintf("%d_", masterActionTriggerId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionTrigger.MasterActionTrigger); ok {
@@ -51,7 +51,7 @@ func (s *masterActionTriggerDao) Find(ctx context.Context, masterActionTriggerId
 	return m, nil
 }
 
-func (s *masterActionTriggerDao) FindOrNil(ctx context.Context, masterActionTriggerId int64) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) FindOrNil(ctx context.Context, masterActionTriggerId int64) (*masterActionTrigger.MasterActionTrigger, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "FindOrNil", fmt.Sprintf("%d_", masterActionTriggerId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionTrigger.MasterActionTrigger); ok {
@@ -73,7 +73,7 @@ func (s *masterActionTriggerDao) FindOrNil(ctx context.Context, masterActionTrig
 	return m, nil
 }
 
-func (s *masterActionTriggerDao) FindByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) FindByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (*masterActionTrigger.MasterActionTrigger, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "FindByMasterActionTriggerEnum", fmt.Sprintf("%d_", masterActionTriggerEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionTrigger.MasterActionTrigger); ok {
@@ -95,7 +95,7 @@ func (s *masterActionTriggerDao) FindByMasterActionTriggerEnum(ctx context.Conte
 	return m, nil
 }
 
-func (s *masterActionTriggerDao) FindOrNilByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) FindOrNilByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (*masterActionTrigger.MasterActionTrigger, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "FindOrNilByMasterActionTriggerEnum", fmt.Sprintf("%d_", masterActionTriggerEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionTrigger.MasterActionTrigger); ok {
@@ -117,7 +117,7 @@ func (s *masterActionTriggerDao) FindOrNilByMasterActionTriggerEnum(ctx context.
 	return m, nil
 }
 
-func (s *masterActionTriggerDao) FindList(ctx context.Context) (masterActionTrigger.MasterActionTriggers, error) {
+func (s *masterActionTriggerMysqlDao) FindList(ctx context.Context) (masterActionTrigger.MasterActionTriggers, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionTrigger.MasterActionTriggers); ok {
@@ -140,7 +140,7 @@ func (s *masterActionTriggerDao) FindList(ctx context.Context) (masterActionTrig
 	return ms, nil
 }
 
-func (s *masterActionTriggerDao) FindListByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (masterActionTrigger.MasterActionTriggers, error) {
+func (s *masterActionTriggerMysqlDao) FindListByMasterActionTriggerEnum(ctx context.Context, masterActionTriggerEnum masterActionTrigger.MasterActionTriggerEnum) (masterActionTrigger.MasterActionTriggers, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_trigger", "FindListByMasterActionTriggerEnum", fmt.Sprintf("%d_", masterActionTriggerEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionTrigger.MasterActionTriggers); ok {
@@ -163,7 +163,7 @@ func (s *masterActionTriggerDao) FindListByMasterActionTriggerEnum(ctx context.C
 	return ms, nil
 }
 
-func (s *masterActionTriggerDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) (*masterActionTrigger.MasterActionTrigger, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterActionTriggerDao) Create(ctx context.Context, tx *gorm.DB, m *mas
 	return masterActionTrigger.SetMasterActionTrigger(t.MasterActionTriggerId, t.Name, t.MasterActionTriggerEnum), nil
 }
 
-func (s *masterActionTriggerDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
+func (s *masterActionTriggerMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterActionTriggerDao) CreateList(ctx context.Context, tx *gorm.DB, ms
 	return ms, nil
 }
 
-func (s *masterActionTriggerDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) (*masterActionTrigger.MasterActionTrigger, error) {
+func (s *masterActionTriggerMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) (*masterActionTrigger.MasterActionTrigger, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterActionTriggerDao) Update(ctx context.Context, tx *gorm.DB, m *mas
 	return masterActionTrigger.SetMasterActionTrigger(t.MasterActionTriggerId, t.Name, t.MasterActionTriggerEnum), nil
 }
 
-func (s *masterActionTriggerDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
+func (s *masterActionTriggerMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) (masterActionTrigger.MasterActionTriggers, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterActionTriggerDao) UpdateList(ctx context.Context, tx *gorm.DB, ms
 	return ms, nil
 }
 
-func (s *masterActionTriggerDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) error {
+func (s *masterActionTriggerMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionTrigger.MasterActionTrigger) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterActionTriggerDao) Delete(ctx context.Context, tx *gorm.DB, m *mas
 	return nil
 }
 
-func (s *masterActionTriggerDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) error {
+func (s *masterActionTriggerMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionTrigger.MasterActionTriggers) error {
 	if len(ms) <= 0 {
 		return nil
 	}

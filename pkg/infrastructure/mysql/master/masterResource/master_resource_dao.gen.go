@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/resource/masterResource"
 )
 
-type masterResourceDao struct {
+type masterResourceMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterResourceDao(conn *database.MysqlHandler) masterResource.MasterResourceMysqlRepository {
-	return &masterResourceDao{
+func NewMasterResourceMysqlDao(conn *database.MysqlHandler) masterResource.MasterResourceMysqlRepository {
+	return &masterResourceMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterResourceDao) Find(ctx context.Context, masterResourceId int64) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) Find(ctx context.Context, masterResourceId int64) (*masterResource.MasterResource, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "Find", fmt.Sprintf("%d_", masterResourceId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterResource.MasterResource); ok {
@@ -51,7 +51,7 @@ func (s *masterResourceDao) Find(ctx context.Context, masterResourceId int64) (*
 	return m, nil
 }
 
-func (s *masterResourceDao) FindOrNil(ctx context.Context, masterResourceId int64) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) FindOrNil(ctx context.Context, masterResourceId int64) (*masterResource.MasterResource, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "FindOrNil", fmt.Sprintf("%d_", masterResourceId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterResource.MasterResource); ok {
@@ -73,7 +73,7 @@ func (s *masterResourceDao) FindOrNil(ctx context.Context, masterResourceId int6
 	return m, nil
 }
 
-func (s *masterResourceDao) FindByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) FindByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (*masterResource.MasterResource, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "FindByMasterResourceEnum", fmt.Sprintf("%d_", masterResourceEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterResource.MasterResource); ok {
@@ -95,7 +95,7 @@ func (s *masterResourceDao) FindByMasterResourceEnum(ctx context.Context, master
 	return m, nil
 }
 
-func (s *masterResourceDao) FindOrNilByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) FindOrNilByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (*masterResource.MasterResource, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "FindOrNilByMasterResourceEnum", fmt.Sprintf("%d_", masterResourceEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterResource.MasterResource); ok {
@@ -117,7 +117,7 @@ func (s *masterResourceDao) FindOrNilByMasterResourceEnum(ctx context.Context, m
 	return m, nil
 }
 
-func (s *masterResourceDao) FindList(ctx context.Context) (masterResource.MasterResources, error) {
+func (s *masterResourceMysqlDao) FindList(ctx context.Context) (masterResource.MasterResources, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterResource.MasterResources); ok {
@@ -140,7 +140,7 @@ func (s *masterResourceDao) FindList(ctx context.Context) (masterResource.Master
 	return ms, nil
 }
 
-func (s *masterResourceDao) FindListByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (masterResource.MasterResources, error) {
+func (s *masterResourceMysqlDao) FindListByMasterResourceEnum(ctx context.Context, masterResourceEnum masterResource.MasterResourceEnum) (masterResource.MasterResources, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_resource", "FindListByMasterResourceEnum", fmt.Sprintf("%d_", masterResourceEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterResource.MasterResources); ok {
@@ -163,7 +163,7 @@ func (s *masterResourceDao) FindListByMasterResourceEnum(ctx context.Context, ma
 	return ms, nil
 }
 
-func (s *masterResourceDao) Create(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) (*masterResource.MasterResource, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterResourceDao) Create(ctx context.Context, tx *gorm.DB, m *masterRe
 	return masterResource.SetMasterResource(t.MasterResourceId, t.Name, t.MasterResourceEnum), nil
 }
 
-func (s *masterResourceDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
+func (s *masterResourceMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterResourceDao) CreateList(ctx context.Context, tx *gorm.DB, ms mast
 	return ms, nil
 }
 
-func (s *masterResourceDao) Update(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) (*masterResource.MasterResource, error) {
+func (s *masterResourceMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) (*masterResource.MasterResource, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterResourceDao) Update(ctx context.Context, tx *gorm.DB, m *masterRe
 	return masterResource.SetMasterResource(t.MasterResourceId, t.Name, t.MasterResourceEnum), nil
 }
 
-func (s *masterResourceDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
+func (s *masterResourceMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) (masterResource.MasterResources, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterResourceDao) UpdateList(ctx context.Context, tx *gorm.DB, ms mast
 	return ms, nil
 }
 
-func (s *masterResourceDao) Delete(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) error {
+func (s *masterResourceMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterResource.MasterResource) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterResourceDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRe
 	return nil
 }
 
-func (s *masterResourceDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) error {
+func (s *masterResourceMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterResource.MasterResources) error {
 	if len(ms) <= 0 {
 		return nil
 	}

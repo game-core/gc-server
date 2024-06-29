@@ -11,19 +11,19 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/account/userAccount"
 )
 
-type userAccountDao struct {
+type userAccountRedisDao struct {
 	ReadRedisConn  *redis.Client
 	WriteRedisConn *redis.Client
 }
 
-func NewUserAccountDao(conn *database.RedisHandler) userAccount.UserAccountRedisRepository {
-	return &userAccountDao{
+func NewUserAccountRedisDao(conn *database.RedisHandler) userAccount.UserAccountRedisRepository {
+	return &userAccountRedisDao{
 		ReadRedisConn:  conn.User.ReadRedisConn,
 		WriteRedisConn: conn.User.WriteRedisConn,
 	}
 }
 
-func (s *userAccountDao) Find(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
+func (s *userAccountRedisDao) Find(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
 	t := NewUserAccount()
 	data, err := s.ReadRedisConn.HGet(ctx, t.TableName(), fmt.Sprintf("%s:userId:%v", t.TableName(), userId)).Result()
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *userAccountDao) Find(ctx context.Context, userId string) (*userAccount.
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) FindOrNil(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
+func (s *userAccountRedisDao) FindOrNil(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
 	t := NewUserAccount()
 	data, err := s.ReadRedisConn.HGet(ctx, t.TableName(), fmt.Sprintf("%s:userId:%v", t.TableName(), userId)).Result()
 	if err != nil {
@@ -54,7 +54,7 @@ func (s *userAccountDao) FindOrNil(ctx context.Context, userId string) (*userAcc
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) Set(ctx context.Context, tx redis.Pipeliner, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
+func (s *userAccountRedisDao) Set(ctx context.Context, tx redis.Pipeliner, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
 	var conn redis.Pipeliner
 	if tx != nil {
 		conn = tx
@@ -82,7 +82,7 @@ func (s *userAccountDao) Set(ctx context.Context, tx redis.Pipeliner, m *userAcc
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) Delete(ctx context.Context, tx redis.Pipeliner, m *userAccount.UserAccount) error {
+func (s *userAccountRedisDao) Delete(ctx context.Context, tx redis.Pipeliner, m *userAccount.UserAccount) error {
 	var conn redis.Pipeliner
 	if tx != nil {
 		conn = tx

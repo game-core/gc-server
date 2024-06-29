@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/exchange/masterExchangeCost"
 )
 
-type masterExchangeCostDao struct {
+type masterExchangeCostMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterExchangeCostDao(conn *database.MysqlHandler) masterExchangeCost.MasterExchangeCostMysqlRepository {
-	return &masterExchangeCostDao{
+func NewMasterExchangeCostMysqlDao(conn *database.MysqlHandler) masterExchangeCost.MasterExchangeCostMysqlRepository {
+	return &masterExchangeCostMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterExchangeCostDao) Find(ctx context.Context, masterExchangeCostId int64) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) Find(ctx context.Context, masterExchangeCostId int64) (*masterExchangeCost.MasterExchangeCost, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "Find", fmt.Sprintf("%d_", masterExchangeCostId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchangeCost.MasterExchangeCost); ok {
@@ -51,7 +51,7 @@ func (s *masterExchangeCostDao) Find(ctx context.Context, masterExchangeCostId i
 	return m, nil
 }
 
-func (s *masterExchangeCostDao) FindOrNil(ctx context.Context, masterExchangeCostId int64) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) FindOrNil(ctx context.Context, masterExchangeCostId int64) (*masterExchangeCost.MasterExchangeCost, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "FindOrNil", fmt.Sprintf("%d_", masterExchangeCostId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchangeCost.MasterExchangeCost); ok {
@@ -73,7 +73,7 @@ func (s *masterExchangeCostDao) FindOrNil(ctx context.Context, masterExchangeCos
 	return m, nil
 }
 
-func (s *masterExchangeCostDao) FindByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) FindByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeCost.MasterExchangeCost, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "FindByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchangeCost.MasterExchangeCost); ok {
@@ -95,7 +95,7 @@ func (s *masterExchangeCostDao) FindByMasterExchangeItemId(ctx context.Context, 
 	return m, nil
 }
 
-func (s *masterExchangeCostDao) FindOrNilByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) FindOrNilByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (*masterExchangeCost.MasterExchangeCost, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "FindOrNilByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterExchangeCost.MasterExchangeCost); ok {
@@ -117,7 +117,7 @@ func (s *masterExchangeCostDao) FindOrNilByMasterExchangeItemId(ctx context.Cont
 	return m, nil
 }
 
-func (s *masterExchangeCostDao) FindList(ctx context.Context) (masterExchangeCost.MasterExchangeCosts, error) {
+func (s *masterExchangeCostMysqlDao) FindList(ctx context.Context) (masterExchangeCost.MasterExchangeCosts, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterExchangeCost.MasterExchangeCosts); ok {
@@ -140,7 +140,7 @@ func (s *masterExchangeCostDao) FindList(ctx context.Context) (masterExchangeCos
 	return ms, nil
 }
 
-func (s *masterExchangeCostDao) FindListByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (masterExchangeCost.MasterExchangeCosts, error) {
+func (s *masterExchangeCostMysqlDao) FindListByMasterExchangeItemId(ctx context.Context, masterExchangeItemId int64) (masterExchangeCost.MasterExchangeCosts, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_exchange_cost", "FindListByMasterExchangeItemId", fmt.Sprintf("%d_", masterExchangeItemId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterExchangeCost.MasterExchangeCosts); ok {
@@ -163,7 +163,7 @@ func (s *masterExchangeCostDao) FindListByMasterExchangeItemId(ctx context.Conte
 	return ms, nil
 }
 
-func (s *masterExchangeCostDao) Create(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) (*masterExchangeCost.MasterExchangeCost, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -186,7 +186,7 @@ func (s *masterExchangeCostDao) Create(ctx context.Context, tx *gorm.DB, m *mast
 	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count), nil
 }
 
-func (s *masterExchangeCostDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
+func (s *masterExchangeCostMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -218,7 +218,7 @@ func (s *masterExchangeCostDao) CreateList(ctx context.Context, tx *gorm.DB, ms 
 	return ms, nil
 }
 
-func (s *masterExchangeCostDao) Update(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) (*masterExchangeCost.MasterExchangeCost, error) {
+func (s *masterExchangeCostMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) (*masterExchangeCost.MasterExchangeCost, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -241,7 +241,7 @@ func (s *masterExchangeCostDao) Update(ctx context.Context, tx *gorm.DB, m *mast
 	return masterExchangeCost.SetMasterExchangeCost(t.MasterExchangeCostId, t.MasterExchangeItemId, t.MasterItemId, t.Name, t.Count), nil
 }
 
-func (s *masterExchangeCostDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
+func (s *masterExchangeCostMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) (masterExchangeCost.MasterExchangeCosts, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -276,7 +276,7 @@ func (s *masterExchangeCostDao) UpdateList(ctx context.Context, tx *gorm.DB, ms 
 	return ms, nil
 }
 
-func (s *masterExchangeCostDao) Delete(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) error {
+func (s *masterExchangeCostMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterExchangeCost.MasterExchangeCost) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -292,7 +292,7 @@ func (s *masterExchangeCostDao) Delete(ctx context.Context, tx *gorm.DB, m *mast
 	return nil
 }
 
-func (s *masterExchangeCostDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) error {
+func (s *masterExchangeCostMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterExchangeCost.MasterExchangeCosts) error {
 	if len(ms) <= 0 {
 		return nil
 	}

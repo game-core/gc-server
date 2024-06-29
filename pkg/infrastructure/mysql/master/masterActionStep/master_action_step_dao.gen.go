@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/action/masterActionStep"
 )
 
-type masterActionStepDao struct {
+type masterActionStepMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterActionStepDao(conn *database.MysqlHandler) masterActionStep.MasterActionStepMysqlRepository {
-	return &masterActionStepDao{
+func NewMasterActionStepMysqlDao(conn *database.MysqlHandler) masterActionStep.MasterActionStepMysqlRepository {
+	return &masterActionStepMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterActionStepDao) Find(ctx context.Context, masterActionStepId int64) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) Find(ctx context.Context, masterActionStepId int64) (*masterActionStep.MasterActionStep, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "Find", fmt.Sprintf("%d_", masterActionStepId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionStep.MasterActionStep); ok {
@@ -51,7 +51,7 @@ func (s *masterActionStepDao) Find(ctx context.Context, masterActionStepId int64
 	return m, nil
 }
 
-func (s *masterActionStepDao) FindOrNil(ctx context.Context, masterActionStepId int64) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) FindOrNil(ctx context.Context, masterActionStepId int64) (*masterActionStep.MasterActionStep, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "FindOrNil", fmt.Sprintf("%d_", masterActionStepId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionStep.MasterActionStep); ok {
@@ -73,7 +73,7 @@ func (s *masterActionStepDao) FindOrNil(ctx context.Context, masterActionStepId 
 	return m, nil
 }
 
-func (s *masterActionStepDao) FindByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) FindByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (*masterActionStep.MasterActionStep, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "FindByMasterActionStepEnum", fmt.Sprintf("%d_", masterActionStepEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionStep.MasterActionStep); ok {
@@ -95,7 +95,7 @@ func (s *masterActionStepDao) FindByMasterActionStepEnum(ctx context.Context, ma
 	return m, nil
 }
 
-func (s *masterActionStepDao) FindOrNilByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) FindOrNilByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (*masterActionStep.MasterActionStep, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "FindOrNilByMasterActionStepEnum", fmt.Sprintf("%d_", masterActionStepEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterActionStep.MasterActionStep); ok {
@@ -117,7 +117,7 @@ func (s *masterActionStepDao) FindOrNilByMasterActionStepEnum(ctx context.Contex
 	return m, nil
 }
 
-func (s *masterActionStepDao) FindList(ctx context.Context) (masterActionStep.MasterActionSteps, error) {
+func (s *masterActionStepMysqlDao) FindList(ctx context.Context) (masterActionStep.MasterActionSteps, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionStep.MasterActionSteps); ok {
@@ -140,7 +140,7 @@ func (s *masterActionStepDao) FindList(ctx context.Context) (masterActionStep.Ma
 	return ms, nil
 }
 
-func (s *masterActionStepDao) FindListByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (masterActionStep.MasterActionSteps, error) {
+func (s *masterActionStepMysqlDao) FindListByMasterActionStepEnum(ctx context.Context, masterActionStepEnum masterActionStep.MasterActionStepEnum) (masterActionStep.MasterActionSteps, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_action_step", "FindListByMasterActionStepEnum", fmt.Sprintf("%d_", masterActionStepEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterActionStep.MasterActionSteps); ok {
@@ -163,7 +163,7 @@ func (s *masterActionStepDao) FindListByMasterActionStepEnum(ctx context.Context
 	return ms, nil
 }
 
-func (s *masterActionStepDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) (*masterActionStep.MasterActionStep, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterActionStepDao) Create(ctx context.Context, tx *gorm.DB, m *master
 	return masterActionStep.SetMasterActionStep(t.MasterActionStepId, t.Name, t.MasterActionStepEnum), nil
 }
 
-func (s *masterActionStepDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
+func (s *masterActionStepMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterActionStepDao) CreateList(ctx context.Context, tx *gorm.DB, ms ma
 	return ms, nil
 }
 
-func (s *masterActionStepDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) (*masterActionStep.MasterActionStep, error) {
+func (s *masterActionStepMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) (*masterActionStep.MasterActionStep, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterActionStepDao) Update(ctx context.Context, tx *gorm.DB, m *master
 	return masterActionStep.SetMasterActionStep(t.MasterActionStepId, t.Name, t.MasterActionStepEnum), nil
 }
 
-func (s *masterActionStepDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
+func (s *masterActionStepMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) (masterActionStep.MasterActionSteps, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterActionStepDao) UpdateList(ctx context.Context, tx *gorm.DB, ms ma
 	return ms, nil
 }
 
-func (s *masterActionStepDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) error {
+func (s *masterActionStepMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterActionStep.MasterActionStep) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterActionStepDao) Delete(ctx context.Context, tx *gorm.DB, m *master
 	return nil
 }
 
-func (s *masterActionStepDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) error {
+func (s *masterActionStepMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterActionStep.MasterActionSteps) error {
 	if len(ms) <= 0 {
 		return nil
 	}

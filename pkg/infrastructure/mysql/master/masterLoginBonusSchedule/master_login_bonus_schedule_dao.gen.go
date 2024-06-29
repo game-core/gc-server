@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/loginBonus/masterLoginBonusSchedule"
 )
 
-type masterLoginBonusScheduleDao struct {
+type masterLoginBonusScheduleMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterLoginBonusScheduleDao(conn *database.MysqlHandler) masterLoginBonusSchedule.MasterLoginBonusScheduleMysqlRepository {
-	return &masterLoginBonusScheduleDao{
+func NewMasterLoginBonusScheduleMysqlDao(conn *database.MysqlHandler) masterLoginBonusSchedule.MasterLoginBonusScheduleMysqlRepository {
+	return &masterLoginBonusScheduleMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterLoginBonusScheduleDao) Find(ctx context.Context, masterLoginBonusScheduleId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) Find(ctx context.Context, masterLoginBonusScheduleId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "Find", fmt.Sprintf("%d_", masterLoginBonusScheduleId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -51,7 +51,7 @@ func (s *masterLoginBonusScheduleDao) Find(ctx context.Context, masterLoginBonus
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindOrNil(ctx context.Context, masterLoginBonusScheduleId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindOrNil(ctx context.Context, masterLoginBonusScheduleId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindOrNil", fmt.Sprintf("%d_", masterLoginBonusScheduleId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -73,7 +73,7 @@ func (s *masterLoginBonusScheduleDao) FindOrNil(ctx context.Context, masterLogin
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindByMasterLoginBonusId", fmt.Sprintf("%d_", masterLoginBonusId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -95,7 +95,7 @@ func (s *masterLoginBonusScheduleDao) FindByMasterLoginBonusId(ctx context.Conte
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindByStep(ctx context.Context, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindByStep(ctx context.Context, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindByStep", fmt.Sprintf("%d_", step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -117,7 +117,7 @@ func (s *masterLoginBonusScheduleDao) FindByStep(ctx context.Context, step int32
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindByMasterLoginBonusIdAndStep", fmt.Sprintf("%d_%d_", masterLoginBonusId, step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -139,7 +139,7 @@ func (s *masterLoginBonusScheduleDao) FindByMasterLoginBonusIdAndStep(ctx contex
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindOrNilByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindOrNilByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindOrNilByMasterLoginBonusId", fmt.Sprintf("%d_", masterLoginBonusId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -161,7 +161,7 @@ func (s *masterLoginBonusScheduleDao) FindOrNilByMasterLoginBonusId(ctx context.
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindOrNilByStep(ctx context.Context, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindOrNilByStep(ctx context.Context, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindOrNilByStep", fmt.Sprintf("%d_", step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -183,7 +183,7 @@ func (s *masterLoginBonusScheduleDao) FindOrNilByStep(ctx context.Context, step 
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindOrNilByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindOrNilByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindOrNilByMasterLoginBonusIdAndStep", fmt.Sprintf("%d_%d_", masterLoginBonusId, step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterLoginBonusSchedule.MasterLoginBonusSchedule); ok {
@@ -205,7 +205,7 @@ func (s *masterLoginBonusScheduleDao) FindOrNilByMasterLoginBonusIdAndStep(ctx c
 	return m, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindList(ctx context.Context) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindList(ctx context.Context) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterLoginBonusSchedule.MasterLoginBonusSchedules); ok {
@@ -228,7 +228,7 @@ func (s *masterLoginBonusScheduleDao) FindList(ctx context.Context) (masterLogin
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindListByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindListByMasterLoginBonusId(ctx context.Context, masterLoginBonusId int64) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindListByMasterLoginBonusId", fmt.Sprintf("%d_", masterLoginBonusId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterLoginBonusSchedule.MasterLoginBonusSchedules); ok {
@@ -251,7 +251,7 @@ func (s *masterLoginBonusScheduleDao) FindListByMasterLoginBonusId(ctx context.C
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindListByStep(ctx context.Context, step int32) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindListByStep(ctx context.Context, step int32) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindListByStep", fmt.Sprintf("%d_", step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterLoginBonusSchedule.MasterLoginBonusSchedules); ok {
@@ -274,7 +274,7 @@ func (s *masterLoginBonusScheduleDao) FindListByStep(ctx context.Context, step i
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) FindListByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) FindListByMasterLoginBonusIdAndStep(ctx context.Context, masterLoginBonusId int64, step int32) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_login_bonus_schedule", "FindListByMasterLoginBonusIdAndStep", fmt.Sprintf("%d_%d_", masterLoginBonusId, step)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterLoginBonusSchedule.MasterLoginBonusSchedules); ok {
@@ -297,7 +297,7 @@ func (s *masterLoginBonusScheduleDao) FindListByMasterLoginBonusIdAndStep(ctx co
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) Create(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -319,7 +319,7 @@ func (s *masterLoginBonusScheduleDao) Create(ctx context.Context, tx *gorm.DB, m
 	return masterLoginBonusSchedule.SetMasterLoginBonusSchedule(t.MasterLoginBonusScheduleId, t.MasterLoginBonusId, t.Step, t.Name), nil
 }
 
-func (s *masterLoginBonusScheduleDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -350,7 +350,7 @@ func (s *masterLoginBonusScheduleDao) CreateList(ctx context.Context, tx *gorm.D
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) Update(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
+func (s *masterLoginBonusScheduleMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) (*masterLoginBonusSchedule.MasterLoginBonusSchedule, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -372,7 +372,7 @@ func (s *masterLoginBonusScheduleDao) Update(ctx context.Context, tx *gorm.DB, m
 	return masterLoginBonusSchedule.SetMasterLoginBonusSchedule(t.MasterLoginBonusScheduleId, t.MasterLoginBonusId, t.Step, t.Name), nil
 }
 
-func (s *masterLoginBonusScheduleDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
+func (s *masterLoginBonusScheduleMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) (masterLoginBonusSchedule.MasterLoginBonusSchedules, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -406,7 +406,7 @@ func (s *masterLoginBonusScheduleDao) UpdateList(ctx context.Context, tx *gorm.D
 	return ms, nil
 }
 
-func (s *masterLoginBonusScheduleDao) Delete(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) error {
+func (s *masterLoginBonusScheduleMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterLoginBonusSchedule.MasterLoginBonusSchedule) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -422,7 +422,7 @@ func (s *masterLoginBonusScheduleDao) Delete(ctx context.Context, tx *gorm.DB, m
 	return nil
 }
 
-func (s *masterLoginBonusScheduleDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) error {
+func (s *masterLoginBonusScheduleMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterLoginBonusSchedule.MasterLoginBonusSchedules) error {
 	if len(ms) <= 0 {
 		return nil
 	}

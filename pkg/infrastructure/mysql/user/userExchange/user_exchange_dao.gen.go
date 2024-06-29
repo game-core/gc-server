@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/exchange/userExchange"
 )
 
-type userExchangeDao struct {
+type userExchangeMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserExchangeDao(conn *database.MysqlHandler) userExchange.UserExchangeMysqlRepository {
-	return &userExchangeDao{
+func NewUserExchangeMysqlDao(conn *database.MysqlHandler) userExchange.UserExchangeMysqlRepository {
+	return &userExchangeMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userExchangeDao) Find(ctx context.Context, userId string, masterExchangeId int64) (*userExchange.UserExchange, error) {
+func (s *userExchangeMysqlDao) Find(ctx context.Context, userId string, masterExchangeId int64) (*userExchange.UserExchange, error) {
 	t := NewUserExchange()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userExchangeDao) Find(ctx context.Context, userId string, masterExchang
 	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
-func (s *userExchangeDao) FindOrNil(ctx context.Context, userId string, masterExchangeId int64) (*userExchange.UserExchange, error) {
+func (s *userExchangeMysqlDao) FindOrNil(ctx context.Context, userId string, masterExchangeId int64) (*userExchange.UserExchange, error) {
 	t := NewUserExchange()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userExchangeDao) FindOrNil(ctx context.Context, userId string, masterEx
 	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
-func (s *userExchangeDao) FindList(ctx context.Context, userId string) (userExchange.UserExchanges, error) {
+func (s *userExchangeMysqlDao) FindList(ctx context.Context, userId string) (userExchange.UserExchanges, error) {
 	ts := NewUserExchanges()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userExchangeDao) FindList(ctx context.Context, userId string) (userExch
 	return ms, nil
 }
 
-func (s *userExchangeDao) Create(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) (*userExchange.UserExchange, error) {
+func (s *userExchangeMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) (*userExchange.UserExchange, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -85,7 +85,7 @@ func (s *userExchangeDao) Create(ctx context.Context, tx *gorm.DB, m *userExchan
 	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
-func (s *userExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
+func (s *userExchangeMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -122,7 +122,7 @@ func (s *userExchangeDao) CreateList(ctx context.Context, tx *gorm.DB, ms userEx
 	return ms, nil
 }
 
-func (s *userExchangeDao) Update(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) (*userExchange.UserExchange, error) {
+func (s *userExchangeMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) (*userExchange.UserExchange, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -143,7 +143,7 @@ func (s *userExchangeDao) Update(ctx context.Context, tx *gorm.DB, m *userExchan
 	return userExchange.SetUserExchange(t.UserId, t.MasterExchangeId, t.ResetAt), nil
 }
 
-func (s *userExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
+func (s *userExchangeMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) (userExchange.UserExchanges, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -183,7 +183,7 @@ func (s *userExchangeDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userEx
 	return ms, nil
 }
 
-func (s *userExchangeDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) error {
+func (s *userExchangeMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchange.UserExchange) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -199,7 +199,7 @@ func (s *userExchangeDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchan
 	return nil
 }
 
-func (s *userExchangeDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) error {
+func (s *userExchangeMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userExchange.UserExchanges) error {
 	if len(ms) <= 0 {
 		return nil
 	}

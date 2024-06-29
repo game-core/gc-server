@@ -207,15 +207,15 @@ func (s *Proto) createStructure(yamlStruct *YamlStruct) string {
 		case "time":
 			check := true
 			for _, im := range imports {
-				if im == "import \"adminGoogle/protobuf/timestamp.proto\";" {
+				if im == "import \"google/protobuf/timestamp.proto\";" {
 					check = false
 					break
 				}
 			}
 			if check {
-				imports = append(imports, "import \"adminGoogle/protobuf/timestamp.proto\";")
+				imports = append(imports, "import \"google/protobuf/timestamp.proto\";")
 			}
-			fe = fmt.Sprintf("adminGoogle.protobuf.Timestamp %s = %v;", field.Name, field.Number)
+			fe = fmt.Sprintf("google.protobuf.Timestamp %s = %v;", field.Name, field.Number)
 		default:
 			fe = fmt.Sprintf("%s %s = %v;", field.Type, field.Name, field.Number)
 		}

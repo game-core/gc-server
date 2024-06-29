@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/action/userAction"
 )
 
-type userActionDao struct {
+type userActionMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserActionDao(conn *database.MysqlHandler) userAction.UserActionMysqlRepository {
-	return &userActionDao{
+func NewUserActionMysqlDao(conn *database.MysqlHandler) userAction.UserActionMysqlRepository {
+	return &userActionMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userActionDao) Find(ctx context.Context, userId string, masterActionId int64) (*userAction.UserAction, error) {
+func (s *userActionMysqlDao) Find(ctx context.Context, userId string, masterActionId int64) (*userAction.UserAction, error) {
 	t := NewUserAction()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_action_id = ?", masterActionId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userActionDao) Find(ctx context.Context, userId string, masterActionId 
 	return userAction.SetUserAction(t.UserId, t.MasterActionId, t.StartedAt), nil
 }
 
-func (s *userActionDao) FindOrNil(ctx context.Context, userId string, masterActionId int64) (*userAction.UserAction, error) {
+func (s *userActionMysqlDao) FindOrNil(ctx context.Context, userId string, masterActionId int64) (*userAction.UserAction, error) {
 	t := NewUserAction()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_action_id = ?", masterActionId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userActionDao) FindOrNil(ctx context.Context, userId string, masterActi
 	return userAction.SetUserAction(t.UserId, t.MasterActionId, t.StartedAt), nil
 }
 
-func (s *userActionDao) FindList(ctx context.Context, userId string) (userAction.UserActions, error) {
+func (s *userActionMysqlDao) FindList(ctx context.Context, userId string) (userAction.UserActions, error) {
 	ts := NewUserActions()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userActionDao) FindList(ctx context.Context, userId string) (userAction
 	return ms, nil
 }
 
-func (s *userActionDao) Create(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) (*userAction.UserAction, error) {
+func (s *userActionMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) (*userAction.UserAction, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -85,7 +85,7 @@ func (s *userActionDao) Create(ctx context.Context, tx *gorm.DB, m *userAction.U
 	return userAction.SetUserAction(t.UserId, t.MasterActionId, t.StartedAt), nil
 }
 
-func (s *userActionDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) (userAction.UserActions, error) {
+func (s *userActionMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) (userAction.UserActions, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -122,7 +122,7 @@ func (s *userActionDao) CreateList(ctx context.Context, tx *gorm.DB, ms userActi
 	return ms, nil
 }
 
-func (s *userActionDao) Update(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) (*userAction.UserAction, error) {
+func (s *userActionMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) (*userAction.UserAction, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -143,7 +143,7 @@ func (s *userActionDao) Update(ctx context.Context, tx *gorm.DB, m *userAction.U
 	return userAction.SetUserAction(t.UserId, t.MasterActionId, t.StartedAt), nil
 }
 
-func (s *userActionDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) (userAction.UserActions, error) {
+func (s *userActionMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) (userAction.UserActions, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -183,7 +183,7 @@ func (s *userActionDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userActi
 	return ms, nil
 }
 
-func (s *userActionDao) Delete(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) error {
+func (s *userActionMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userAction.UserAction) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -199,7 +199,7 @@ func (s *userActionDao) Delete(ctx context.Context, tx *gorm.DB, m *userAction.U
 	return nil
 }
 
-func (s *userActionDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) error {
+func (s *userActionMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAction.UserActions) error {
 	if len(ms) <= 0 {
 		return nil
 	}

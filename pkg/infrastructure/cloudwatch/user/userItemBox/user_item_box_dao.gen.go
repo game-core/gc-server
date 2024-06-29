@@ -15,19 +15,19 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/item/userItemBox"
 )
 
-type userItemBoxDao struct {
+type userItemBoxCloudWatchDao struct {
 	ReadCloudWatchConn  *cloudwatchlogs.Client
 	WriteCloudWatchConn *cloudwatchlogs.Client
 }
 
-func NewUserItemBoxDao(conn *logger.CloudWatchHandler) userItemBox.UserItemBoxCloudWatchRepository {
-	return &userItemBoxDao{
+func NewUserItemBoxCloudWatchDao(conn *logger.CloudWatchHandler) userItemBox.UserItemBoxCloudWatchRepository {
+	return &userItemBoxCloudWatchDao{
 		ReadCloudWatchConn:  conn.User.ReadCloudWatchConn,
 		WriteCloudWatchConn: conn.User.WriteCloudWatchConn,
 	}
 }
 
-func (s *userItemBoxDao) Create(ctx context.Context, now time.Time, level logger.LogLevel, m *userItemBox.UserItemBox) {
+func (s *userItemBoxCloudWatchDao) Create(ctx context.Context, now time.Time, level logger.LogLevel, m *userItemBox.UserItemBox) {
 	timestamp := now.Unix() * 1000
 	t := &UserItemBox{
 		UserId:       m.UserId,
@@ -47,7 +47,7 @@ func (s *userItemBoxDao) Create(ctx context.Context, now time.Time, level logger
 	}
 }
 
-func (s *userItemBoxDao) CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms userItemBox.UserItemBoxes) {
+func (s *userItemBoxCloudWatchDao) CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms userItemBox.UserItemBoxes) {
 	timestamp := now.Unix() * 1000
 	ts := NewUserItemBoxes()
 	for _, m := range ms {
@@ -71,7 +71,7 @@ func (s *userItemBoxDao) CreateList(ctx context.Context, now time.Time, level lo
 	}
 }
 
-func (s *userItemBoxDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
+func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
 	if _, err := s.WriteCloudWatchConn.PutLogEvents(
 		ctx,
 		&cloudwatchlogs.PutLogEventsInput{
@@ -91,7 +91,7 @@ func (s *userItemBoxDao) creteToCloudWatch(ctx context.Context, timestamp int64,
 	return nil
 }
 
-func (s *userItemBoxDao) creteToFile(fileName, message string) error {
+func (s *userItemBoxCloudWatchDao) creteToFile(fileName, message string) error {
 	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err

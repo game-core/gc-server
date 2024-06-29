@@ -9,19 +9,19 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/masterTransaction"
 )
 
-type masterTransactionDao struct {
+type masterTransactionMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 }
 
-func NewMasterTransactionDao(conn *database.MysqlHandler) masterTransaction.MasterTransactionMysqlRepository {
-	return &masterTransactionDao{
+func NewMasterTransactionMysqlDao(conn *database.MysqlHandler) masterTransaction.MasterTransactionMysqlRepository {
+	return &masterTransactionMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 	}
 }
 
-func (d *masterTransactionDao) Begin(ctx context.Context) (*gorm.DB, error) {
+func (d *masterTransactionMysqlDao) Begin(ctx context.Context) (*gorm.DB, error) {
 	tx := d.WriteMysqlConn.WithContext(ctx).Begin()
 	if err := tx.Error; err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (d *masterTransactionDao) Begin(ctx context.Context) (*gorm.DB, error) {
 	return tx, nil
 }
 
-func (d *masterTransactionDao) Commit(ctx context.Context, tx *gorm.DB) error {
+func (d *masterTransactionMysqlDao) Commit(ctx context.Context, tx *gorm.DB) error {
 	tx.WithContext(ctx).Commit()
 	if err := tx.Error; err != nil {
 		return err
@@ -39,7 +39,7 @@ func (d *masterTransactionDao) Commit(ctx context.Context, tx *gorm.DB) error {
 	return nil
 }
 
-func (d *masterTransactionDao) Rollback(ctx context.Context, tx *gorm.DB) error {
+func (d *masterTransactionMysqlDao) Rollback(ctx context.Context, tx *gorm.DB) error {
 	tx.WithContext(ctx).Rollback()
 	if err := tx.Error; err != nil {
 		return err

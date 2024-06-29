@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/exchange/userExchangeItem"
 )
 
-type userExchangeItemDao struct {
+type userExchangeItemMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserExchangeItemDao(conn *database.MysqlHandler) userExchangeItem.UserExchangeItemMysqlRepository {
-	return &userExchangeItemDao{
+func NewUserExchangeItemMysqlDao(conn *database.MysqlHandler) userExchangeItem.UserExchangeItemMysqlRepository {
+	return &userExchangeItemMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userExchangeItemDao) Find(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) Find(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userExchangeItemDao) Find(ctx context.Context, userId string, masterExc
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindOrNil(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) FindOrNil(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userExchangeItemDao) FindOrNil(ctx context.Context, userId string, mast
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) FindByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
 	if err := res.Error; err != nil {
@@ -62,7 +62,7 @@ func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeId(ctx context.Contex
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) FindByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -75,7 +75,7 @@ func (s *userExchangeItemDao) FindByUserIdAndMasterExchangeItemId(ctx context.Co
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) FindOrNilByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(t)
 	if err := res.Error; err != nil {
@@ -88,7 +88,7 @@ func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeId(ctx context.C
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) FindOrNilByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (*userExchangeItem.UserExchangeItem, error) {
 	t := NewUserExchangeItem()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(t)
 	if err := res.Error; err != nil {
@@ -101,7 +101,7 @@ func (s *userExchangeItemDao) FindOrNilByUserIdAndMasterExchangeItemId(ctx conte
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) FindList(ctx context.Context, userId string) (userExchangeItem.UserExchangeItems, error) {
+func (s *userExchangeItemMysqlDao) FindList(ctx context.Context, userId string) (userExchangeItem.UserExchangeItems, error) {
 	ts := NewUserExchangeItems()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -116,7 +116,7 @@ func (s *userExchangeItemDao) FindList(ctx context.Context, userId string) (user
 	return ms, nil
 }
 
-func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (userExchangeItem.UserExchangeItems, error) {
+func (s *userExchangeItemMysqlDao) FindListByUserIdAndMasterExchangeId(ctx context.Context, userId string, masterExchangeId int64) (userExchangeItem.UserExchangeItems, error) {
 	ts := NewUserExchangeItems()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_id = ?", masterExchangeId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -131,7 +131,7 @@ func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeId(ctx context.Co
 	return ms, nil
 }
 
-func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (userExchangeItem.UserExchangeItems, error) {
+func (s *userExchangeItemMysqlDao) FindListByUserIdAndMasterExchangeItemId(ctx context.Context, userId string, masterExchangeItemId int64) (userExchangeItem.UserExchangeItems, error) {
 	ts := NewUserExchangeItems()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_exchange_item_id = ?", masterExchangeItemId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -146,7 +146,7 @@ func (s *userExchangeItemDao) FindListByUserIdAndMasterExchangeItemId(ctx contex
 	return ms, nil
 }
 
-func (s *userExchangeItemDao) Create(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -168,7 +168,7 @@ func (s *userExchangeItemDao) Create(ctx context.Context, tx *gorm.DB, m *userEx
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
+func (s *userExchangeItemMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -206,7 +206,7 @@ func (s *userExchangeItemDao) CreateList(ctx context.Context, tx *gorm.DB, ms us
 	return ms, nil
 }
 
-func (s *userExchangeItemDao) Update(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
+func (s *userExchangeItemMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) (*userExchangeItem.UserExchangeItem, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -228,7 +228,7 @@ func (s *userExchangeItemDao) Update(ctx context.Context, tx *gorm.DB, m *userEx
 	return userExchangeItem.SetUserExchangeItem(t.UserId, t.MasterExchangeId, t.MasterExchangeItemId, t.Count), nil
 }
 
-func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
+func (s *userExchangeItemMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) (userExchangeItem.UserExchangeItems, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -269,7 +269,7 @@ func (s *userExchangeItemDao) UpdateList(ctx context.Context, tx *gorm.DB, ms us
 	return ms, nil
 }
 
-func (s *userExchangeItemDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) error {
+func (s *userExchangeItemMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userExchangeItem.UserExchangeItem) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -285,7 +285,7 @@ func (s *userExchangeItemDao) Delete(ctx context.Context, tx *gorm.DB, m *userEx
 	return nil
 }
 
-func (s *userExchangeItemDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) error {
+func (s *userExchangeItemMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userExchangeItem.UserExchangeItems) error {
 	if len(ms) <= 0 {
 		return nil
 	}

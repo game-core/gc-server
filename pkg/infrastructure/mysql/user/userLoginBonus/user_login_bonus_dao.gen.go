@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/loginBonus/userLoginBonus"
 )
 
-type userLoginBonusDao struct {
+type userLoginBonusMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserLoginBonusDao(conn *database.MysqlHandler) userLoginBonus.UserLoginBonusMysqlRepository {
-	return &userLoginBonusDao{
+func NewUserLoginBonusMysqlDao(conn *database.MysqlHandler) userLoginBonus.UserLoginBonusMysqlRepository {
+	return &userLoginBonusMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userLoginBonusDao) Find(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
+func (s *userLoginBonusMysqlDao) Find(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
 	t := NewUserLoginBonus()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_login_bonus_id = ?", masterLoginBonusId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userLoginBonusDao) Find(ctx context.Context, userId string, masterLogin
 	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
 }
 
-func (s *userLoginBonusDao) FindOrNil(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
+func (s *userLoginBonusMysqlDao) FindOrNil(ctx context.Context, userId string, masterLoginBonusId int64) (*userLoginBonus.UserLoginBonus, error) {
 	t := NewUserLoginBonus()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Where("master_login_bonus_id = ?", masterLoginBonusId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userLoginBonusDao) FindOrNil(ctx context.Context, userId string, master
 	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
 }
 
-func (s *userLoginBonusDao) FindList(ctx context.Context, userId string) (userLoginBonus.UserLoginBonuses, error) {
+func (s *userLoginBonusMysqlDao) FindList(ctx context.Context, userId string) (userLoginBonus.UserLoginBonuses, error) {
 	ts := NewUserLoginBonuses()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userLoginBonusDao) FindList(ctx context.Context, userId string) (userLo
 	return ms, nil
 }
 
-func (s *userLoginBonusDao) Create(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) (*userLoginBonus.UserLoginBonus, error) {
+func (s *userLoginBonusMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) (*userLoginBonus.UserLoginBonus, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -85,7 +85,7 @@ func (s *userLoginBonusDao) Create(ctx context.Context, tx *gorm.DB, m *userLogi
 	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
 }
 
-func (s *userLoginBonusDao) CreateList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) (userLoginBonus.UserLoginBonuses, error) {
+func (s *userLoginBonusMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) (userLoginBonus.UserLoginBonuses, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -122,7 +122,7 @@ func (s *userLoginBonusDao) CreateList(ctx context.Context, tx *gorm.DB, ms user
 	return ms, nil
 }
 
-func (s *userLoginBonusDao) Update(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) (*userLoginBonus.UserLoginBonus, error) {
+func (s *userLoginBonusMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) (*userLoginBonus.UserLoginBonus, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -143,7 +143,7 @@ func (s *userLoginBonusDao) Update(ctx context.Context, tx *gorm.DB, m *userLogi
 	return userLoginBonus.SetUserLoginBonus(t.UserId, t.MasterLoginBonusId, t.ReceivedAt), nil
 }
 
-func (s *userLoginBonusDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) (userLoginBonus.UserLoginBonuses, error) {
+func (s *userLoginBonusMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) (userLoginBonus.UserLoginBonuses, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -183,7 +183,7 @@ func (s *userLoginBonusDao) UpdateList(ctx context.Context, tx *gorm.DB, ms user
 	return ms, nil
 }
 
-func (s *userLoginBonusDao) Delete(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) error {
+func (s *userLoginBonusMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userLoginBonus.UserLoginBonus) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -199,7 +199,7 @@ func (s *userLoginBonusDao) Delete(ctx context.Context, tx *gorm.DB, m *userLogi
 	return nil
 }
 
-func (s *userLoginBonusDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) error {
+func (s *userLoginBonusMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userLoginBonus.UserLoginBonuses) error {
 	if len(ms) <= 0 {
 		return nil
 	}

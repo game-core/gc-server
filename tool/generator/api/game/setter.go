@@ -238,7 +238,7 @@ func (s *Setter) getType(yamlStruct *YamlStruct, field *Structure) string {
 
 // getTypeTime timeの型を取得する
 func (s *Setter) getTypeTime() string {
-	importCode = fmt.Sprintf("%s\n%s", importCode, "\"adminGoogle.golang.org/protobuf/types/known/timestamppb\"")
+	importCode = fmt.Sprintf("%s\n%s", importCode, "\"google.golang.org/protobuf/types/known/timestamppb\"")
 	// timeの場合はポインタ固定にする
 	return "*timestamppb.Timestamp"
 }

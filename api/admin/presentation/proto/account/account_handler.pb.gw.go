@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Account_GetGoogleUrl_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AccountGetGoogleUrlRequest
 	var metadata runtime.ServerMetadata
 
@@ -43,12 +43,12 @@ func request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetGoogleLoginUrl(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetGoogleUrl(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Account_GetGoogleUrl_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AccountGetGoogleUrlRequest
 	var metadata runtime.ServerMetadata
 
@@ -60,12 +60,12 @@ func local_request_Account_GetGoogleLoginUrl_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetGoogleLoginUrl(ctx, &protoReq)
+	msg, err := server.GetGoogleUrl(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Account_GetGoogleToken_0(ctx context.Context, marshaler runtime.Marshaler, client AccountClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AccountGetGoogleTokenRequest
 	var metadata runtime.ServerMetadata
 
@@ -77,12 +77,12 @@ func request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetGoogleLoginToken(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetGoogleToken(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Account_GetGoogleToken_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq AccountGetGoogleTokenRequest
 	var metadata runtime.ServerMetadata
 
@@ -94,7 +94,7 @@ func local_request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetGoogleLoginToken(ctx, &protoReq)
+	msg, err := server.GetGoogleToken(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -105,7 +105,7 @@ func local_request_Account_GetGoogleLoginToken_0(ctx context.Context, marshaler 
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAccountHandlerFromEndpoint instead.
 func RegisterAccountHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AccountServer) error {
 
-	mux.Handle("POST", pattern_Account_GetGoogleLoginUrl_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Account_GetGoogleUrl_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -113,12 +113,12 @@ func RegisterAccountHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.admin.Account/GetGoogleLoginUrl", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleLoginUrl"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.admin.Account/GetGoogleUrl", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleUrl"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Account_GetGoogleLoginUrl_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Account_GetGoogleUrl_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -126,11 +126,11 @@ func RegisterAccountHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_Account_GetGoogleLoginUrl_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Account_GetGoogleUrl_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Account_GetGoogleLoginToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Account_GetGoogleToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -138,12 +138,12 @@ func RegisterAccountHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.admin.Account/GetGoogleLoginToken", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleLoginToken"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.admin.Account/GetGoogleToken", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleToken"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Account_GetGoogleLoginToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Account_GetGoogleToken_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -151,7 +151,7 @@ func RegisterAccountHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_Account_GetGoogleLoginToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Account_GetGoogleToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -196,47 +196,47 @@ func RegisterAccountHandler(ctx context.Context, mux *runtime.ServeMux, conn *gr
 // "AccountClient" to call the correct interceptors.
 func RegisterAccountHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AccountClient) error {
 
-	mux.Handle("POST", pattern_Account_GetGoogleLoginUrl_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Account_GetGoogleUrl_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.admin.Account/GetGoogleLoginUrl", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleLoginUrl"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.admin.Account/GetGoogleUrl", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleUrl"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Account_GetGoogleLoginUrl_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Account_GetGoogleUrl_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Account_GetGoogleLoginUrl_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Account_GetGoogleUrl_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Account_GetGoogleLoginToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Account_GetGoogleToken_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.admin.Account/GetGoogleLoginToken", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleLoginToken"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.admin.Account/GetGoogleToken", runtime.WithHTTPPathPattern("/api.admin.Account/GetGoogleToken"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Account_GetGoogleLoginToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Account_GetGoogleToken_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Account_GetGoogleLoginToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Account_GetGoogleToken_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -244,13 +244,13 @@ func RegisterAccountHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 }
 
 var (
-	pattern_Account_GetGoogleLoginUrl_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api.admin.Account", "GetGoogleLoginUrl"}, ""))
+	pattern_Account_GetGoogleUrl_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api.admin.Account", "GetGoogleUrl"}, ""))
 
-	pattern_Account_GetGoogleLoginToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api.admin.Account", "GetGoogleLoginToken"}, ""))
+	pattern_Account_GetGoogleToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api.admin.Account", "GetGoogleToken"}, ""))
 )
 
 var (
-	forward_Account_GetGoogleLoginUrl_0 = runtime.ForwardResponseMessage
+	forward_Account_GetGoogleUrl_0 = runtime.ForwardResponseMessage
 
-	forward_Account_GetGoogleLoginToken_0 = runtime.ForwardResponseMessage
+	forward_Account_GetGoogleToken_0 = runtime.ForwardResponseMessage
 )

@@ -15,21 +15,21 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/rarity/masterRarity"
 )
 
-type masterRarityDao struct {
+type masterRarityMysqlDao struct {
 	ReadMysqlConn  *gorm.DB
 	WriteMysqlConn *gorm.DB
 	Cache          *cache.Cache
 }
 
-func NewMasterRarityDao(conn *database.MysqlHandler) masterRarity.MasterRarityMysqlRepository {
-	return &masterRarityDao{
+func NewMasterRarityMysqlDao(conn *database.MysqlHandler) masterRarity.MasterRarityMysqlRepository {
+	return &masterRarityMysqlDao{
 		ReadMysqlConn:  conn.Master.ReadMysqlConn,
 		WriteMysqlConn: conn.Master.WriteMysqlConn,
 		Cache:          cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
-func (s *masterRarityDao) Find(ctx context.Context, masterRarityId int64) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) Find(ctx context.Context, masterRarityId int64) (*masterRarity.MasterRarity, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "Find", fmt.Sprintf("%d_", masterRarityId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterRarity.MasterRarity); ok {
@@ -51,7 +51,7 @@ func (s *masterRarityDao) Find(ctx context.Context, masterRarityId int64) (*mast
 	return m, nil
 }
 
-func (s *masterRarityDao) FindOrNil(ctx context.Context, masterRarityId int64) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) FindOrNil(ctx context.Context, masterRarityId int64) (*masterRarity.MasterRarity, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "FindOrNil", fmt.Sprintf("%d_", masterRarityId)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterRarity.MasterRarity); ok {
@@ -73,7 +73,7 @@ func (s *masterRarityDao) FindOrNil(ctx context.Context, masterRarityId int64) (
 	return m, nil
 }
 
-func (s *masterRarityDao) FindByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) FindByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (*masterRarity.MasterRarity, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "FindByMasterRarityEnum", fmt.Sprintf("%d_", masterRarityEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterRarity.MasterRarity); ok {
@@ -95,7 +95,7 @@ func (s *masterRarityDao) FindByMasterRarityEnum(ctx context.Context, masterRari
 	return m, nil
 }
 
-func (s *masterRarityDao) FindOrNilByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) FindOrNilByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (*masterRarity.MasterRarity, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "FindOrNilByMasterRarityEnum", fmt.Sprintf("%d_", masterRarityEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(*masterRarity.MasterRarity); ok {
@@ -117,7 +117,7 @@ func (s *masterRarityDao) FindOrNilByMasterRarityEnum(ctx context.Context, maste
 	return m, nil
 }
 
-func (s *masterRarityDao) FindList(ctx context.Context) (masterRarity.MasterRarities, error) {
+func (s *masterRarityMysqlDao) FindList(ctx context.Context) (masterRarity.MasterRarities, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "FindList", ""))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterRarity.MasterRarities); ok {
@@ -140,7 +140,7 @@ func (s *masterRarityDao) FindList(ctx context.Context) (masterRarity.MasterRari
 	return ms, nil
 }
 
-func (s *masterRarityDao) FindListByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (masterRarity.MasterRarities, error) {
+func (s *masterRarityMysqlDao) FindListByMasterRarityEnum(ctx context.Context, masterRarityEnum masterRarity.MasterRarityEnum) (masterRarity.MasterRarities, error) {
 	cachedResult, found := s.Cache.Get(cashes.CreateCacheKey("master_rarity", "FindListByMasterRarityEnum", fmt.Sprintf("%d_", masterRarityEnum)))
 	if found {
 		if cachedEntity, ok := cachedResult.(masterRarity.MasterRarities); ok {
@@ -163,7 +163,7 @@ func (s *masterRarityDao) FindListByMasterRarityEnum(ctx context.Context, master
 	return ms, nil
 }
 
-func (s *masterRarityDao) Create(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) (*masterRarity.MasterRarity, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -184,7 +184,7 @@ func (s *masterRarityDao) Create(ctx context.Context, tx *gorm.DB, m *masterRari
 	return masterRarity.SetMasterRarity(t.MasterRarityId, t.Name, t.MasterRarityEnum), nil
 }
 
-func (s *masterRarityDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
+func (s *masterRarityMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -214,7 +214,7 @@ func (s *masterRarityDao) CreateList(ctx context.Context, tx *gorm.DB, ms master
 	return ms, nil
 }
 
-func (s *masterRarityDao) Update(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) (*masterRarity.MasterRarity, error) {
+func (s *masterRarityMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) (*masterRarity.MasterRarity, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -235,7 +235,7 @@ func (s *masterRarityDao) Update(ctx context.Context, tx *gorm.DB, m *masterRari
 	return masterRarity.SetMasterRarity(t.MasterRarityId, t.Name, t.MasterRarityEnum), nil
 }
 
-func (s *masterRarityDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
+func (s *masterRarityMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) (masterRarity.MasterRarities, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -268,7 +268,7 @@ func (s *masterRarityDao) UpdateList(ctx context.Context, tx *gorm.DB, ms master
 	return ms, nil
 }
 
-func (s *masterRarityDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) error {
+func (s *masterRarityMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRarity.MasterRarity) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -284,7 +284,7 @@ func (s *masterRarityDao) Delete(ctx context.Context, tx *gorm.DB, m *masterRari
 	return nil
 }
 
-func (s *masterRarityDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) error {
+func (s *masterRarityMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms masterRarity.MasterRarities) error {
 	if len(ms) <= 0 {
 		return nil
 	}

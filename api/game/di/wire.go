@@ -6,6 +6,7 @@ package di
 import (
 	"github.com/google/wire"
 
+	"github.com/game-core/gc-server/config/auth"
 	"github.com/game-core/gc-server/config/database"
 	"github.com/game-core/gc-server/config/logger"
 
@@ -24,12 +25,14 @@ import (
 	actionService "github.com/game-core/gc-server/pkg/domain/model/action"
 	eventService "github.com/game-core/gc-server/pkg/domain/model/event"
 	exchangeService "github.com/game-core/gc-server/pkg/domain/model/exchange"
+	googleService "github.com/game-core/gc-server/pkg/domain/model/google"
 	healthService "github.com/game-core/gc-server/pkg/domain/model/health"
 	itemService "github.com/game-core/gc-server/pkg/domain/model/item"
 	loginBonusService "github.com/game-core/gc-server/pkg/domain/model/loginBonus"
 	profileService "github.com/game-core/gc-server/pkg/domain/model/profile"
 	shardService "github.com/game-core/gc-server/pkg/domain/model/shard"
 	transactionService "github.com/game-core/gc-server/pkg/domain/model/transaction"
+	adminGoogleAuthDao "github.com/game-core/gc-server/pkg/infrastructure/auth/admin/adminGoogle"
 	userItemBoxCloudWatchDao "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	adminHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
@@ -160,9 +163,9 @@ func InitializeAccountService() accountService.AccountService {
 		database.NewRedis,
 		accountService.NewAccountService,
 		InitializeShardService,
-		userAccountMysqlDao.NewUserAccountDao,
-		userAccountRedisDao.NewUserAccountDao,
-		userAccountTokenRedisDao.NewUserAccountTokenDao,
+		userAccountMysqlDao.NewUserAccountMysqlDao,
+		userAccountRedisDao.NewUserAccountRedisDao,
+		userAccountTokenRedisDao.NewUserAccountTokenRedisDao,
 	)
 	return nil
 }
@@ -171,11 +174,11 @@ func InitializeActionService() actionService.ActionService {
 	wire.Build(
 		database.NewMysql,
 		actionService.NewActionService,
-		masterActionMysqlDao.NewMasterActionDao,
-		masterActionRunMysqlDao.NewMasterActionRunDao,
-		masterActionStepMysqlDao.NewMasterActionStepDao,
-		masterActionTriggerMysqlDao.NewMasterActionTriggerDao,
-		userActionMysqlDao.NewUserActionDao,
+		masterActionMysqlDao.NewMasterActionMysqlDao,
+		masterActionRunMysqlDao.NewMasterActionRunMysqlDao,
+		masterActionStepMysqlDao.NewMasterActionStepMysqlDao,
+		masterActionTriggerMysqlDao.NewMasterActionTriggerMysqlDao,
+		userActionMysqlDao.NewUserActionMysqlDao,
 	)
 	return nil
 }
@@ -184,7 +187,7 @@ func InitializeEventService() eventService.EventService {
 	wire.Build(
 		database.NewMysql,
 		eventService.NewEventService,
-		masterEventMysqlDao.NewMasterEventDao,
+		masterEventMysqlDao.NewMasterEventMysqlDao,
 	)
 	return nil
 }
@@ -195,11 +198,20 @@ func InitializeExchangeService() exchangeService.ExchangeService {
 		exchangeService.NewExchangeService,
 		InitializeItemService,
 		InitializeEventService,
-		masterExchangeMysqlDao.NewMasterExchangeDao,
-		masterExchangeCostMysqlDao.NewMasterExchangeCostDao,
-		masterExchangeItemMysqlDao.NewMasterExchangeItemDao,
-		userExchangeMysqlDao.NewUserExchangeDao,
-		userExchangeItemMysqlDao.NewUserExchangeItemDao,
+		masterExchangeMysqlDao.NewMasterExchangeMysqlDao,
+		masterExchangeCostMysqlDao.NewMasterExchangeCostMysqlDao,
+		masterExchangeItemMysqlDao.NewMasterExchangeItemMysqlDao,
+		userExchangeMysqlDao.NewUserExchangeMysqlDao,
+		userExchangeItemMysqlDao.NewUserExchangeItemMysqlDao,
+	)
+	return nil
+}
+
+func InitializeGoogleService() googleService.GoogleService {
+	wire.Build(
+		auth.NewAuth,
+		googleService.NewGoogleService,
+		adminGoogleAuthDao.NewAdminGoogleAuthDao,
 	)
 	return nil
 }
@@ -208,9 +220,9 @@ func InitializeHealthService() healthService.HealthService {
 	wire.Build(
 		database.NewMysql,
 		healthService.NewHealthService,
-		adminHealthMysqlDao.NewAdminHealthDao,
-		commonHealthMysqlDao.NewCommonHealthDao,
-		masterHealthMysqlDao.NewMasterHealthDao,
+		adminHealthMysqlDao.NewAdminHealthMysqlDao,
+		commonHealthMysqlDao.NewCommonHealthMysqlDao,
+		masterHealthMysqlDao.NewMasterHealthMysqlDao,
 	)
 	return nil
 }
@@ -220,9 +232,9 @@ func InitializeItemService() itemService.ItemService {
 		database.NewMysql,
 		logger.NewCloudWatch,
 		itemService.NewItemService,
-		userItemBoxMysqlDao.NewUserItemBoxDao,
-		userItemBoxCloudWatchDao.NewUserItemBoxDao,
-		masterItemMysqlDao.NewMasterItemDao,
+		userItemBoxMysqlDao.NewUserItemBoxMysqlDao,
+		userItemBoxCloudWatchDao.NewUserItemBoxCloudWatchDao,
+		masterItemMysqlDao.NewMasterItemMysqlDao,
 	)
 	return nil
 }
@@ -233,10 +245,10 @@ func InitializeLoginBonusService() loginBonusService.LoginBonusService {
 		loginBonusService.NewLoginBonusService,
 		InitializeItemService,
 		InitializeEventService,
-		userLoginBonusMysqlDao.NewUserLoginBonusDao,
-		masterLoginBonusMysqlDao.NewMasterLoginBonusDao,
-		masterLoginBonusItemMysqlDao.NewMasterLoginBonusItemDao,
-		masterLoginBonusScheduleMysqlDao.NewMasterLoginBonusScheduleDao,
+		userLoginBonusMysqlDao.NewUserLoginBonusMysqlDao,
+		masterLoginBonusMysqlDao.NewMasterLoginBonusMysqlDao,
+		masterLoginBonusItemMysqlDao.NewMasterLoginBonusItemMysqlDao,
+		masterLoginBonusScheduleMysqlDao.NewMasterLoginBonusScheduleMysqlDao,
 	)
 	return nil
 }
@@ -245,7 +257,7 @@ func InitializeProfileService() profileService.ProfileService {
 	wire.Build(
 		database.NewMysql,
 		profileService.NewProfileService,
-		userProfileMysqlDao.NewUserProfileDao,
+		userProfileMysqlDao.NewUserProfileMysqlDao,
 	)
 	return nil
 }
@@ -254,7 +266,7 @@ func InitializeShardService() shardService.ShardService {
 	wire.Build(
 		database.NewMysql,
 		shardService.NewShardService,
-		masterShardMysqlDao.NewMasterShardDao,
+		masterShardMysqlDao.NewMasterShardMysqlDao,
 	)
 	return nil
 }
@@ -264,10 +276,10 @@ func InitializeTransactionService() transactionService.TransactionService {
 		database.NewMysql,
 		database.NewRedis,
 		transactionService.NewTransactionService,
-		commonTransactionMysqlDao.NewCommonTransactionDao,
-		masterTransactionMysqlDao.NewMasterTransactionDao,
-		userTransactionMysqlDao.NewUserTransactionDao,
-		userTransactionRedisDao.NewUserTransactionDao,
+		commonTransactionMysqlDao.NewCommonTransactionMysqlDao,
+		masterTransactionMysqlDao.NewMasterTransactionMysqlDao,
+		userTransactionMysqlDao.NewUserTransactionMysqlDao,
+		userTransactionRedisDao.NewUserTransactionRedisDao,
 	)
 	return nil
 }

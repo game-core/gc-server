@@ -13,17 +13,17 @@ import (
 	"github.com/game-core/gc-server/pkg/domain/model/account/userAccount"
 )
 
-type userAccountDao struct {
+type userAccountMysqlDao struct {
 	ShardMysqlConn *database.ShardMysqlConn
 }
 
-func NewUserAccountDao(conn *database.MysqlHandler) userAccount.UserAccountMysqlRepository {
-	return &userAccountDao{
+func NewUserAccountMysqlDao(conn *database.MysqlHandler) userAccount.UserAccountMysqlRepository {
+	return &userAccountMysqlDao{
 		ShardMysqlConn: conn.User,
 	}
 }
 
-func (s *userAccountDao) Find(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
+func (s *userAccountMysqlDao) Find(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
 	t := NewUserAccount()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -36,7 +36,7 @@ func (s *userAccountDao) Find(ctx context.Context, userId string) (*userAccount.
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) FindOrNil(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
+func (s *userAccountMysqlDao) FindOrNil(ctx context.Context, userId string) (*userAccount.UserAccount, error) {
 	t := NewUserAccount()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(t)
 	if err := res.Error; err != nil {
@@ -49,7 +49,7 @@ func (s *userAccountDao) FindOrNil(ctx context.Context, userId string) (*userAcc
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) FindList(ctx context.Context, userId string) (userAccount.UserAccounts, error) {
+func (s *userAccountMysqlDao) FindList(ctx context.Context, userId string) (userAccount.UserAccounts, error) {
 	ts := NewUserAccounts()
 	res := s.ShardMysqlConn.Shards[keys.GetShardKeyByUserId(userId)].ReadMysqlConn.WithContext(ctx).Where("user_id = ?", userId).Find(&ts)
 	if err := res.Error; err != nil {
@@ -64,7 +64,7 @@ func (s *userAccountDao) FindList(ctx context.Context, userId string) (userAccou
 	return ms, nil
 }
 
-func (s *userAccountDao) Create(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
+func (s *userAccountMysqlDao) Create(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -87,7 +87,7 @@ func (s *userAccountDao) Create(ctx context.Context, tx *gorm.DB, m *userAccount
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) (userAccount.UserAccounts, error) {
+func (s *userAccountMysqlDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) (userAccount.UserAccounts, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -126,7 +126,7 @@ func (s *userAccountDao) CreateList(ctx context.Context, tx *gorm.DB, ms userAcc
 	return ms, nil
 }
 
-func (s *userAccountDao) Update(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
+func (s *userAccountMysqlDao) Update(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) (*userAccount.UserAccount, error) {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -149,7 +149,7 @@ func (s *userAccountDao) Update(ctx context.Context, tx *gorm.DB, m *userAccount
 	return userAccount.SetUserAccount(t.UserId, t.Name, t.Password, t.LoginAt, t.LogoutAt), nil
 }
 
-func (s *userAccountDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) (userAccount.UserAccounts, error) {
+func (s *userAccountMysqlDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) (userAccount.UserAccounts, error) {
 	if len(ms) <= 0 {
 		return ms, nil
 	}
@@ -191,7 +191,7 @@ func (s *userAccountDao) UpdateList(ctx context.Context, tx *gorm.DB, ms userAcc
 	return ms, nil
 }
 
-func (s *userAccountDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) error {
+func (s *userAccountMysqlDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccount.UserAccount) error {
 	var conn *gorm.DB
 	if tx != nil {
 		conn = tx
@@ -207,7 +207,7 @@ func (s *userAccountDao) Delete(ctx context.Context, tx *gorm.DB, m *userAccount
 	return nil
 }
 
-func (s *userAccountDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) error {
+func (s *userAccountMysqlDao) DeleteList(ctx context.Context, tx *gorm.DB, ms userAccount.UserAccounts) error {
 	if len(ms) <= 0 {
 		return nil
 	}

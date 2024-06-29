@@ -13,8 +13,8 @@ import (
 	sync "sync"
 
 	adminAccountGoogleToken "github.com/game-core/gc-server/api/admin/presentation/proto/account/adminAccountGoogleToken"
-	protoreflect "adminGoogle.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "adminGoogle.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

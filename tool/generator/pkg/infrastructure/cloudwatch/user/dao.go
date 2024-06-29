@@ -33,13 +33,13 @@ import (
 	"github.com/game-core/gc-server/internal/errors"
 )
 
-type {{.CamelName}}Dao struct {
+type {{.CamelName}}CloudWatchDao struct {
 	ReadCloudWatchConn  *cloudwatchlogs.Client
 	WriteCloudWatchConn *cloudwatchlogs.Client
 }
 
-func New{{.Name}}Dao(conn *logger.CloudWatchHandler) {{.Package}}.{{.Name}}CloudWatchRepository {
-	return &{{.CamelName}}Dao{
+func New{{.Name}}CloudWatchDao(conn *logger.CloudWatchHandler) {{.Package}}.{{.Name}}CloudWatchRepository {
+	return &{{.CamelName}}CloudWatchDao{
 		ReadCloudWatchConn:  conn.User.ReadCloudWatchConn,
 		WriteCloudWatchConn: conn.User.WriteCloudWatchConn,
 	}
@@ -213,7 +213,7 @@ func (s *Dao) createMethods(yamlStruct *YamlStruct) []string {
 // createCreate Createを作成する
 func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		`func (s *%sDao) Create(ctx context.Context, now time.Time, level logger.LogLevel, m *%s.%s) {
+		`func (s *%sCloudWatchDao) Create(ctx context.Context, now time.Time, level logger.LogLevel, m *%s.%s) {
 			timestamp := now.Unix() * 1000
 			t := %s
 			message := string(logger.SetLogMessage(now, level, t).ToJson())
@@ -239,7 +239,7 @@ func (s *Dao) createCreate(yamlStruct *YamlStruct) string {
 // createCreateList CreateListを作成する
 func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 	return fmt.Sprintf(
-		`func (s *%sDao) CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms %s.%s) {
+		`func (s *%sCloudWatchDao) CreateList(ctx context.Context, now time.Time, level logger.LogLevel, ms %s.%s) {
 			timestamp := now.Unix() * 1000
 			ts := New%s()
 			for _, m := range ms {
@@ -269,7 +269,7 @@ func (s *Dao) createCreateList(yamlStruct *YamlStruct) string {
 
 // createCreateToCloudWatch createToCloudWatch
 func (s *Dao) createCreateToCloudWatch() string {
-	return `func (s *userItemBoxDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
+	return `func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timestamp int64, logGroupName, logStreamName, message string) error {
 		if _, err := s.WriteCloudWatchConn.PutLogEvents(
 			ctx,
 			&cloudwatchlogs.PutLogEventsInput{
@@ -292,7 +292,7 @@ func (s *Dao) createCreateToCloudWatch() string {
 
 // createCreateToFile createToFileを作成する
 func (s *Dao) createCreateToFile() string {
-	return `func (s *userItemBoxDao) creteToFile(fileName, message string) error {
+	return `func (s *userItemBoxCloudWatchDao) creteToFile(fileName, message string) error {
 		f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			return err
