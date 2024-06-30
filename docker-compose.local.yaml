@@ -1,11 +1,13 @@
 version: '3.8'
 
-name: gc-server-api
+name: gc-server
 
 volumes:
   mysql-local:
     driver: local
   redis-local:
+    driver: local
+  node_modules:
     driver: local
 
 services:
@@ -82,3 +84,17 @@ services:
     depends_on:
       - mysql
       - redis
+
+  view-admin:
+    env_file:
+      - view/admin/.env.local
+    build:
+      target: dev
+      context: .
+      dockerfile: platform/docker/view/admin/Dockerfile
+    volumes:
+      - ./view/admin:/app:cached
+      - node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    tty: true

@@ -22,6 +22,9 @@ mysql_conn_user1:
 # コンテナに接続
 gen_conn:
 	$(DOCKER_COMPOSE) exec gen bash
+# コンテナに接続
+view_conn:
+	$(DOCKER_COMPOSE) exec view-admin sh
 
 # apiを生成
 gen_api:
