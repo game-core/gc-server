@@ -79,3 +79,18 @@ func (mr *MockGoogleServiceMockRecorder) GetAdminGoogleUrl() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdminGoogleUrl", reflect.TypeOf((*MockGoogleService)(nil).GetAdminGoogleUrl))
 }
+
+// RefreshAdminGoogleToken mocks base method.
+func (m *MockGoogleService) RefreshAdminGoogleToken(ctx context.Context, refreshToken string) (*adminGoogle.AdminGoogleToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshAdminGoogleToken", ctx, refreshToken)
+	ret0, _ := ret[0].(*adminGoogle.AdminGoogleToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RefreshAdminGoogleToken indicates an expected call of RefreshAdminGoogleToken.
+func (mr *MockGoogleServiceMockRecorder) RefreshAdminGoogleToken(ctx, refreshToken interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshAdminGoogleToken", reflect.TypeOf((*MockGoogleService)(nil).RefreshAdminGoogleToken), ctx, refreshToken)
+}

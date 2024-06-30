@@ -128,7 +128,7 @@ func (s *Dao) getYamlStruct(file string) (*YamlStruct, error) {
 
 // getOutputFileName ファイル名を取得する
 func (s *Dao) getOutputFileName(dir, name string) string {
-	return filepath.Join(dir, fmt.Sprintf("%s_dao.gen.go", changes.UpperCamelToSnake(name)))
+	return filepath.Join(dir, fmt.Sprintf("%s_mysql_dao.gen.go", changes.UpperCamelToSnake(name)))
 }
 
 // createOutputFile ファイルを作成する

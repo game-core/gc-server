@@ -36,6 +36,33 @@ func (m *MockTransactionService) EXPECT() *MockTransactionServiceMockRecorder {
 	return m.recorder
 }
 
+// AdminMysqlBegin mocks base method.
+func (m *MockTransactionService) AdminMysqlBegin(ctx context.Context) (*gorm.DB, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AdminMysqlBegin", ctx)
+	ret0, _ := ret[0].(*gorm.DB)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AdminMysqlBegin indicates an expected call of AdminMysqlBegin.
+func (mr *MockTransactionServiceMockRecorder) AdminMysqlBegin(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdminMysqlBegin", reflect.TypeOf((*MockTransactionService)(nil).AdminMysqlBegin), ctx)
+}
+
+// AdminMysqlEnd mocks base method.
+func (m *MockTransactionService) AdminMysqlEnd(ctx context.Context, tx *gorm.DB, err error) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "AdminMysqlEnd", ctx, tx, err)
+}
+
+// AdminMysqlEnd indicates an expected call of AdminMysqlEnd.
+func (mr *MockTransactionServiceMockRecorder) AdminMysqlEnd(ctx, tx, err interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdminMysqlEnd", reflect.TypeOf((*MockTransactionService)(nil).AdminMysqlEnd), ctx, tx, err)
+}
+
 // CommonMysqlBegin mocks base method.
 func (m *MockTransactionService) CommonMysqlBegin(ctx context.Context) (*gorm.DB, error) {
 	m.ctrl.T.Helper()

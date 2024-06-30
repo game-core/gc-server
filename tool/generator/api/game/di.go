@@ -362,60 +362,60 @@ func (s *Di) serviceScript(structName string, fields []*ast.Field) string {
 
 // getDaoDir daoのディレクトリを取得する
 func (s *Di) getDaoDir(name string) string {
-	if fileExists("../../../../pkg/infrastructure/mysql/admin", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/admin", fmt.Sprintf("%s_mysql_dao.gen.go", changes.CamelToSnake(name))) {
 		return "admin"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/common", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/common", fmt.Sprintf("%s_mysql_dao.gen.go", changes.CamelToSnake(name))) {
 		return "common"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/master", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/master", fmt.Sprintf("%s_mysql_dao.gen.go", changes.CamelToSnake(name))) {
 		return "master"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/user", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/user", fmt.Sprintf("%s_mysql_dao.gen.go", changes.CamelToSnake(name))) {
 		return "user"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/redis/common", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/redis/common", fmt.Sprintf("%s_redis_dao.gen.go", changes.CamelToSnake(name))) {
 		return "common"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/redis/user", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/redis/user", fmt.Sprintf("%s_redis_dao.gen.go", changes.CamelToSnake(name))) {
 		return "user"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_dao.gen.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_auth_dao.gen.go", changes.CamelToSnake(name))) {
 		return "admin"
 	}
 
 	// original
-	if fileExists("../../../../pkg/infrastructure/mysql/admin", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/admin", fmt.Sprintf("%s_mysql_dao.go", changes.CamelToSnake(name))) {
 		return "admin"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/common", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/common", fmt.Sprintf("%s_mysql_dao.go", changes.CamelToSnake(name))) {
 		return "common"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/master", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/master", fmt.Sprintf("%s_mysql_dao.go", changes.CamelToSnake(name))) {
 		return "master"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/mysql/user", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/mysql/user", fmt.Sprintf("%s_mysql_dao.go", changes.CamelToSnake(name))) {
 		return "user"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/redis/common", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/redis/common", fmt.Sprintf("%s_redis_dao.go", changes.CamelToSnake(name))) {
 		return "common"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/redis/user", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/redis/user", fmt.Sprintf("%s_user_dao.go", changes.CamelToSnake(name))) {
 		return "user"
 	}
 
-	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_dao.go", changes.CamelToSnake(name))) {
+	if fileExists("../../../../pkg/infrastructure/auth/admin", fmt.Sprintf("%s_auth_dao.go", changes.CamelToSnake(name))) {
 		return "admin"
 	}
 

@@ -29,6 +29,7 @@ import (
 	"github.com/game-core/gc-server/pkg/infrastructure/auth/admin/adminGoogle"
 	userItemBox2 "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
+	"github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	"github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -187,11 +188,12 @@ func InitializeShardService() shard.ShardService {
 
 func InitializeTransactionService() transaction.TransactionService {
 	mysqlHandler := database.NewMysql()
+	adminTransactionMysqlRepository := adminTransaction.NewAdminTransactionMysqlDao(mysqlHandler)
 	commonTransactionMysqlRepository := commonTransaction.NewCommonTransactionMysqlDao(mysqlHandler)
 	masterTransactionMysqlRepository := masterTransaction.NewMasterTransactionMysqlDao(mysqlHandler)
 	userTransactionMysqlRepository := userTransaction.NewUserTransactionMysqlDao(mysqlHandler)
 	redisHandler := database.NewRedis()
 	userTransactionRedisRepository := masterTransaction2.NewUserTransactionRedisDao(redisHandler)
-	transactionService := transaction.NewTransactionService(commonTransactionMysqlRepository, masterTransactionMysqlRepository, userTransactionMysqlRepository, userTransactionRedisRepository)
+	transactionService := transaction.NewTransactionService(adminTransactionMysqlRepository, commonTransactionMysqlRepository, masterTransactionMysqlRepository, userTransactionMysqlRepository, userTransactionRedisRepository)
 	return transactionService
 }

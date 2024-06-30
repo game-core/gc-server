@@ -9,12 +9,15 @@ import (
 
 	"github.com/game-core/gc-server/internal/errors"
 	"github.com/game-core/gc-server/internal/keys"
+	"github.com/game-core/gc-server/pkg/domain/model/transaction/adminTransaction"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/commonTransaction"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/masterTransaction"
 	"github.com/game-core/gc-server/pkg/domain/model/transaction/userTransaction"
 )
 
 type TransactionService interface {
+	AdminMysqlBegin(ctx context.Context) (*gorm.DB, error)
+	AdminMysqlEnd(ctx context.Context, tx *gorm.DB, err error)
 	CommonMysqlBegin(ctx context.Context) (*gorm.DB, error)
 	CommonMysqlEnd(ctx context.Context, tx *gorm.DB, err error)
 	MasterMysqlBegin(ctx context.Context) (*gorm.DB, error)
@@ -28,6 +31,7 @@ type TransactionService interface {
 }
 
 type transactionService struct {
+	adminTransactionMysqlRepository  adminTransaction.AdminTransactionMysqlRepository
 	commonTransactionMysqlRepository commonTransaction.CommonTransactionMysqlRepository
 	masterTransactionMysqlRepository masterTransaction.MasterTransactionMysqlRepository
 	userTransactionMysqlRepository   userTransaction.UserTransactionMysqlRepository
@@ -35,16 +39,41 @@ type transactionService struct {
 }
 
 func NewTransactionService(
+	adminTransactionMysqlRepository adminTransaction.AdminTransactionMysqlRepository,
 	commonTransactionMysqlRepository commonTransaction.CommonTransactionMysqlRepository,
 	masterTransactionMysqlRepository masterTransaction.MasterTransactionMysqlRepository,
 	userTransactionMysqlRepository userTransaction.UserTransactionMysqlRepository,
 	userTransactionRedisRepository userTransaction.UserTransactionRedisRepository,
 ) TransactionService {
 	return &transactionService{
+		adminTransactionMysqlRepository:  adminTransactionMysqlRepository,
 		commonTransactionMysqlRepository: commonTransactionMysqlRepository,
 		masterTransactionMysqlRepository: masterTransactionMysqlRepository,
 		userTransactionMysqlRepository:   userTransactionMysqlRepository,
 		userTransactionRedisRepository:   userTransactionRedisRepository,
+	}
+}
+
+// AdminMysqlBegin トランザクションを開始する
+func (s *transactionService) AdminMysqlBegin(ctx context.Context) (*gorm.DB, error) {
+	tx, err := s.adminTransactionMysqlRepository.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return tx, nil
+}
+
+// AdminMysqlEnd トランザクションを終了する
+func (s *transactionService) AdminMysqlEnd(ctx context.Context, tx *gorm.DB, err error) {
+	if err != nil {
+		if err := s.adminTransactionMysqlRepository.Rollback(ctx, tx); err != nil {
+			errors.NewMethodErrorLog("s.adminTransactionMysqlRepository.Rollback", err)
+		}
+	} else {
+		if err := s.adminTransactionMysqlRepository.Commit(ctx, tx); err != nil {
+			errors.NewMethodErrorLog("s.adminTransactionMysqlRepository.Commit", err)
+		}
 	}
 }
 

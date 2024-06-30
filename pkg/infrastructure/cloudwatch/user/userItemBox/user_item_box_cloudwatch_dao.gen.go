@@ -37,14 +37,17 @@ func (s *userItemBoxCloudWatchDao) Create(ctx context.Context, now time.Time, le
 	}
 	message := string(logger.SetLogMessage(now, level, t).ToJson())
 
-	if os.Getenv("APP_ENV") == "prod" {
+	switch os.Getenv("APP_ENV") {
+	case "prod":
 		if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
-	} else if os.Getenv("APP_ENV") == "dev" {
+	case "dev":
 		if err := s.creteToFile("./log/gc_server_user.log", fmt.Sprintf("%s %s\n", now.Format(time.RFC3339), message)); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
+	default:
+		errors.NewErrorLog("APP_ENV is invalid")
 	}
 }
 
@@ -61,14 +64,17 @@ func (s *userItemBoxCloudWatchDao) CreateList(ctx context.Context, now time.Time
 	}
 	message := string(logger.SetLogMessage(now, level, ts).ToJson())
 
-	if os.Getenv("APP_ENV") == "prod" {
+	switch os.Getenv("APP_ENV") {
+	case "prod":
 		if err := s.creteToCloudWatch(ctx, timestamp, message); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
-	} else if os.Getenv("APP_ENV") == "dev" {
+	case "dev":
 		if err := s.creteToFile("./log/gc_server_user.log", fmt.Sprintf("%s %s\n", now.Format(time.RFC3339), message)); err != nil {
 			errors.NewMethodErrorLog("appendToFile", err)
 		}
+	default:
+		errors.NewErrorLog("APP_ENV is invalid")
 	}
 }
 
@@ -86,7 +92,7 @@ func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timest
 			LogStreamName: pointers.StringToPointer(os.Getenv("USER_LOG_STREAM_NAME")),
 		},
 	); err != nil {
-		errors.NewMethodErrorLog("s.WriteCloudWatchConn.PutLogEvents", err)
+		return errors.NewMethodError("s.WriteCloudWatchConn.PutLogEvents", err)
 	}
 
 	return nil
@@ -95,7 +101,7 @@ func (s *userItemBoxCloudWatchDao) creteToCloudWatch(ctx context.Context, timest
 func (s *userItemBoxCloudWatchDao) creteToFile(fileName, message string) error {
 	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return err
+		return errors.NewMethodError("os.OpenFile", err)
 	}
 	defer func(f *os.File) {
 		if err := f.Close(); err != nil {
@@ -103,7 +109,7 @@ func (s *userItemBoxCloudWatchDao) creteToFile(fileName, message string) error {
 		}
 	}(f)
 	if _, err := f.WriteString(message); err != nil {
-		return err
+		return errors.NewMethodError("f.WriteString", err)
 	}
 
 	return nil

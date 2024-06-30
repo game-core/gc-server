@@ -29,6 +29,7 @@ import (
 	adminGoogleAuthDao "github.com/game-core/gc-server/pkg/infrastructure/auth/admin/adminGoogle"
 	userItemBoxCloudWatchDao "github.com/game-core/gc-server/pkg/infrastructure/cloudwatch/user/userItemBox"
 	adminHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminHealth"
+	adminTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/admin/adminTransaction"
 	commonHealthMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonHealth"
 	commonTransactionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/common/commonTransaction"
 	masterActionMysqlDao "github.com/game-core/gc-server/pkg/infrastructure/mysql/master/masterAction"
@@ -218,6 +219,7 @@ func InitializeTransactionService() transactionService.TransactionService {
 		database.NewMysql,
 		database.NewRedis,
 		transactionService.NewTransactionService,
+		adminTransactionMysqlDao.NewAdminTransactionMysqlDao,
 		commonTransactionMysqlDao.NewCommonTransactionMysqlDao,
 		masterTransactionMysqlDao.NewMasterTransactionMysqlDao,
 		userTransactionMysqlDao.NewUserTransactionMysqlDao,
